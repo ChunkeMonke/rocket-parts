@@ -1,6 +1,6 @@
 # Project: l1-cheap — Phase 0 Goal
 
-**Status:** Phase 0 — awaiting owner confirmation
+**Status:** Phase 0 — confirmed 2026-11-20
 
 ## Goal
 Tripoli Level 1 certification flight, as cheaply as possible.

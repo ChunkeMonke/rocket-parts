@@ -44,11 +44,11 @@ print_profile_petg:
   bed_adhesion: glue stick
   build_plate: TBD
   part_cooling_fan_pct: [30, 40]
-  layer_height_mm: 0.16
+  layer_height_mm: 0.2
   elephant_foot_comp_mm: 0.15
-  seam_position: Back
+  seam_position: Aligned
   nozzle_diameter_mm: 0.4      # P1S stock
-  wall_loops: 4                # Bambu Studio Strength tab
+  wall_loops: 6                # Bambu Studio Strength tab
   # infill % is NOT fixed here: verify.py solves it per part from the target mass
   # --- from Bambu Studio screenshots 2026-11-20 ---
   initial_layer_height_mm: 0.2
@@ -140,6 +140,6 @@ statement, and the pass/fail of each verify check).
 
 ## Print setup (PETG, P1S)
 
-Nozzle 245–250 °C · bed 75 °C + glue stick · fan 30–40 % · 0.16 mm layers ·
-elephant-foot compensation 0.15 mm · seam Back. Values above in the YAML are
+Nozzle 245–250 °C · bed 75 °C + glue stick · fan 30–40 % · 0.2 mm layers ·
+elephant-foot compensation 0.15 mm · seam Aligned. Values above in the YAML are
 authoritative; this line is a human summary.

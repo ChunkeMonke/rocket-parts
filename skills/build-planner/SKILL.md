@@ -54,8 +54,8 @@ Rate each task, and the project overall as its hardest critical task.
 
 ```yaml planner-defaults
 stability_margin_cal: 1.8      # target OpenRocket static margin, calibers
-stability_band_cal: TBD        # +/- allowed around the target
-contingency_pct: TBD           # added to the budget total
+stability_band_cal: 0.2        # owner wrote "+-2"; read as 0.2 (+-2 would allow -0.2 cal = unstable) — CONFIRM
+contingency_pct: 5             # held back inside the budget cap
 filament_price_usd_per_kg: 13  # PETG, owner's paid price
 ```
 
