@@ -8,15 +8,15 @@ id,item,tag,qty,mass_g,mass_basis,unit_price_usd,price_source,notes
 7,Parachute 40 in,have,1,57,ESTIMATE <=57 g (recovery),0,owned,Brand/type/mass TBD; reef to ~30 in to cut drift (free). Weigh it
 8,Kevlar cord 9KM DWLIFE 750 lb,have,3.68 m,10.7,2.91 g/m x 3.68 m,0,owned (16 m on hand),Spliced/sewn end loops recommended over knots
 9,Recovery wadding (Estes),buy,1 pack,2,ESTIMATE,5.43-5.99,"Estes listings, searched 2026-11-20",Nomex 6x6 (~$5) is the reusable alternative
-10,Rail buttons x2 (size per club rail),buy,2,5,ESTIMATE,TBD,TBD,Rail size (1010/1515) TBD from Palm Bay club
+10,Rail buttons x2 (size per club rail),owner-handled,2,5,ESTIMATE,excluded,-,Owner 2026-11-20: handled by owner; not tracked in plan or budget
 11,M3 brass heat-set inserts,buy,2 (pack of 100),~1,ESTIMATE,10.99 per 100,"Prusa/CNC Kitchen listing, searched 2026-11-20 (may be out of stock)",4.0 mm hole x 5.7 mm deep (motor.md)
 12,M3 screws + washers,TBD,2 + 2,~3,ESTIMATE,TBD,TBD,Length and washer OD depend on thrust ring size (TBD). Owned?
 13,PETG filament,have,~260 g,-,nose + fin can + spare,0,owned ($13/kg),Cost of printed parts is in rows 3-4
-14,Igniter,TBD,1,-,-,TBD,TBD,Check whether one comes in the H182R DMS kit before buying
+14,Igniter,owner-handled,1,-,-,excluded,-,Owner 2026-11-20: handled by owner; not tracked in plan or budget
 15,AeroTech delay adjustment tool,borrow,1,-,-,0,-,Ask at Palm Bay who has one; needed to cut 14 s to 12 s
 16,Launch pad + rail + controller,borrow,1,-,-,0,club,Club provides
 17,Glue stick (bed adhesion),have,-,-,-,0,shop rules,
-18,Soldering iron (to set heat-set inserts),TBD,1,-,-,TBD,TBD,Owned?
+18,Soldering iron (to set heat-set inserts),owner-handled,1,-,-,excluded,-,Owner 2026-11-20: handled by owner; not tracked in plan or budget
 19,Calipers,TBD,1,-,-,TBD,TBD,Needed to measure tube OD + motor case/ring. Owned?
 20,Scale (0.1 g or 1 g),TBD,1,-,-,TBD,TBD,Needed to weigh tube/chute/parts for the as-built sim. Owned?
 21,Sandpaper / finish,optional,-,-,-,0,-,Raw print is fine for L1; finish slightly lowers drag
