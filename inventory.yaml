@@ -8,7 +8,8 @@ recovery:
   - {item: "9KM DWLIFE Kevlar cord, hollow braided, 750 lb", qty: "16 m", notes: "2.3 mm dia, 16 strands, 88.7 g/100 ft (2.91 g/m); vendor: safe use 70% of rated (525 lb); melts 427 C"}
   - {item: "Parachute, 40 in", qty: 1, notes: "brand/type/mass TBD"}
 electronics:
-  - {item: Quasar-LR altimeter, qty: 1, notes: "cost split with another person; model details TBD"}
+  - {item: "Eggtimer Quasar-LR + LCD-LR handheld receiver combo", qty: 1, notes: "$130 sale; shared with another person; battery TBD"}
+  - {item: "Eggtimer USB-serial interface", qty: 1, notes: "$5"}
 tools: []
 consumables:
   - {item: PETG filament, qty: TBD, notes: "$13/kg paid"}

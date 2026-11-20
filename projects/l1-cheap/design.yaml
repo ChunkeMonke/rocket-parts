@@ -66,13 +66,13 @@ nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.m
   ballast_cavity_cm3_to_100mm: 27.2   # interior from tip to 100 mm aft of tip; uniform-fill CG 74.6 mm from tip
 
 payload:                   # payload agent
-  contents: Eggtimer Quasar-LR (baro altimeter + GPS + LoRa telemetry; deploy outputs NOT wired) + 2S LiPo  # owner 2026-11-20; maker identification by search, owner to confirm
+  contents: Eggtimer Quasar-LR (baro altimeter + GPS + LoRa telemetry; deploy outputs NOT wired) + 2S LiPo  # Eggtimer CONFIRMED by owner 2026-11-20
   mass_g: TBD              # board ~28 g is the ORIGINAL Quasar (Eggtimer FAQ); LR (stacked board) mass, battery, sled, bulkheads TBD
   bay_length_mm: TBD       # >= 140 board (original Quasar) + battery + bulkhead(s); LR length TBD from its manual
   position: TBD            # PROPOSED: tube-section bay riding with the nose (nose shoulder plugs into its forward end), aft bulkhead sealed from ejection gas. Nose cone cavity does NOT fit (100.7 mm usable vs 140 mm board), see payload.md
   vent_holes: 3 holes, ~1.3 mm dia (PROVISIONAL)  # Eggtimer guide rule: 1/4 in hole area per 100 in^3 bay, split into 3; 1.20-1.39 mm for a 150-200 mm bay; not across from the baro sensor
-  price_usd: TBD           # original Quasar kit listed $100; LR price + required LCD-LR receiver + battery TBD
-  owner_share_usd: TBD     # cost split with another person; split and whether it counts against the $100 cap TBD
+  price_usd: 135           # owner 2026-11-20: Quasar-LR + LCD-LR receiver combo $130 (sale) + USB-serial interface $5; battery TBD
+  owner_share_usd: TBD     # split with another person (67.50 if 50/50 - confirm); whether it counts against the $100 cap TBD
 
 stability:                 # stability agent — see projects/l1-cheap/stability.md (2026-11-20)
   sim_tool: rocketpy 1.13.0
