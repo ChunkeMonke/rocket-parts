@@ -1,6 +1,8 @@
 # l1-cheap — Payload & Avionics (Phase 2 scoping)
 
-**Status:** Phase 2 scoping pass · 2026-11-20 · payload agent
+**Status:** Phase 2 · 2026-11-20 · payload agent
+
+> **SUPERSEDED (owner update 2026-11-20):** there WILL be a payload, a Quasar-LR. See §Quasar-LR at the end. The "no payload" default and add-on table below are kept for the record.
 
 ## Default: no payload
 The owner has not asked for a payload, and feasibility.md plans motor ejection with no
@@ -35,3 +37,63 @@ Notes:
 1. Confirm **no payload** for this flight.
 2. If you want one: altimeter (A1 is the only one that fits the budget), beeper, or both?
 3. If A1: are you OK soldering a through-hole kit before 2026-12-14?
+
+---
+
+## Quasar-LR (owner update 2026-11-20)
+
+### Identification (owner to confirm)
+Most likely the **Eggtimer Rocketry Quasar-LR**. Eggtimer says the original Quasar "has been
+replaced by the Eggtimer Quasar-LR, which uses a LoRa radio module", and that it needs the new
+**LCD-LR receiver**; the old Eggfinder LCD will not work
+([Eggtimer Quasar FAQ](https://eggtimerrocketry.com/quasar/), via search 2026-11-20).
+What it is: a barometric **recording altimeter + GPS tracker + telemetry radio**, with 3
+deployment outputs, set up over WiFi from a phone
+([User's Guide 1.02S](https://eggtimerrocketry.com/wp-content/uploads/2024/02/Eggtimer-Quasar-1_02s.pdf)).
+On this rocket the outputs stay **unwired**, because the motor ejection does the deploy.
+I could not open eggtimerrocketry.com from this session (proxy 403), so everything below comes
+from search snippets. **Please send the Quasar-LR manual PDF**, or measure the board.
+
+### Specs found (mostly for the ORIGINAL Quasar; LR values TBD)
+| Item | Value | Source |
+|---|---|---|
+| Board | ~140 × 27.7 × 12.5 mm (original) | Eggtimer FAQ |
+| LR board | same hole layout, but **stacked** (about 6 mm between boards), so taller than 12.5 mm; actual height TBD | Eggtimer owner, [Rocketry Forum](https://www.rocketryforum.com/threads/the-eggtimer-quasar-a-wifi-enabled-gps-altimeter.175766/) |
+| Mass | ~28 g (original, no battery); LR TBD | Eggtimer FAQ |
+| Battery | 2S 7.4 V LiPo, 500 mAh or more (original); its mass and size depend on the pack you choose, so TBD | Eggtimer FAQ |
+| Price | kit $100 (original Quasar listing; LR price not confirmed) + LCD-LR receiver TBD + battery TBD | Eggtimer FAQ |
+| Vents | 1/4 in hole area per 100 in³ of bay volume, 3 holes preferred; size "not terribly critical"; don't put the sensor directly across from a hole | User's Guide 1.02S |
+| Antenna | no guidance found; TBD from the LR manual | — |
+
+### Fit check: nose cone (from nosecone.md: ogive L 165, R 20.64, wall 2.2, shoulder ID 34.155, 5 mm aft bulkhead)
+Script: `/tmp/claude-0/-home-user/c895d01b-a099-5773-be20-859042f2dc61/scratchpad/fit.py`.
+- The original board's cross-section has a 30.4 mm diagonal. The cone's inner diameter only
+  reaches that 99.3 mm from the tip.
+- That leaves **100.7 mm** to the bulkhead, against **140 mm** needed, before adding the battery.
+- With the taller stacked LR, it gets worse: at an assumed 18.5 mm height, only 83.7 mm is usable.
+- **Verdict: it does not fit in the nose cone.** The nose cone also has a sealed, integral
+  bulkhead, which leaves no access.
+
+### Proposal: a short tube bay that rides with the nose
+- Cut a section from the 34 in BT-1.52, about 140 mm board + battery + bulkhead; length TBD.
+  The nose shoulder plugs into its forward end.
+- The aft end gets a sealed bulkhead carrying the shock-cord eye. It keeps ejection gas off
+  the board and ties the bay to the recovery harness. The deploy split stays at the booster joint.
+- The board goes on a printed sled, flat across the tube. The tube ID of 38.735 allows a stack
+  up to about 27 mm tall at 27.7 mm wide: √(38.735² − 27.7²) = 27.1 mm, minus the sled.
+- GPS/LoRa: PETG and paper are non-metallic, so I expect little RF blockage (judgement, not a
+  cited source). Keep the antenna away from any metal ballast.
+- Vents: the Eggtimer rule gives 3 holes of about 1.20–1.39 mm for a 150–200 mm bay.
+  **Provisional: 3 × ~1.3 mm**, spaced 120° apart and not facing the sensor.
+- The pouch-on-shock-cord option is rejected. The board would sit in ejection gas and pressure,
+  which corrupts the baro data, and a loose ~28 g+ board would whip around on the cord.
+
+### Budget flag
+Even half of a $100 kit is **$50**. That is more than the $21–41 feasibility left, before the
+receiver and battery. The owner must say whether the Quasar is counted inside the $100 cap.
+
+### Open questions
+1. Is it the Eggtimer Quasar-LR? Please send its manual.
+2. Battery pack model or mass? Do you already own an LCD-LR receiver?
+3. Cost split, and is it inside or outside the $100 cap?
+4. Does the other co-owner need it back intact by a set date?
