@@ -1,0 +1,57 @@
+# Shared design state for l1-cheap — the one "whiteboard" every agent reads.
+# Each agent edits ONLY its own section. Values are TBD until sourced or decided.
+# Units: mm, g, N, s, m/s, calibers.
+
+owner:                     # set by the owner; agents never change these
+  budget_usd: 100
+  contingency_pct: 5
+  stability_target_cal: 1.8
+  stability_band_cal: 0.2  # owner wrote "+-2"; pending confirmation
+  airframe_od_class_mm: 38
+  motor_class: 29mm H
+
+motor:                     # motor agent
+  designation: TBD         # Phase 1 recommends AeroTech H182R-14A (pending owner)
+  loaded_mass_g: TBD
+  burnout_mass_g: TBD
+  length_mm: TBD
+  total_impulse_ns: TBD
+  delay_s: TBD
+  retention: TBD
+  thrust_curve_source: TBD
+
+aero:                      # aerodynamics agent
+  fin_count: TBD
+  fin_root_chord_mm: TBD
+  fin_tip_chord_mm: TBD
+  fin_span_mm: TBD
+  fin_sweep_mm: TBD
+  fin_thickness_mm: TBD
+  cp_from_nose_tip_mm: TBD
+  cd_estimate: TBD
+  max_velocity_m_s: TBD
+
+nosecone:                  # nosecone agent
+  shape: TBD
+  length_mm: TBD
+  shoulder_length_mm: TBD
+  wall_thickness_mm: TBD
+  mass_g: TBD
+  ballast_g: TBD
+
+payload:                   # payload agent
+  contents: TBD            # e.g. none / altimeter / tracker
+  mass_g: TBD
+  bay_length_mm: TBD
+
+stability:                 # stability agent
+  total_length_mm: TBD
+  liftoff_mass_g: TBD
+  cg_liftoff_from_nose_mm: TBD
+  cg_burnout_from_nose_mm: TBD
+  margin_liftoff_cal: TBD
+  margin_burnout_cal: TBD
+  sim_tool: TBD
+  apogee_m: TBD
+  time_to_apogee_s: TBD
+  rail_exit_velocity_m_s: TBD
