@@ -91,7 +91,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   cg_burnout_from_nose_mm: 724.2
   cp_from_nose_mm: 845.5         # Barrowman M~0 (aero.md formula, Lb 963); RocketPy 845.4 (M0), 856.6 (M0.9)
   margin_liftoff_cal: 1.79       # PASS vs 1.8 +/- 0.2
-  margin_burnout_cal: 2.94       # FAIL (high) vs 1.8 +/- 0.2. Propellant burn adds ~1.0-1.15 cal in EVERY config tried; a 0.4 cal band cannot hold both ends. Owner to rule
+  margin_burnout_cal: 2.94       # FAIL (high) vs 1.8 +/- 0.2. Propellant burn adds +0.8 to +1.15 cal in every practical config; a 0.4 cal band cannot hold both ends. Owner to rule
   apogee_m: 1280                 # 4198 ft AGL; Cd x0.85..x1.3 -> 1406..1095 m
   time_to_apogee_s: 13.97
   burnout_time_s: 1.235
