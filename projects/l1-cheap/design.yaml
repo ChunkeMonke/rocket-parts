@@ -23,12 +23,12 @@ motor:                     # motor agent
   burnout_mass_g: 92       # derived 207 - 115 (ignores delay/ejection mass lost)
   length_mm: 203           # spec sheet
   total_impulse_ns: 218    # spec sheet (49.0 lb-s)
-  avg_thrust_n: 182        # derived 218 / 1.2
-  max_thrust_n: 205        # plot spike ~46 lb at ~1.18 s; spec sheet STATES 43 lb (192 N) - discrepancy flagged; larger used for structure
-  burn_time_s: 1.2         # spec sheet
+  avg_thrust_n: 175          # RSE file (label-derived 182)
+  max_thrust_n: 205          # structural design value: max(plot read 205, RSE 200.8, label 192)
+  burn_time_s: 1.235        # RSE file (label 1.2)
   delay_s: TBD             # 14 s max, adjustable shorter; set from stability sim
   retention: TBD           # proposal in motor.md (screws + washers over thrust ring)
-  thrust_curve_source: "projects/l1-cheap/motor/H182R_digitized.eng - DIGITIZED FROM SPEC-SHEET PLOT (6 pts, scaled to 218 N-s), replace with the thrustcurve.org HP-H182R file"
+  thrust_curve_source: projects/l1-cheap/motor/H182R.eng (from owner's ThrustCurve RSE, AT DMS data May 2014; curve Itot 216.1 N-s)
 
 aero:                      # aerodynamics agent
   fin_count: TBD
@@ -50,9 +50,9 @@ nosecone:                  # nosecone agent
   ballast_g: TBD
 
 payload:                   # payload agent
-  contents: TBD            # e.g. none / altimeter / tracker
-  mass_g: TBD
-  bay_length_mm: TBD
+  contents: none (pending owner confirmation)  # optional add-ons listed in payload.md
+  mass_g: 0                # no payload; if an add-on is chosen, see payload.md for its mass
+  bay_length_mm: 0         # no separate bay; vent holes not needed with no altimeter
 
 stability:                 # stability agent
   total_length_mm: TBD

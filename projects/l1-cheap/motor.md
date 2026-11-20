@@ -25,7 +25,7 @@ both read through WebSearch on 2026-11-20 because direct fetches are blocked. Al
 | Thrust ring | **TBD**. Not on the sheet, and no published OD or thickness found | Phase 1 inferred a ring exists, because AeroTech also sells a "no thrust ring" variant |
 | Case OD | **TBD**. Not published | measure the motor |
 
-**Thrust curve file:** `projects/l1-cheap/motor/H182R_digitized.eng`.
+**Thrust curve file:** `projects/l1-cheap/motor/H182R.eng`, converted from the owner's ThrustCurve RSE file (`AeroTech_HP-H182R.rse`, AT DMS data May 2014): 216.1 N·s, peak 200.8 N, avg 175.0 N, burn 1.235 s. **Superseded (2026-11-20):** the digitized curve below was deleted.
 - It is **digitized from the spec-sheet plot** (6 points) and scaled by 0.954 so the curve totals 218 N·s.
 - After scaling, its peak is 195 N, so the file understates the plotted 205 N spike. Do not use the file's peak for structural sizing.
 - RocketPy 1.13 reads it as 218.0 N·s total, 1.25 s burn and 92 g dry mass.
@@ -67,7 +67,7 @@ both read through WebSearch on 2026-11-20 because direct fetches are blocked. Al
 7. Who at the Palm Bay launch has the AeroTech delay tool?
 
 ## 5. Hand-offs
-- **Stability:** masses 207 / 92 g, length 203 mm, and the digitized `.eng`. Please send me the time from burnout to apogee so I can set the delay.
+- **Stability:** masses 207 / 92 g, length 203 mm, and `motor/H182R.eng`. Please send me the time from burnout to apogee so I can set the delay.
 - **Aerodynamics:** the `.eng` file.
 - **Recovery:** the delay will be cut down from 14 s with the AeroTech tool. The ejection charge size is not published (TBD).
 - **Part library:** the bore and the aft thrust face, once the measurements are in.

@@ -1,0 +1,17 @@
+; AeroTech H182R-14A DMS -- converted from ThrustCurve.org RSE file supplied by owner 2026-11-20
+; Source comment: From AT DMS announcement May 2014. Itot 216.1 N-s (certified label 218 N-s).
+H182R 29 203.2 14 0.115 0.207 AT
+   0.007 82.404
+   0.031 159.208
+   0.091 158.408
+   0.186 182.409
+   0.500 192.009
+   0.904 188.809
+   1.054 175.209
+   1.106 180.809
+   1.144 200.810
+   1.163 162.408
+   1.201 36.802
+   1.212 16.801
+   1.235 0.000
+;
