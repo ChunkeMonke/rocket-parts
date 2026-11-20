@@ -19,7 +19,12 @@ Parameters (all from projects/<project>/design.yaml `fin_can:` + `aero:` + skill
   airfoil_points      -    cosine-spaced chord stations per surface
   anchor_groove_width_mm, anchor_groove_depth_mm  mm   Kevlar groove in the shoulder OD
   anchor_angle_deg    deg  groove position about Z (between fins)
-  thrust_ring_od_mm, thrust_ring_thk_mm  mm  motor thrust ring (mating check only)
+  thrust_ring_od_mm, thrust_ring_thk_mm  mm  motor thrust ring (mating check; sets washer size)
+  insert_hole_d_mm, insert_depth_mm       mm  M3 heat-set insert hole (one per fin, axial, from the aft face)
+  boss_wall_mm        mm   plastic around the insert hole (= print-profile perimeter band)
+  insert_radius_mm    mm   insert axis radius = bore/2 + boss wall + hole/2 (derived: keeps a full wall to the bore)
+  boss_fairing_length_mm  mm  taper from the boss into the fin root, forward of the insert
+  washer_min_overlap_mm   mm  required washer overlap on the thrust ring
   target_mass_g       g    declared target for verify check 2
 """
 from __future__ import annotations
@@ -44,7 +49,9 @@ INFO = {
         "Fin root bending (aero side load): bending stress runs radially/tangentially, WITHIN the layers.",
         "Kevlar anchor (deploy): the cord pulls +Z on a groove epoxied under the tube. The bond is loaded "
         "in shear on vertical faces, so the PETG layers are sheared in-plane, not peeled apart.",
-        "Ejection kick on the motor (aft): taken by the motor retention, which is NOT in rev 1 (OPEN).",
+        "Ejection kick on the motor (aft): thrust ring pulls the screws/washers aft (-Z); each insert is "
+        "pulled out of its boss along Z, which loads the boss across the layers (the weak direction). "
+        "Capacity estimate in motor.md (SF ~2.6 for 2 inserts; rev 2 has one per fin).",
     ],
 }
 
@@ -84,7 +91,20 @@ def params(project: str = "l1-cheap") -> dict:
         "thrust_ring_od_mm": v["thrust_ring_od_mm"],
         "thrust_ring_thk_mm": v["thrust_ring_thk_mm"],
         "target_mass_g": v["target_mass_g"],
+        "retention": v["retention"],
     }
+    if v["retention"] == "insert_bosses_at_fin_roots":
+        wall = lw["outer_wall"] + (const("print_profile_petg.wall_loops") - 1) * lw["inner_wall"]
+        p.update({
+            "insert_hole_d_mm": v["insert_hole_d_mm"],
+            "insert_depth_mm": v["insert_depth_mm"],
+            "boss_wall_mm": wall,
+            "insert_radius_mm": p["bore_d_mm"] / 2 + wall + v["insert_hole_d_mm"] / 2,
+            "boss_fairing_length_mm": v["boss_fairing_length_mm"],
+            "washer_min_overlap_mm": v["washer_min_overlap_mm"],
+        })
+        # washer OD the screws need so the washer overlaps the ring by the required amount
+        p["washer_min_od_mm"] = 2 * (p["washer_min_overlap_mm"] + p["insert_radius_mm"] - p["thrust_ring_od_mm"] / 2)
     p["_status"] = status
     p["_source"] = {k: (fc[k].get("note", "") if isinstance(fc.get(k), dict) else "") for k in fc}
     return p
@@ -149,8 +169,12 @@ def build(p: dict) -> cq.Workplane:
     for i in range(p["fin_count"]):
         body = body.union(cq.Workplane("XY").add(fin.rotate(cq.Vector(0, 0, 0), cq.Vector(0, 0, 1),
                                                            i * 360.0 / p["fin_count"])))
+    if p.get("retention") == "insert_bosses_at_fin_roots":
+        body = body.union(retention_bosses(p))
     bore = cq.Workplane("XY").circle(p["bore_d_mm"] / 2).extrude(le + ls)
     body = body.cut(bore)
+    if p.get("retention") == "insert_bosses_at_fin_roots":
+        body = body.cut(insert_holes(p))
     # Kevlar anchor groove on the shoulder OD
     w, dep = p["anchor_groove_width_mm"], p["anchor_groove_depth_mm"]
     r_sh = p["shoulder_od_mm"] / 2
@@ -158,6 +182,34 @@ def build(p: dict) -> cq.Workplane:
               .translate((r_sh - dep, 0, le))
               .rotate((0, 0, 0), (0, 0, 1), p["anchor_angle_deg"]))
     return body.cut(groove)
+
+
+def _at_fins(p: dict, solid: cq.Workplane) -> cq.Workplane:
+    out = None
+    for i in range(p["fin_count"]):
+        s = solid.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
+        out = s if out is None else out.union(s)
+    return out
+
+
+def retention_bosses(p: dict) -> cq.Workplane:
+    """Per fin: a cylinder around the insert (insert depth + a wall-thick cap), then a loft that
+    tapers it into the fin root so the outside stays faired."""
+    r_b = p["insert_hole_d_mm"] / 2 + p["boss_wall_mm"]
+    h_b = p["insert_depth_mm"] + p["boss_wall_mm"]
+    cyl = cq.Solid.makeCylinder(r_b, h_b, cq.Vector(p["insert_radius_mm"], 0, 0))
+    w0 = cq.Wire.makeCircle(r_b, cq.Vector(p["insert_radius_mm"], 0, h_b), cq.Vector(0, 0, 1))
+    w1 = cq.Wire.makeCircle(p["fin_thickness_mm"] / 2,
+                            cq.Vector(p["insert_radius_mm"], 0, h_b + p["boss_fairing_length_mm"]),
+                            cq.Vector(0, 0, 1))
+    fair = cq.Solid.makeLoft([w0, w1], ruled=True)
+    return _at_fins(p, cq.Workplane("XY").add(cyl).union(cq.Workplane("XY").add(fair)))
+
+
+def insert_holes(p: dict) -> cq.Workplane:
+    hole = cq.Workplane("XY").add(cq.Solid.makeCylinder(p["insert_hole_d_mm"] / 2, p["insert_depth_mm"],
+                                                        cq.Vector(p["insert_radius_mm"], 0, 0)))
+    return _at_fins(p, hole)
 
 
 def mating(p: dict) -> dict[str, cq.Workplane]:

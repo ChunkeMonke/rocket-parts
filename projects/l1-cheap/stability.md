@@ -1,8 +1,11 @@
 # Project: l1-cheap — Phase 2 Stability & Integration
 
-**Status:** Phase 2 integration, rev 2, 2026-11-20. Uses the **real fin can mass** from `parts/fin_can.py`
-rev 1. **PROVISIONAL:** the Quasar-LR payload mass and bay are TBD, and the tube, liner, nose, chute,
-epoxy, rail-button and retention masses are estimates (§2).
+**Status:** Phase 2 integration, rev 3, 2026-11-20.
+- Real fin can mass (rev 2).
+- Owner decisions (rev 3): the stability band gates **liftoff only**, and motor retention is a
+  **friction fit + tape**.
+- **PROVISIONAL:** the Quasar-LR payload mass and bay are TBD. The tube, liner, nose, chute, epoxy,
+  rail-button and tape masses are estimates (§2).
 
 **Sim.** `sims/l1_cheap.py` (RocketPy 1.13.0) reads every number from `design.yaml` and the shop
 constants.
@@ -14,10 +17,16 @@ constants.
   are numbers. Otherwise it falls back to the walls+infill estimate.
 - Liner: computed from `fin_can.liner_*` × `assumptions.cardboard_density_g_cm3`.
 
-**Sweeps.** `sims/l1_cheap_sweep.py [mass|payload|cd|nose|all]`.
+**Sweeps.** `sims/l1_cheap_sweep.py [mass|payload|cd|nose|target|all]`.
+
+**Margin vs time.** `--margin-plot out/sims/l1_cheap_margin_vs_time.png` prints the key-event table and
+writes the plot (§3a).
 
 **Baseline run, used for every result below:**
-`.venv/bin/python sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0`
+`.venv/bin/python sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0 --margin-plot out/sims/l1_cheap_margin_vs_time.png`
+
+**Rev 3 change.** Retention went from 4 g (screws + inserts) to 2 g (tape). Ballast was re-solved to
+**89 g**, giving 1.81 cal at liftoff and 710 g.
 
 **Rev 2 change.** The fin can went from a 197.3 g estimate at 1047.4 mm (weighted CG of the three
 estimate items) to 171.1 g at 1047.7 mm (80.3 mm forward of the aft face). The CG barely moved; the
@@ -28,19 +37,16 @@ the solved ballast dropped from 96 g to **90 g**, and the liftoff mass from 736 
 
 | Item | Value | vs. target |
 |---|---|---|
-| Configuration | 165 ogive nose + 863 mm BT-1.52 (uncut) + 100 mm exposed fin can, span 40, **90 g nose ballast** | |
-| Length / liftoff / burnout mass | 1128 mm / 713 g / 598 g | |
-| CP (Barrowman, M≈0) | 845.5 mm (RocketPy 845.4; 856.6 at M 0.9) | |
-| CG liftoff / burnout | 770.8 / 721.6 mm | |
-| **Static margin, liftoff** | **1.81 cal** | **PASS** (1.8 ± 0.2) |
-| **Static margin, burnout** | **3.00 cal** | **FAIL (high)**, not forced |
-| Margin at rail exit / max in flight (RocketPy) | 1.90 / 3.27 cal | |
+| Configuration | 165 ogive nose + 863 mm BT-1.52 (uncut) + 100 mm exposed fin can, span 40, **89 g nose ballast** | |
+| Length / liftoff / burnout mass | 1128 mm / 710 g / 595 g | |
+| CP (Barrowman, M≈0) | 845.5 mm (RocketPy 845.4; 856.6 from M 0.8 up) | |
+| CG liftoff / burnout | 770.8 / 721.4 mm | |
+| **Static margin, liftoff (the gate)** | **1.81 cal** | **PASS** (1.8 ± 0.2) |
+| Margin at rail exit / min in flight / max in flight | 1.90 / **1.81 (at liftoff)** / 3.28 (burnout) | reported |
+| Static margin, burnout (M 0) | 3.01 cal | reported, not gated (owner 2026-11-20) |
 
-**Why burnout fails.** The burn removes 115 g of propellant from about 256 mm aft of the CG, which
-adds **+0.8 to +1.2 cal** in every practical configuration (§4). The band is only 0.4 cal wide.
-- The only designs that hold both ends are 565–715 mm long with 75–90 mm fins (rev 1 grid). Those are
-  bad for flutter, and too short for the chute and the bay.
-- The owner has not yet ruled on whether the band applies at burnout.
+**Why burnout is high.** The burn removes 115 g of propellant from about 256 mm aft of the CG. That
+adds **+0.8 to +1.2 cal** in every practical configuration (§4).
 
 **Without ballast the rocket is unstable:** −0.63 cal at liftoff.
 
@@ -49,7 +55,7 @@ adds **+0.8 to +1.2 cal** in every practical configuration (§4). The band is on
 | Item | g | x (mm) | Basis |
 |---|---|---|---|
 | Nose cone | 52.7 | 119.9 | nosecone.md, ESTIMATE |
-| Ballast | 90 | 74.6 | stability. Fill tip→100 mm (27.2 cm³) needs ≥ 3.31 g/cm³ packed |
+| Ballast | 89 | 74.6 | stability. Fill tip→100 mm (27.2 cm³) needs ≥ 3.27 g/cm³ packed |
 | BT-1.52 tube, 863 mm | 93.6 | 596.5 | **ESTIMATE** 0.1085 g/mm = shop wall area 159.6 mm² × 0.68 g/cm³ (OpenRocket cardboard) |
 | **Fin can incl. fins (rev 1 model)** | **171.1** | **1047.7** | verify mass model at 25 % infill (170.5–173.0 over 0–100 %). Solid-mesh CG 80.3 mm forward of the aft face |
 | Motor liner MMT-1.14, 203 mm | 10.0 | 1026.5 | **ESTIMATE** π/4 (30.5² − 28.956²) × 203 × 0.68 g/cm³. **OD 30.5 is a placeholder**. Placed at the motor midpoint |
@@ -58,8 +64,8 @@ adds **+0.8 to +1.2 cal** in every practical configuration (§4). The band is on
 | Wadding | 2 | 915.0 | **ESTIMATE** |
 | Epoxy | 10 | 976.5 | **ESTIMATE** |
 | Rail buttons | 5 | 828.0 | **ESTIMATE** |
-| Retention (screws + inserts) | 4 | 1126.0 | **ESTIMATE**. fin_can rev 1 has no retention yet |
-| **Structure** | **506.1** | **666.2** | |
+| Retention: friction fit + tape | 2 | 1126.0 | **ESTIMATE** (owner chose tape, 2026-11-20; not weighed). Placed at the aft face (conservative) |
+| **Structure** | **503.1** | **665.6** | |
 | Motor, loaded / dry | 207 / 92 | 1026.5 | motor.md. CG assumed at mid-length |
 
 The recovery pack is placed resting on the motor's forward end, its most aft (conservative) position.
@@ -67,21 +73,21 @@ The recovery pack is placed resting on the motor's forward end, its most aft (co
 ## 3. Flight (nominal Cd, vertical, no wind, standard atmosphere)
 
 Cd is aero.md's table, held at 0.83 above M 0.7 with no transonic rise (assumption).
-- **Apogee:** 1284 m (4213 ft) at 13.88 s.
-- **Burnout:** 1.235 s. **Coast to apogee:** 12.65 s.
-- **Vmax:** 282.1 m/s (**M 0.83**). Max q 48.0 kPa.
-- **Rail exit:** **25.5 m/s** on the 1.5 m rail, **28.4 m/s** on the 1.83 m rail. Rail-button geometry is
+- **Apogee:** 1285 m (4214 ft) at 13.87 s.
+- **Burnout:** 1.235 s. **Coast to apogee:** 12.64 s.
+- **Vmax:** 283.1 m/s (**M 0.83**). Max q 48.3 kPa.
+- **Rail exit:** **25.6 m/s** on the 1.5 m rail, **28.4 m/s** on the 1.83 m rail. Rail-button geometry is
   not modelled.
 
 **Deployment vs. delay** (timed from burnout; recovery flags: ≤ 20 m/s preferred, ≤ 27 m/s limit)
 
 | Delay (s) | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 6 | 4 |
 |---|---|---|---|---|---|---|---|---|---|
-| Altitude AGL (m) | 1275 | 1283 | 1282 | 1271 | 1249 | 1218 | 1175 | 1053 | 871 |
-| Speed (m/s) | 12.8↓ | 3.4↓ | 6.3↑ | 16.3↑ | 26.4↑ | 37.1 | 48.4 | 74.6 | 108.9 |
+| Altitude AGL (m) | 1276 | 1284 | 1283 | 1271 | 1250 | 1219 | 1176 | 1054 | 873 |
+| Speed (m/s) | 12.9↓ | 3.6↓ | 6.2↑ | 16.1↑ | 26.3↑ | 37.0 | 48.3 | 74.4 | 108.9 |
 | Flag | pref. | pref. | pref. | pref. | limit | too fast | too fast | too fast | too fast |
 
-**Cd sensitivity at 12 / 13 / 14 s delay**
+**Cd sensitivity at 12 / 13 / 14 s delay** (90 g run; the 89 g run differs by ≤ 0.2 m/s)
 
 | Cd scale | Coast to apogee | 12 s | 13 s | 14 s |
 |---|---|---|---|---|
@@ -92,7 +98,87 @@ Cd is aero.md's table, held at 0.83 above M 0.7 with no transonic rise (assumpti
 **Recommended delay: 12 s.** It stays ≤ 14.6 m/s across Cd × 0.85–1.3. 13 s is equally good if the
 AeroTech tool offers it. 14 s goes over 20 m/s at Cd × 1.3.
 
+## 3a. Static margin in flight (liftoff → apogee)
+
+**How it is computed.** SM(t) = (CP(Mach(t)) − CG(t)) / d.
+- **CP(M):** RocketPy's Mach-dependent Barrowman. It rises from 845.4 mm at M 0 to 856.6 mm at M 0.8.
+  RocketPy caps its compressibility factor at M 0.8, so CP is flat above that.
+- **Propellant m(t):** RocketPy's impulse-proportional model. It matches the RSE file's m(t) points
+  (115 → 0 g over 1.235 s) within **0.05 g** at every point. The RSE has `auto-calc-mass="1"`, so it is
+  computed by the same method, not measured. Propellant CG is at the motor midpoint, as in the RSE
+  (cg 101.6 of 203.2 mm).
+- **Delay grain + ejection charge:** the mass they burn is **unpublished**. The 92 g burnout mass
+  treats it as 0 (ASSUMPTION). The sensitivity cases are 0 / 5 / 10 g, burning linearly over the 12 s
+  delay at the motor's forward end.
+
+![margin vs time](../../out/sims/l1_cheap_margin_vs_time.png)
+`out/sims/l1_cheap_margin_vs_time.png`, 1.83 m rail, 89 g ballast.
+
+| Event | t (s) | Mach | CP (mm) | CG (mm) | Mass (g) | SM, +0 g (cal) | SM, +10 g (cal) |
+|---|---|---|---|---|---|---|---|
+| Liftoff | 0 | 0 | 845.4 | 770.8 | 710.1 | **1.81** (minimum) | 1.81 |
+| Rail exit (1.83 m) | 0.141 | 0.08 | 845.5 | 766.7 | 698.9 | 1.91 | 1.91 |
+| Max q = Vmax | 1.193 | 0.83 | 856.6 | 721.6 | 595.6 | 3.27 | 3.27 |
+| Burnout | 1.235 | 0.83 | 856.6 | 721.4 | 595.1 | **3.28** (max) | 3.28 |
+| Coast, M 0.5 | 3.06 | 0.50 | 849.6 | 721.4 | 595.1 | 3.11 | 3.12 |
+| Coast, M 0.3 | 5.63 | 0.30 | 846.9 | 721.4 | 595.1 | 3.04 | 3.07 |
+| Apogee | 13.87 | 0 | 845.4 | 721.4 | 595.1 | 3.01 | 3.09 |
+
+- **The minimum in-flight margin is at liftoff.** During boost the CP moves aft with Mach and the CG
+  moves forward as propellant burns, so the margin only rises. The liftoff static margin is therefore
+  the number to aim for.
+- The delay/ejection loss sits aft of the CG. Losing it *raises* the coast margin, by ≤ 0.08 cal at
+  10 g. It doesn't matter for safety.
+
+## 3b. Liftoff caliber to aim for
+
+**Guidance.** All three sources below were accessed 2026-11-20.
+- The rule of thumb is **1–2 cal**, and above 2 cal counts as "over-stable": it tends to weathercock
+  ([RocketReviews, over-stability](https://rocketreviews.com/over-stability-230702231653.html);
+  [MIT Rocket Team wiki](https://wikis.mit.edu/confluence/x/JGf_Bg), which calls it a design suggestion).
+- NASA Student Launch: "desirable 1.5 to 2.0", and "over stable if … 3.0 or greater". SL itself requires
+  ≥ 2.0 on the pad
+  ([NASA SL "Rocketry by the Numbers", 2023](https://www.nasa.gov/wp-content/uploads/2023/09/nasa-sl-2024-arw-rocketry-by-the-numbers-508.pdf)).
+
+**Floor I use:** minimum in-flight margin ≥ **1.0 cal** (bottom of the rule of thumb), with
+**1.5 cal** preferred (NASA's lower "desirable" value).
+
+**Liftoff target sweep** (`sims/l1_cheap_sweep.py target`; 1.83 m rail; the wind is a sample
+4.5 m/s = 10 mph, vertical rail)
+
+| Liftoff aim | Ballast | Liftoff | SM rail exit | SM burnout (M 0) | SM max | Vmax / Mach | Apogee | v @ 12 s | Apogee / drift in 4.5 m/s wind |
+|---|---|---|---|---|---|---|---|---|---|
+| 1.0 | 56.5 g | 678 g | 1.09 | 2.10 | 2.37 | 294.9 / 0.868 | 1288 | 4.8 | 1284 / 67 m |
+| 1.3 | 68.2 g | 689 g | 1.39 | 2.44 | 2.71 | 290.6 / 0.856 | 1287 | 5.4 | 1282 / 70 m |
+| 1.5 | 76.2 g | 697 g | 1.60 | 2.66 | 2.93 | 287.6 / 0.847 | 1286 | 5.7 | 1281 / 72 m |
+| 1.6 | 80.3 g | 701 g | 1.70 | 2.77 | 3.05 | 286.2 / 0.843 | 1286 | 5.9 | 1281 / 73 m |
+| **1.8** | **88.6 g** | **710 g** | **1.90** | **3.00** | **3.27** | **283.3 / 0.834** | **1285** | **6.2** | **1279 / 75 m** |
+| 2.0 | 97.1 g | 718 g | 2.10 | 3.22 | 3.49 | 280.4 / 0.826 | 1283 | 6.5 | 1278 / 77 m |
+
+**Recommendation: aim for 1.8 cal at liftoff, and accept 1.6–2.0.**
+- **Why 1.8.**
+  - It is the owner's band centre, and the minimum in flight (it occurs at liftoff).
+  - Even a −0.2 cal build error leaves 1.6, above NASA's 1.5 "desirable" floor and well above the
+    1.0 rule-of-thumb minimum.
+  - Rail exit adds +0.1 cal.
+- **Why not lower.** Aiming at 1.5 is defensible on the 1.0 floor, but it buys very little: −12 g of
+  ballast, +4 m/s Vmax, +1 m apogee. A −0.2 cal build error would then drop it to 1.3, below the 1.5
+  preference.
+- **Over-stability.**
+  - Every target in the table goes past 2 cal in coast. The burn adds about 1.2 cal regardless.
+  - Aiming 1.8 gives 3.0 at burnout, right at NASA's "≥ 3.0 over-stable" line.
+  - **But** the rail exit speed is 28 m/s, so the 4.5 m/s wind angle at rail exit is only about 9°.
+    Going from 1.0 to 2.0 cal costs just 4–6 m of apogee and +10 m of drift (sample wind, vertical rail).
+  - So weathercocking is not a strong reason to go lower on this rocket.
+- **Number to verify: ready-to-fly balance point 771 ± 8 mm from the nose tip.**
+  - Ready to fly means motor loaded, chute/cord/wadding packed, ballast in, no payload.
+  - ±8 mm = ±0.2 cal. If the balance point is aft of 779 mm, add about 1 g of nose ballast per mm.
+  - CP 845.5 mm is calculated, not measured; a swing test checks that CP qualitatively.
+  - Re-derive this number when the payload bay is added.
+
 ## 4. Mass trade: subsonic vs. light (owner decides)
+
+*§4–6 are rev 2 runs (4 g screw retention). The tape change shifts their ballast by about 1 g, and nothing else visibly.*
 
 All rows use the 1.83 m rail. The "ballast" column is the ballast solved for a 1.8 cal liftoff margin,
 unless stated otherwise.
@@ -149,14 +235,18 @@ unless stated otherwise.
   [WSU OpenRocket model](https://hub.wsu.edu/aerospace/wp-content/uploads/sites/204/2015/02/OpenRocket-Model.pdf)
 - LOC BT-1.52, no published mass: [Wildman](https://wildmanrocketry.com/products/bt-1-52),
   [LOC](https://locprecision.com/products/cardboard-airframes)
+- Stability guidance: [RocketReviews over-stability](https://rocketreviews.com/over-stability-230702231653.html),
+  [MIT Rocket Team wiki](https://wikis.mit.edu/confluence/x/JGf_Bg),
+  [NASA SL Rocketry by the Numbers (2023)](https://www.nasa.gov/wp-content/uploads/2023/09/nasa-sl-2024-arw-rocketry-by-the-numbers-508.pdf)
+- Motor m(t): `projects/l1-cheap/motor/AeroTech_HP-H182R.rse` (owner, ThrustCurve).
 - Wadding: [hobbyetc](https://store.hobbyetc.com/parts/view/123056). Chute: recovery (the-rocketman.com/?p=3121).
   Kevlar: owner.
 - Fin can mass and CG: `out/fin_can/rev1/` (verify mass model, solid-mesh CG). Liner ID: `fin_can.liner_id_mm`.
 
 ## 9. Open questions for the owner
 
-1. Does the ±0.2 band apply at liftoff only? Burnout is about 1.2 cal higher.
-2. Ballast density: it needs ≥ 3.31 g/cm³ packed to fit tip→100 mm.
-3. Rail length and the minimum rail-exit speed you want.
-4. Light (s50, M 0.89) or heavier (s40 + ballast, M 0.83)?
-5. Measure the liner OD; weigh the tube, chute, nose and Kevlar.
+1. Ballast density: it needs ≥ 3.27 g/cm³ packed to fit tip→100 mm.
+2. Rail length, the minimum rail-exit speed you want, and whether the RSO tilts the rail.
+3. Light (s50, M 0.89) or heavier (s40 + ballast, M 0.83)?
+4. Measure the liner OD. Weigh the tube, chute, nose and Kevlar, then do the 771 ± 8 mm balance check.
+5. If you can find it, the delay-grain/ejection mass for the H182R; today it is an assumption (0, sensitivity 5/10 g).

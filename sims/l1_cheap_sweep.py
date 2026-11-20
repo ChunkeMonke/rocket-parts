@@ -5,7 +5,7 @@ Each case is a set of design.yaml overrides. Ballast can be 'solve', which finds
 nose ballast that puts the LIFTOFF static margin on owner.stability_target_cal.
 Runs with --allow-tbd semantics (payload slot defaults to the case's values).
 
-  .venv/bin/python sims/l1_cheap_sweep.py [mass|payload|cd|nose|all]
+  .venv/bin/python sims/l1_cheap_sweep.py [mass|payload|cd|nose|target|all]
 """
 from __future__ import annotations
 
@@ -117,6 +117,27 @@ def nose_cases(masses=(40, 45, 52.7, 60, 70)):
             for m in masses]
 
 
+def target_cases(targets=(1.0, 1.3, 1.5, 1.6, 1.8, 2.0), wind=4.5):
+    """Liftoff-margin target -> ballast, flight, margins in flight; calm and with a sample wind."""
+    print(f"{'target':>6s} {'ball':>6s} {'m g':>5s} {'SM rail':>7s} {'SM bo':>6s} {'SM max':>6s} {'SM apo':>6s} "
+          f"{'Vmax':>6s} {'Mach':>5s} {'apo':>5s} {'v@12':>5s} | wind {wind}: {'apo':>5s} {'drift':>5s} {'v@12':>5s}")
+    for tg in targets:
+        over = {**NOPAY}
+        over["stability.ballast_g"] = round(solve_ballast(over, tg), 1)
+        d = design_with(over)
+        b = S.build(d, True)
+        f = S.simulate(d, b, RAIL)
+        h = S.margin_history(d, b, f)
+        dep = {r["delay"]: r["speed"] for r in f["deploy"]}
+        dw = design_with({**over, "stability.assumptions.wind_m_s": wind})
+        fw = S.simulate(dw, b, RAIL)
+        depw = {r["delay"]: r["speed"] for r in fw["deploy"]}
+        print(f"{tg:6.2f} {over['stability.ballast_g']:6.1f} {b['m_liftoff']:5.0f} {f['rail_exit_margin']:7.2f} "
+              f"{b['sm_burnout']:6.2f} {h['sm'].max():6.2f} {h['sm'][-1]:6.2f} {f['vmax']:6.1f} {f['mach_max']:5.3f} "
+              f"{f['apogee_m']:5.0f} {dep[12]:5.1f} | {fw['apogee_m']:5.0f} {fw['apogee_drift_m']:5.0f} {depw[12]:5.1f}")
+    return []
+
+
 def cd_cases():
     rows = []
     for sc in (0.85, 1.0, 1.15, 1.3):
@@ -128,7 +149,7 @@ def cd_cases():
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     for name, fn in (("mass", mass_cases), ("payload", payload_cases), ("cd", cd_cases),
-                     ("nose", nose_cases)):
+                     ("nose", nose_cases), ("target", target_cases)):
         if which in (name, "all"):
             print(f"\n== {name} (rail {RAIL} m) ==")
             show(fn())

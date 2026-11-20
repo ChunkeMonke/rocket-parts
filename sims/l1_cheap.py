@@ -283,6 +283,10 @@ def simulate(design, b, rail_length_m, max_delay_s=14):
     A = lambda k: _get(design, "stability.assumptions." + k)  # noqa: E731
     site = A("launch_site")
     env = Environment(latitude=site["latitude"], longitude=site["longitude"], elevation=site["elevation_m"])
+    wind = A("wind_m_s")
+    if _isnum(wind) and wind != 0:   # constant wind blowing toward +east (u), standard atmosphere
+        env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=None,
+                                  wind_u=float(wind), wind_v=0)
     eng = ROOT / str(_get(design, "motor.thrust_curve_source")).split()[0]
     mo = b["motor"]
     mlen = mo["len"] / 1000
@@ -337,7 +341,93 @@ def simulate(design, b, rail_length_m, max_delay_s=14):
             continue
         out["deploy"].append(dict(delay=delay, t=t, alt=float(fl.z(t)) - elev, speed=float(fl.speed(t)),
                                   vz=float(fl.vz(t))))
+    out["_flight"], out["_rocket"] = fl, rkt
+    out["apogee_drift_m"] = float(math.hypot(fl.x(t_ap), fl.y(t_ap)))
     return out
+
+
+# ----------------------------------------------------------------------------- margin vs time
+def margin_history(design, b, sim, extra_loss_g=0.0, delay_s=None, n=600):
+    """Static margin vs time, liftoff -> apogee: (CP(Mach(t)) - CG(t)) / d.
+    CP(M) is RocketPy's Mach-dependent Barrowman CP; CG(t) is RocketPy's (propellant burns per the
+    thrust curve, impulse-proportional, same as the RSE m(t)). extra_loss_g = delay grain + ejection
+    mass (unpublished), modelled as burning linearly over the delay at the motor's FORWARD end."""
+    fl, rkt = sim["_flight"], sim["_rocket"]
+    d_m = b["d"] / 1000
+    t_bo, t_ap = sim["t_burnout"], sim["t_apogee"]
+    if delay_s is None:
+        delay_s = float(_get(design, "stability.recommended_delay_s"))
+    x_fwd = (b["motor"]["x_aft"] - b["motor"]["len"]) / 1000
+    t = np.linspace(0, t_ap, n)
+    t = np.unique(np.concatenate([t, [sim["t_rail"], t_bo, float(fl.max_dynamic_pressure_time)]]))
+    mach = np.array([float(fl.mach_number(x)) for x in t])
+    cp = np.array([float(rkt.cp_position(m)) for m in mach])
+    m_tot = np.array([float(rkt.total_mass(x)) for x in t])
+    cg = np.array([float(rkt.center_of_mass(x)) for x in t])
+    lost = extra_loss_g / 1000 * np.clip((t - t_bo) / delay_s, 0, 1)
+    cg = (m_tot * cg - lost * x_fwd) / (m_tot - lost)
+    sm = (cp - cg) / d_m
+    return dict(t=t, mach=mach, cp_mm=cp * 1000, cg_mm=cg * 1000, sm=sm, mass_g=(m_tot - lost) * 1000)
+
+
+def key_events(sim, hist):
+    fl = sim["_flight"]
+    ev = [("liftoff", 0.0), ("rail exit", sim["t_rail"]), ("max q", float(fl.max_dynamic_pressure_time)),
+          ("Vmax", sim["t_vmax"]), ("burnout", sim["t_burnout"]),
+          ("coast, M 0.5", None), ("coast, M 0.3", None), ("apogee", sim["t_apogee"])]
+    rows = []
+    t, mach = hist["t"], hist["mach"]
+    i_vmax = int(np.argmax(mach))
+    for name, te in ev:
+        if te is None:
+            target = float(name.split("M ")[1])
+            j = i_vmax + int(np.argmin(np.abs(mach[i_vmax:] - target)))
+        else:
+            j = int(np.argmin(np.abs(t - te)))
+        rows.append((name, t[j], mach[j], hist["cp_mm"][j], hist["cg_mm"][j], hist["mass_g"][j], hist["sm"][j]))
+    jmin = int(np.argmin(hist["sm"]))
+    rows.append(("MINIMUM", t[jmin], mach[jmin], hist["cp_mm"][jmin], hist["cg_mm"][jmin],
+                 hist["mass_g"][jmin], hist["sm"][jmin]))
+    return rows
+
+
+def margin_plot(design, b, sim, path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    losses = _get(design, "stability.assumptions.delay_ejection_loss_sensitivity_g") or [0]
+    tgt = _get(design, "owner.stability_target_cal")
+    band = _get(design, "owner.stability_band_cal")
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [1, 1.6]})
+    hs = [(el, margin_history(design, b, sim, el)) for el in losses]
+    for ax, (t0, t1, title) in zip(axes, ((0, sim["t_burnout"] + 0.3, "boost (linear, 0 to burnout + 0.3 s)"),
+                                          (0, sim["t_apogee"], "whole ascent to apogee"))):
+        for el, h in hs:
+            ax.plot(h["t"], h["sm"], label=f"static margin, +{el} g delay/ejection loss")
+        ax.axhspan(tgt - band, tgt + band, color="g", alpha=0.12, label=f"owner band {tgt}±{band} (liftoff gate)")
+        ax2 = ax.twinx()
+        ax2.plot(hs[0][1]["t"], hs[0][1]["mach"], "k:", lw=1, label="Mach")
+        ax2.set_ylabel("Mach")
+        ax2.set_ylim(0, 1)
+        ax.set_xlim(t0, t1)
+        ax.set_ylim(1.4, 3.6)
+        for name, te in (("rail exit", sim["t_rail"]), ("burnout", sim["t_burnout"]), ("apogee", sim["t_apogee"])):
+            if t0 <= te <= t1:
+                ax.axvline(te, color="grey", lw=0.8)
+                ax.text(te, 1.45, " " + name, rotation=90, va="bottom", fontsize=8)
+        ax.set_xlabel("time from ignition (s)")
+        ax.set_ylabel("static margin (cal)")
+        ax.set_title(title, fontsize=10)
+        ax.grid(alpha=0.3)
+    l1, n1 = axes[1].get_legend_handles_labels()
+    l2, n2 = ax2.get_legend_handles_labels()
+    axes[1].legend(l1 + l2, n1 + n2, fontsize=8, loc="lower right")
+    fig.suptitle(f"l1-cheap static margin vs time: CP(Mach) - CG(t); rail {sim['rail_m']} m, "
+                 f"ballast {_get(design, 'stability.ballast_g')} g")
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    fig.tight_layout()
+    fig.savefig(path, dpi=130)
+    return path
 
 
 def load_design(path, sets):
@@ -385,8 +475,10 @@ def report(b, sims, design):
     def verdict(sm):
         return "PASS" if lo <= sm <= hi else ("FAIL (low)" if sm < lo else "FAIL (high)")
     print(f"\nCP (Barrowman, M~0) {b['cp']:.1f} mm   CG liftoff {b['cg_liftoff']:.1f}   CG burnout {b['cg_burnout']:.1f}")
+    gated_bo = _get(design, "owner.stability_band_applies") != "liftoff_only"
+    bo_txt = verdict(b["sm_burnout"]) if gated_bo else "reported, not gated (owner: liftoff only)"
     print(f"Static margin liftoff {b['sm_liftoff']:.2f} cal  {verdict(b['sm_liftoff'])}   "
-          f"burnout {b['sm_burnout']:.2f} cal  {verdict(b['sm_burnout'])}   [target {tgt} +/- {band}]")
+          f"burnout {b['sm_burnout']:.2f} cal  {bo_txt}   [target {tgt} +/- {band}]")
     if not sims:
         print("\nUNSTABLE at liftoff (margin <= 0): flight NOT simulated.")
         return
@@ -411,15 +503,26 @@ def main():
     ap.add_argument("--allow-tbd", action="store_true", help="exclude TBD items and stamp the run PROVISIONAL")
     ap.add_argument("--set", action="append", default=[], help="override dotted.key=value (yaml value)")
     ap.add_argument("--json", help="write results to this JSON file")
+    ap.add_argument("--margin-plot", help="write static-margin-vs-time PNG here and print the key-event table")
     a = ap.parse_args()
     design = load_design(a.design, a.set)
     b, sims = run(design, a.allow_tbd)
     report(b, sims, design)
+    if a.margin_plot and sims:
+        s0 = sims[-1]
+        print(f"\nMargin vs time (rail {s0['rail_m']} m; extra delay/ejection loss as labelled):")
+        print(f"  {'event':14s} {'t s':>6s} {'Mach':>5s} {'CP mm':>6s} {'CG mm':>6s} {'mass g':>6s} {'SM cal':>6s}")
+        for el in _get(design, "stability.assumptions.delay_ejection_loss_sensitivity_g") or [0]:
+            print(f"  -- +{el} g --")
+            for r in key_events(s0, margin_history(design, b, s0, el)):
+                print(f"  {r[0]:14s} {r[1]:6.3f} {r[2]:5.3f} {r[3]:6.1f} {r[4]:6.1f} {r[5]:6.1f} {r[6]:6.2f}")
+        print("plot:", margin_plot(design, b, s0, a.margin_plot))
     if a.json:
         bb = {k: v for k, v in b.items() if k != "inputs"}
         bb["missing_tbd"] = b["inputs"].missing
         bb["assumptions_used"] = sorted(set(b["inputs"].used_assumptions))
-        Path(a.json).write_text(json.dumps(dict(budget=bb, flights=sims), indent=1))
+        fl = [{k: v for k, v in x.items() if not k.startswith("_")} for x in sims]
+        Path(a.json).write_text(json.dumps(dict(budget=bb, flights=fl), indent=1))
 
 
 if __name__ == "__main__":
