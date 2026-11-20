@@ -1,10 +1,17 @@
 # What I already own. The build planner checks this before adding anything to a buy list.
 # Add entries as: - {item: ..., qty: ..., notes: ...}
 printers:
-  - {item: Bambu Lab P1S, qty: 1, notes: PETG profile in skills/SKILL.md}
+  - {item: Bambu Lab P1S, qty: 1, notes: "0.4 mm stock nozzle; PETG profile in skills/SKILL.md"}
 airframe: []
 motors_and_hardware: []    # reloads AND RMS cases (case_od feeds the motor-interference check)
-recovery: []
+recovery:
+  - {item: Kevlar, qty: TBD, notes: "form (cord/tape), length and rating TBD"}
 electronics: []
 tools: []
-consumables: []            # filament, epoxy, glue stick ...
+consumables:
+  - {item: PETG filament, qty: TBD, notes: "$13/kg paid"}
+  - {item: Epoxy, qty: TBD, notes: "type/brand/amount TBD"}
+memberships:
+  - {item: Tripoli Rocketry Association, notes: "member; no cert yet — L1 attempt planned"}
+software:
+  - {item: SolidWorks, notes: "owner can model parts here too"}

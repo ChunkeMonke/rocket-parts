@@ -47,9 +47,9 @@ print_profile_petg:
   layer_height_mm: 0.16
   elephant_foot_comp_mm: 0.15
   seam_position: Back
-  nozzle_diameter_mm: TBD
-  wall_loops: TBD
-  infill_pct: TBD
+  nozzle_diameter_mm: 0.4      # P1S stock
+  wall_loops: 4                # Bambu Studio Strength tab
+  # infill % is NOT fixed here: verify.py solves it per part from the target mass
 
 printer:
   bambu_p1s:
@@ -73,9 +73,10 @@ mating:
     slot_geometry: TBD
 
 verify:
-  mass_tolerance_pct: TBD      # pass band around a part's declared target mass
+  mass_tolerance_pct: 5        # +/- around declared target mass (provisional)
   mass_basis: walls_plus_infill  # shell (walls + top/bottom) solid, interior at infill_pct
-  top_bottom_layers: TBD
+  top_layers: TBD              # Bambu Studio Strength tab -> top shell layers
+  bottom_layers: TBD           # Bambu Studio Strength tab -> bottom shell layers
   # target mass per part comes from the OpenRocket design or the build planner;
   # verify reports the infill % needed to hit it and fails if it is outside 0-100 %.
 ```
