@@ -72,35 +72,38 @@ payload:                   # payload agent
   position: TBD            # PROPOSED: tube-section bay riding with the nose (nose shoulder plugs into its forward end), aft bulkhead sealed from ejection gas. Nose cone cavity does NOT fit (100.7 mm usable vs 140 mm board), see payload.md
   vent_holes: 3 holes, ~1.3 mm dia (PROVISIONAL)  # Eggtimer guide rule: 1/4 in hole area per 100 in^3 bay, split into 3; 1.20-1.39 mm for a 150-200 mm bay; not across from the baro sensor
   price_usd: 135           # owner 2026-11-20: Quasar-LR + LCD-LR receiver combo $130 (sale) + USB-serial interface $5; battery TBD
-  owner_share_usd: TBD     # split with another person (67.50 if 50/50 - confirm); whether it counts against the $100 cap TBD
+  owner_share_usd: 67.50   # 50/50 split (owner 2026-11-20); NOT counted against the rocket's $100 cap - reusable gear
 
 stability:                 # stability agent — see projects/l1-cheap/stability.md (2026-11-20)
   sim_tool: rocketpy 1.13.0
   sim_script: sims/l1_cheap.py   # .venv/bin/python sims/l1_cheap.py [--allow-tbd] [--set key=value ...]
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
-  body_tube_length_mm: 863       # full LOC BT-1.52, uncut
-  fin_span_request_mm: null      # null = use aero.fin_span_mm; a number = proposal to aero, used by the sim until aero answers
-  ballast_g: 0
-  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm
-  # ---- results (sims/l1_cheap.py; filled in below after the run) ----
-  total_length_mm: TBD
-  liftoff_mass_g: TBD
-  burnout_mass_g: TBD
-  cg_liftoff_from_nose_mm: TBD
-  cg_burnout_from_nose_mm: TBD
-  cp_from_nose_mm: TBD
-  margin_liftoff_cal: TBD
-  margin_burnout_cal: TBD
-  apogee_m: TBD
-  time_to_apogee_s: TBD
-  burnout_time_s: TBD
-  max_velocity_m_s: TBD
-  max_mach: TBD
-  rail_exit_velocity_m_s: TBD
-  recommended_delay_s: TBD
-  deploy_velocity_m_s: TBD
-  deploy_altitude_m: TBD
-  target_mass_g: {nose_cone: TBD, fin_can: TBD}
+  body_tube_length_mm: 863       # full LOC BT-1.52 stock. If payload adds a bay cut from this stock, the main tube = 863 - bay (sweep does this)
+  fin_span_request_mm: null      # null = use aero.fin_span_mm (40, flutter-limited). 45/50 cut ballast to 65/43 g but worsen flutter; see stability.md
+  ballast_g: 96                  # nose cavity, for NO altimeter (payload TBD). Re-solve when payload reports: ~37 g at 80 g / 180 mm bay, ~7 g at 120 g
+  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3 -> needs >= 3.54 g/cm3 packed; material TBD, owner)
+  # ---- results: sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0 (2026-11-20) ----
+  # PROVISIONAL: payload (Quasar-LR) mass/bay TBD; masses of tube, fin can, chute, epoxy, buttons are ESTIMATES (assumptions below)
+  total_length_mm: 1128          # nose 165 + tube 863 + fin can exposed 100
+  liftoff_mass_g: 736            # structure 529 + motor 207
+  burnout_mass_g: 621
+  cg_liftoff_from_nose_mm: 771.4
+  cg_burnout_from_nose_mm: 724.2
+  cp_from_nose_mm: 845.5         # Barrowman M~0 (aero.md formula, Lb 963); RocketPy 845.4 (M0), 856.6 (M0.9)
+  margin_liftoff_cal: 1.79       # PASS vs 1.8 +/- 0.2
+  margin_burnout_cal: 2.94       # FAIL (high) vs 1.8 +/- 0.2. Propellant burn adds ~1.0-1.15 cal in EVERY config tried; a 0.4 cal band cannot hold both ends. Owner to rule
+  apogee_m: 1280                 # 4198 ft AGL; Cd x0.85..x1.3 -> 1406..1095 m
+  time_to_apogee_s: 13.97
+  burnout_time_s: 1.235
+  coast_to_apogee_s: 12.73       # for the motor delay (Cd x0.85..x1.3 -> 13.56..11.46 s)
+  max_velocity_m_s: 274.6        # at 1.19 s
+  max_mach: 0.81                 # subsonic at this mass; 0.85-0.86 for the lightest stable configs (687-696 g)
+  max_q_kpa: 45.5
+  rail_exit_velocity_m_s: {rail_1p5m: 25.1, rail_1p83m: 27.9}   # no rail-button geometry modelled (travel = rail length)
+  recommended_delay_s: 12        # deploy 7.2 m/s at 1277 m AGL (Cd x1); <= 15.3 m/s over Cd x0.85-1.3. 13 s equally good if the AT tool offers it. Motor agent to confirm steps
+  deploy_velocity_m_s: 7.2       # at 12 s delay, nominal Cd
+  deploy_altitude_m: 1277
+  target_mass_g: {nose_cone: 52.7, fin_can: 197.3}   # verify.py targets (+/-5 %). Fin can = exposed 77.7 + 103 mm shoulder 66.3 + 3 fins 53.3 (ESTIMATE); print height 203 mm
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
     tube_linear_density_g_per_mm: 0.1085   # ESTIMATE: wall area from shop OD/ID (159.6 mm2) x 0.68 g/cm3 OpenRocket "cardboard" density (rocketryforum.com/goto/post?id=2317962, 2026-11-20). No published LOC tube mass found. WEIGH THE TUBE.
