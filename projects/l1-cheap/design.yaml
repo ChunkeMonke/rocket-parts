@@ -42,7 +42,7 @@ aero:                      # aerodynamics agent
   cp_from_nose_tip_mm: 768.3   # Barrowman M~0; ASSUMES 165 mm tangent ogive + 863 mm body; formula in aero.md. RocketPy 1.13 agrees (768.2)
   cp_formula: "CP = 0.2279*k*Ln + 0.7721*(Ln + Lb - 55.7)  [mm; k=0.466 ogive, 0.5 Haack/VK, 0.666 cone; Lb = nose base to aft end]"
   cd_estimate: 0.70-0.83   # ESTIMATE, component buildup for M 0.1-0.7, 60 um roughness; no rail buttons, no nose wave drag
-  max_velocity_m_s: 284-369  # RocketPy, H182R.eng, ASSUMED structure 300-500 g + 207 g motor; Mach 0.84-1.09
+  max_velocity_m_s: 286-369  # RocketPy, H182R.eng, ASSUMED structure 300-500 g + 207 g motor; Mach 0.84-1.09
   max_mach: 0.84-1.09
   fin_flutter_velocity_m_s: TBD  # needs PETG shear modulus G (owner)
   fin_root_bending_mpa: 1.9      # t=5, alpha 5 deg at max q 81.8 kPa; within layers, compared to 15 MPa interlayer anyway
