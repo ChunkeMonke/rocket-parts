@@ -51,7 +51,16 @@ stability:                 # stability agent
   cg_burnout_from_nose_mm: TBD
   margin_liftoff_cal: TBD
   margin_burnout_cal: TBD
-  sim_tool: TBD
+  sim_tool: rocketpy 1.13.0
   apogee_m: TBD
   time_to_apogee_s: TBD
   rail_exit_velocity_m_s: TBD
+
+recovery:                  # recovery agent
+  deployment: TBD          # default proposal: single deploy, motor ejection
+  descent_rate_target_m_s: TBD
+  chute: TBD
+  chute_mass_g: TBD
+  shock_cord: TBD          # owner's Kevlar: form/length/rating TBD
+  ejection_protection: TBD
+  deploy_velocity_m_s: TBD

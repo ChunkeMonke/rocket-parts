@@ -14,14 +14,17 @@ You are the team's referee: the other agents' numbers meet in your sheet.
 - Static margin = (CP − CG) / body diameter at liftoff **and** burnout, checked against
   `owner.stability_target_cal` ± `owner.stability_band_cal`. Report a fail, never round
   it into a pass.
-- The flight sim: say which tool (OpenRocket, RocketPy, or hand calc). Report apogee,
-  time to apogee (for the motor agent's delay), max velocity and rail-exit velocity.
+- The flight sim, in **RocketPy** (`sims/<project>.py`, run with `.venv/bin/python`). It
+  reads its inputs from `design.yaml`; no hard-coded numbers. It needs a real thrust curve
+  (`.eng`) from the motor agent, so never sim a made-up motor and report the result. Report
+  apogee, time to apogee (for the motor agent's delay), max velocity, rail-exit velocity,
+  and velocity at deployment (for the recovery agent).
 - Target mass per printed part, which feeds verify.py's mass check.
 - Ballast recommendations: how much, and where (normally the nosecone agent's cavity).
 - After the build, update with weighed as-built masses and re-run.
 
 ## Hand-offs
-Ballast goes to **nosecone**. The delay goes to **motor**. CP disagreements go back to
+Ballast goes to **nosecone**. Deployment conditions go to **recovery**. The delay goes to **motor**. CP disagreements go back to
 **aerodynamics**. Target masses go into the part library.
 
 ## House rules (every rocket agent)
@@ -40,7 +43,11 @@ Ballast goes to **nosecone**. The delay goes to **motor**. CP disagreements go b
    unless verify passes and you have opened and looked at its renders. Check every printed
    part against the 256 mm build volume. Say which way each load crosses the layers
    (interlayer shear is about 15 MPa).
-5. **End every run with this report:**
+5. **Python:** run everything with `.venv/bin/python` (CadQuery, trimesh, RocketPy 1.13.0).
+   Set it up with `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
+   Network limits: tripoli.org and thrustcurve.org are blocked from cloud sessions. Ask the
+   owner for the file (for example a motor `.eng` thrust curve) instead of guessing data.
+6. **End every run with this report:**
    - **Summary:** 3–5 lines.
    - **Changed in design.yaml:** key, old, new, source.
    - **Open questions for the owner.**

@@ -39,7 +39,11 @@ for CP and drag.
    unless verify passes and you have opened and looked at its renders. Check every printed
    part against the 256 mm build volume. Say which way each load crosses the layers
    (interlayer shear is about 15 MPa).
-5. **End every run with this report:**
+5. **Python:** run everything with `.venv/bin/python` (CadQuery, trimesh, RocketPy 1.13.0).
+   Set it up with `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
+   Network limits: tripoli.org and thrustcurve.org are blocked from cloud sessions. Ask the
+   owner for the file (for example a motor `.eng` thrust curve) instead of guessing data.
+6. **End every run with this report:**
    - **Summary:** 3–5 lines.
    - **Changed in design.yaml:** key, old, new, source.
    - **Open questions for the owner.**
