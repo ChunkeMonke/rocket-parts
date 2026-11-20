@@ -113,11 +113,12 @@ stability:                 # stability agent — see projects/l1-cheap/stability
     motor_aft_offset_mm: 0       # ASSUMPTION: motor aft end flush with fin can aft face (thrust ring thickness TBD)
     motor_dry_cg: midpoint       # ASSUMPTION: case + propellant CG at motor mid-length (no published CG)
     motor_nozzle_radius_mm: 7    # ASSUMPTION, unpublished; RocketPy needs it, no pressure correction used so it does not change thrust
-    chute_mass_g: 71             # ESTIMATE for the owner's 40 in chute: area-scaled from Estes Pro II 30 in 1.41 oz = 40 g (desertcart listing) x (40/30)^2. Cross-check 24 in 0.8 oz = 22.7 g scales to 63 g. WEIGH IT.
+    chute_mass_g: 57             # ESTIMATE from recovery (owner's 40 in chute, <=57 g: 42 in hex nylon 2.01 oz, the-rocketman.com/?p=3121); used while recovery.chute_mass_g is TBD. WEIGH IT.
     shock_cord_g_per_m: 2.91     # owner 2026-11-20: 9KM DWLIFE 750 lb, 88.7 g/100 ft (vendor table)
     shock_cord_length_factor: 3  # owner/recovery rule: 3 x rocket length
+    shock_cord_loop_allowance_mm: 300  # ESTIMATE (recovery: allowance TBD); 0.3 m = 0.9 g, negligible
     wadding_g: 2                 # ESTIMATE: 8 sheets x 0.24 g; 0.24 g = 17 g shipping weight / 72 sheets (hobbyetc listing), an upper bound
-    recovery_pack_length_mm: 150 # ESTIMATE: 71 g chute at a guessed 0.4 g/cm3 packed = 178 cm3 / 117.8 cm3 per 100 mm. Pack test pending (recovery)
+    recovery_pack_length_mm: 120 # ESTIMATE: 57 g chute at a guessed 0.4 g/cm3 packed = 143 cm3 / 117.8 cm3 per 100 mm, + cord + wadding. Pack test pending (recovery)
     recovery_pack_position: on_motor  # pack rests on the motor forward end (gravity on the pad, inertia in boost) = most aft = conservative
     epoxy_g: 10                  # ESTIMATE: shoulder joint film + rail buttons + cord anchor; no measured value
     epoxy_cg: fin_can_shoulder
