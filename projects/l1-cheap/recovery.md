@@ -129,3 +129,64 @@ For F = 343 N, A_net ≥ 69 mm².
 - **Drift.** Drift ≈ wind × apogee / v_descent. Apogee and the field's wind are TBD.
   - Per 100 m of apogee at 5.5 m/s descent, the rocket is under canopy for 18.2 s.
   - At 2.2, 4.5 and 6.7 m/s of wind (5, 10 and 15 mph), that is 40, 82 and 122 m of drift.
+
+## 7. Owner update 2026-11-20: owned 40" chute, 9KM Kevlar, Quasar-LR
+
+The owner already has a **40" chute** (brand, type and mass unknown). This replaces the purchase in §2, which saves $10–20.
+Calc: `/tmp/claude-0/-home-user/c895d01b-a099-5773-be20-859042f2dc61/scratchpad/rec40.py`.
+
+**Descent rate (m/s)**
+
+| Chute | Cd | 450 g | 575 g | 700 g |
+|---|---|---|---|---|
+| 40" | 0.75 | 3.44 | 3.89 | 4.29 |
+| 40" | 1.5 | 2.43 | 2.75 | 3.04 |
+| 30"-equivalent (reefed) | 0.75 | 4.59 | 5.19 | 5.72 |
+
+**Drift per 100 m of apogee, at 575 g and Cd 0.75.** Apogee is TBD.
+
+| Wind (m/s) | 2.2 (5 mph) | 4.5 (10 mph) | 6.7 (15 mph) |
+|---|---|---|---|
+| 40" full (25.7 s per 100 m) | 57 m | 116 m | 172 m |
+| reefed to about 30" (19.3 s) | 42 m | 87 m | 129 m |
+| 24" (15.4 s) | 34 m | 69 m | 103 m |
+
+**Recommendation: fly the owned 40" reefed rather than buying a smaller chute.**
+- Reef it by tying the shroud lines or tape-binding part of the canopy. This can be undone. A spill hole can't.
+- Reefing costs $0. It also cuts drift and the opening load. For example, the effective area falls by (30/40)² ≈ 0.56.
+- The reefed area is an estimate; measure the descent rate on the first flight.
+- Fly it full-size if the winds are light and the field is large.
+
+**Mass.** Estimate up to 57 g, based on a 42" hex nylon chute at 2.01 oz ([the-rocketman](https://the-rocketman.com/?p=3121), accessed 2026-11-20). Weigh it.
+
+**Opening load, 40" chute (Cd 0.75, Cx 1.6)**
+
+| v at deploy | 10 m/s | 20 | 30 | 40 |
+|---|---|---|---|---|
+| F (N) | 60 | 238 | 536 | 953 |
+
+The design case is 953 N × SF 3 = **2860 N**. This replaces the 1030 N figure in §3.
+
+**Kevlar check: 9KM DWLIFE, 750 lb**
+- Rated 3336 N. The vendor's safe limit is 70%, which is 2335 N.
+- **Knot efficiency is taken as 40%.** A stiff aramid rope lost 60% of its strength with a figure-8 knot ([Springer, J. Dyn. Behav. Mater.](https://link.springer.com/article/10.1007%2Fs40870-015-0015-5)). Kernmantle ropes keep about 80% ([CMC](https://www.cmcpro.com/?p=121806)), but that isn't aramid.
+- Knotted strength: 3336 × 0.4 = **1334 N**.
+  - Passes the old 1030 N case.
+  - Passes the 40" case only if the deploy speed is **≤ 27 m/s**. That is 445 N of opening load, × 3 = 1334 N.
+  - **Fails the 40 m/s case** (2860 N needed).
+- Fix it either way:
+  - **Splice or sew** the end loops. The cord is hollow braid, which can be spliced. Splice efficiency is TBD; it has not been tested.
+  - **And/or** pick a delay that keeps the deploy speed ≤ 20 m/s, a 714 N requirement.
+- **Cut length:** 3 × `stability.total_length_mm`, plus a loop or splice allowance (TBD).
+  - Mass is 88.7 g / 30.48 m = 2.91 g/m.
+  - Example only: at a 2.6 m floor the cord is 7.6 g. At a 5 m cut it is 14.6 g.
+  - 16 m on hand is ample.
+- **Diameter 2.3 mm** goes to the nosecone agent for hole sizing.
+
+**Anchors** need a solid cross-section on the weakest layer of at least 953 × 3 / 15 = **191 mm²** for the 40 m/s case. If the deploy speed is ≤ 20 m/s, 48 mm² is enough. Both anchors are in interlayer tension (§4).
+
+**Quasar-LR altimeter**
+- Recovery stays on motor ejection unless the owner says otherwise.
+- If the Quasar-LR has pyro outputs, apogee deployment would remove the delay-timing risk. That would be a scheme change and needs the owner's OK.
+- The bay has to be sealed from the ejection gas, with its baro vent holes outside the pressurized recovery volume. Its length adds to the stack.
+- The payload agent owns the bay.

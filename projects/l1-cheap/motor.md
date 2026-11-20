@@ -57,6 +57,54 @@ both read through WebSearch on 2026-11-20 because direct fetches are blocked. Al
   - The area at which stress would reach 15 MPa is 205 / 15 = 13.7 mm².
   - 15 MPa is the shop's interlayer *shear* figure. I use it only as a conservative reference, since the shop constants have no compressive allowable for PETG.
 
+## 3a. Retention sizing (update 2026-11-20; owner chose screws + heat-set inserts)
+
+The proposal is **2 × M3 brass heat-set inserts**, set axially into the fin can's aft face. A screw and washer in each one overlaps the thrust ring.
+
+### Design load (estimate)
+
+- **Load case.** The ejection charge pushes the motor aft. AeroTech does not publish the charge size.
+- **Assumed pressure: 15 psi = 0.103 MPa.** This is the top of the 10–15 psi range that charge-sizing guides treat as typical:
+  - [ejection-charge calc page](https://tonuonu.github.io/MyLevel1Peregrine/calculations/ejection-charges)
+  - [NAU capstone report](https://ceias.nau.edu/capstone/projects/ME/2026/F25toSp26_Rocket/files/AislinnJoyGacayan-ME476C-001-EjectionChargeandParachuteAnalysis.pdf)
+- **Area.** The pressure acts on the motor's forward face, taken as π/4 × 29² = 660.5 mm² (29 mm class diameter).
+- **Force.** F = 0.103 MPa × 660.5 mm² = **68 N**.
+- **Margin.** I applied ×3 because the motor's fixed charge in this small bay could exceed 15 psi. **Design load = 205 N.**
+
+### Pull-out capacity (calculated)
+
+- I found no confirmed PETG pull-out figure for M3 inserts:
+  - The [3D People white paper](https://felix-manley-n4jm.squarespace.com/s/Threaded-Inserts-White-Paper-V1.pdf) has PETG data, but I could not read the PDF; search snippets did not show which material its M3 average of 1304 N belongs to.
+  - [Sculpteo's tests](https://www.sculpteo.com/en/3d-learning-hub/design-guidelines/pull-out-resistance-of-threaded-inserts-testing-and-results/) are in PA12, not PETG.
+- **Calculation.** Treat the plug around each insert as failing in shear, using the 15 MPa interlayer shear figure: 15 × π × 4.0 × 5.7 = **1074 N per insert**.
+- **Knock-down.** SPIROL says installation accounts for up to 75 % of insert performance ([source](https://www.spirol.com/resources/white-papers/performance-expectations-for-threaded-inserts-in-plastic-assemblies/)). Keeping 25 % gives **269 N each, 537 N for two**, so the safety factor is **2.6** on 205 N.
+- **Layer direction.** The insert axis runs along Z, so pull-out loads the layer bond in shear and tension. That is the weak direction, which is why I size from 15 MPa.
+- **M4 is not needed.** It also takes a 5.61 mm hole ([McMaster](https://www.mcmaster.com/products/threaded-inserts/performance~any-orientation/)), which leaves less wall beside the bore.
+
+### Hole and boss
+
+| Dimension | Value | Source |
+|---|---|---|
+| Hole diameter | 4.0 mm | [accu-components chart](https://accu-components.com/p/488-threaded-insert-hole-size-charts-for-3d-printing-pla-petg-resin), for non-flanged M3; insert OD up to 4.4 mm |
+| Insert length | 5.7 mm | [Prusa / CNC Kitchen listing](https://www.prusa3d.com/en/product/heat-set-inserts-m3-standard-100-pcs/) |
+| Minimum material | 4.2 mm | [McMaster 94459A769](https://www.mcmaster.com/product/94459A769/), a different insert |
+| Hole depth | at least 5.7 mm | insert length |
+| Boss wall | TBD | the insert maker's drawing was not readable |
+
+### Cost (searched 2026-11-20)
+
+- Inserts:
+  - [Prusa / CNC Kitchen M3 standard, 100 pcs: $10.99](https://www.prusa3d.com/en/product/heat-set-inserts-m3-standard-100-pcs/), possibly out of stock.
+  - [Zoro 94459A130, 50 pcs](https://zoro.com/bsc-preferred-heat-set-inserts-for-plastic-brass-m3-x-05-mm-43-mm-installed-length-50pk-94459a130/i/G111638281): price TBD.
+- M3 screws and washers: price TBD.
+
+### Washer geometry
+
+- Put the insert axes at radius R outside the ring, so the screw head stays clear of the ring.
+- Required overlap: washer OD/2 − (R − ring OD/2) ≥ 2 mm. The 2 mm is my proposal; the owner should confirm it.
+- The washer bears on the ring's aft face. If there is no ring, it bears on the motor's aft rim.
+- All dimensions are TBD until the ring is measured.
+
 ## 4. Open questions for the owner
 1. Formally confirm the H182R-14A, or choose option B.
 2. Measure the case OD, and the thrust ring OD and thickness, on a motor in hand (for example the vendor's stock).

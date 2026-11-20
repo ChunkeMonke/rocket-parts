@@ -27,7 +27,10 @@ motor:                     # motor agent
   max_thrust_n: 205          # structural design value: max(plot read 205, RSE 200.8, label 192)
   burn_time_s: 1.235        # RSE file (label 1.2)
   delay_s: TBD             # 14 s max, adjustable shorter; set from stability sim
-  retention: screws + heat-set inserts (owner choice 2026-11-20); size TBD - motor agent to propose
+  retention: screws + heat-set inserts (owner choice 2026-11-20); PROPOSED 2x M3 brass heat-set, axial in fin-can aft face, screw + washer over thrust ring (pending owner OK)
+  retention_insert: M3 x 5.7 mm brass heat-set (CNC Kitchen standard via Prusa listing); hole 4.0 mm (accu-components chart)  # proposal
+  retention_design_load_n: 205   # ESTIMATE: 15 psi (top of 10-15 psi typical) x 660.5 mm2 (29 mm class face) = 68 N, x3 margin for unknown bay pressure
+  retention_washer: TBD          # OD/position set by thrust ring OD (TBD); screw length TBD
   thrust_curve_source: projects/l1-cheap/motor/H182R.eng (from owner's ThrustCurve RSE, AT DMS data May 2014; curve Itot 216.1 N-s)
 
 aero:                      # aerodynamics agent
@@ -63,9 +66,13 @@ nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.m
   ballast_cavity_cm3_to_100mm: 27.2   # interior from tip to 100 mm aft of tip; uniform-fill CG 74.6 mm from tip
 
 payload:                   # payload agent
-  contents: none (pending owner confirmation)  # optional add-ons listed in payload.md
-  mass_g: 0                # no payload; if an add-on is chosen, see payload.md for its mass
-  bay_length_mm: 0         # no separate bay; vent holes not needed with no altimeter
+  contents: Eggtimer Quasar-LR (baro altimeter + GPS + LoRa telemetry; deploy outputs NOT wired) + 2S LiPo  # owner 2026-11-20; maker identification by search, owner to confirm
+  mass_g: TBD              # board ~28 g is the ORIGINAL Quasar (Eggtimer FAQ); LR (stacked board) mass, battery, sled, bulkheads TBD
+  bay_length_mm: TBD       # >= 140 board (original Quasar) + battery + bulkhead(s); LR length TBD from its manual
+  position: TBD            # PROPOSED: tube-section bay riding with the nose (nose shoulder plugs into its forward end), aft bulkhead sealed from ejection gas. Nose cone cavity does NOT fit (100.7 mm usable vs 140 mm board), see payload.md
+  vent_holes: 3 holes, ~1.3 mm dia (PROVISIONAL)  # Eggtimer guide rule: 1/4 in hole area per 100 in^3 bay, split into 3; 1.20-1.39 mm for a 150-200 mm bay; not across from the baro sensor
+  price_usd: TBD           # original Quasar kit listed $100; LR price + required LCD-LR receiver + battery TBD
+  owner_share_usd: TBD     # cost split with another person; split and whether it counts against the $100 cap TBD
 
 stability:                 # stability agent
   total_length_mm: TBD
@@ -84,11 +91,14 @@ recovery:                  # recovery agent — see projects/l1-cheap/recovery.m
   descent_rate_target_m_s: TBD   # owner to set; recovery.md tabulates 4.5 / 5.5 / 6.5 m/s
   descent_mass_range_g: [450, 700]  # PLACEHOLDER range given by main session; replace with stability's burnout mass
   chute_cd_assumed: 0.75     # flat sheet, Van Milligan / NASA GRC; 1.5 (Nakka) shown as optimistic bound
-  chute: TBD                 # 24" fits only if target >= ~6.5 m/s at 575 g; 30" covers 450-700 g at <= 5.7 m/s (Cd 0.75)
-  chute_mass_g: TBD          # weigh the chute or get vendor figure
-  shock_cord: TBD            # owner's Kevlar: form/length/rating TBD
-  shock_cord_length_rule: 3x rocket length (forum/4-H rule of thumb; 3-5x range)  # absolute length TBD until stability gives total_length_mm
-  shock_cord_min_rating_n: 1030  # ESTIMATE: 343 N opening load at 40 m/s (Cx 1.6) x proposed SF 3; owner to confirm SF; after knot derating
+  chute: owned 40 in, brand/type TBD (owner 2026-11-20)  # 3.44-4.29 m/s at Cd 0.75 over 450-700 g; reefing proposed to cut drift
+  chute_diameter_in: 40      # owner
+  chute_mass_g: TBD          # ESTIMATE <=57 g (42" hex nylon 2.01 oz, the-rocketman.com/?p=3121); weigh it
+  shock_cord: 9KM DWLIFE hollow-braid Kevlar, 750 lb (3336 N) rated, 2.3 mm dia, 16 strand, 2.91 g/m (88.7 g/100 ft); owner has 16 m  # owner 2026-11-20
+  shock_cord_length_rule: 3x rocket length (forum/4-H rule of thumb; 3-5x range)  # cut length = 3 x stability.total_length_mm + loop allowance (TBD)
+  shock_cord_min_rating_n: 2860  # ESTIMATE, 40 in chute: 953 N opening at 40 m/s (Cd .75, Cx 1.6) x proposed SF 3. Was 1030 (24 in). At <=20 m/s deploy: 714 N
+  shock_cord_check: knotted (40% eff., aramid fig-8 study) 1334 N -> passes 24 in case and 40 in up to ~27 m/s deploy only (1334/3=445 N opening); spliced/sewn eyes recommended
+  anchor_min_net_area_mm2: 191   # 953 N x SF 3 / 15 MPa interlayer; 48 mm2 if deploy <=20 m/s
   ejection_protection: Estes recovery wadding (PROPOSED, $5.43-5.99)  # Nomex 6x6 alt
   deploy_velocity_m_s: TBD   # needs stability sim + motor delay
   recovery_mass_g: TBD       # chute + cord + wadding; weigh
