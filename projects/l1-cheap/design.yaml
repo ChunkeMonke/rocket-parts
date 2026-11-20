@@ -76,29 +76,29 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock. If payload adds a bay cut from this stock, the main tube = 863 - bay (sweep does this)
   fin_span_request_mm: null      # null = use aero.fin_span_mm (40, flutter-limited). 45/50 cut ballast to 65/43 g but worsen flutter; see stability.md
-  ballast_g: 96                  # nose cavity, for NO altimeter (payload TBD). Re-solve when payload reports: ~37 g at 80 g / 180 mm bay, ~7 g at 120 g
-  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3 -> needs >= 3.54 g/cm3 packed; material TBD, owner)
-  # ---- results: sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0 (2026-11-20) ----
-  # PROVISIONAL: payload (Quasar-LR) mass/bay TBD; masses of tube, fin can, chute, epoxy, buttons are ESTIMATES (assumptions below)
+  ballast_g: 90                  # nose cavity, NO altimeter (payload TBD), real fin can 171.1 g. Re-solve when payload reports: ~30 g at 80 g / 180 mm bay, ~1 g at 120 g. Set from the WEIGHED nose (1 g nose ~ 0.9 g ballast)
+  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3 -> needs >= 3.31 g/cm3 packed; owner has ballast, material/density TBD)
+  # ---- results: sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0 (2026-11-20, fin can rev 1 model) ----
+  # PROVISIONAL: payload (Quasar-LR) mass/bay TBD; tube, liner, chute, epoxy, buttons, retention, nose are ESTIMATES (assumptions below)
   total_length_mm: 1128          # nose 165 + tube 863 + fin can exposed 100
-  liftoff_mass_g: 736            # structure 529 + motor 207
-  burnout_mass_g: 621
-  cg_liftoff_from_nose_mm: 771.4
-  cg_burnout_from_nose_mm: 724.2
+  liftoff_mass_g: 713            # structure 506 + motor 207
+  burnout_mass_g: 598
+  cg_liftoff_from_nose_mm: 770.8
+  cg_burnout_from_nose_mm: 721.6
   cp_from_nose_mm: 845.5         # Barrowman M~0 (aero.md formula, Lb 963); RocketPy 845.4 (M0), 856.6 (M0.9)
-  margin_liftoff_cal: 1.79       # PASS vs 1.8 +/- 0.2
-  margin_burnout_cal: 2.94       # FAIL (high) vs 1.8 +/- 0.2. Propellant burn adds +0.8 to +1.15 cal in every practical config; a 0.4 cal band cannot hold both ends. Owner to rule
-  apogee_m: 1280                 # 4198 ft AGL; Cd x0.85..x1.3 -> 1406..1095 m
-  time_to_apogee_s: 13.97
+  margin_liftoff_cal: 1.81       # PASS vs 1.8 +/- 0.2
+  margin_burnout_cal: 3.00       # FAIL (high) vs 1.8 +/- 0.2. Propellant burn adds +0.8 to +1.2 cal in every practical config; a 0.4 cal band cannot hold both ends. Owner to rule
+  apogee_m: 1284                 # 4213 ft AGL; Cd x0.85..x1.3 -> 1413..1096 m
+  time_to_apogee_s: 13.88
   burnout_time_s: 1.235
-  coast_to_apogee_s: 12.73       # for the motor delay (Cd x0.85..x1.3 -> 13.56..11.46 s)
-  max_velocity_m_s: 274.6        # at 1.19 s
-  max_mach: 0.81                 # subsonic at this mass; 0.85-0.86 for the lightest stable configs (687-696 g)
-  max_q_kpa: 45.5
-  rail_exit_velocity_m_s: {rail_1p5m: 25.1, rail_1p83m: 27.9}   # no rail-button geometry modelled (travel = rail length)
-  recommended_delay_s: 12        # deploy 7.2 m/s at 1277 m AGL (Cd x1); <= 15.3 m/s over Cd x0.85-1.3. 13 s equally good if the AT tool offers it. Motor agent to confirm steps
-  deploy_velocity_m_s: 7.2       # at 12 s delay, nominal Cd
-  deploy_altitude_m: 1277
+  coast_to_apogee_s: 12.65       # for the motor delay (Cd x0.85..x1.3 -> 13.48..11.36 s)
+  max_velocity_m_s: 282.1        # at 1.20 s
+  max_mach: 0.83                 # subsonic; 0.87-0.90 for the light span-45/50 options (657-680 g)
+  max_q_kpa: 48.0
+  rail_exit_velocity_m_s: {rail_1p5m: 25.5, rail_1p83m: 28.4}   # no rail-button geometry modelled (travel = rail length)
+  recommended_delay_s: 12        # deploy 6.3 m/s at 1282 m AGL (Cd x1); <= 14.6 m/s over Cd x0.85-1.3. 13 s equally good if the AT tool offers it. Motor agent to confirm steps
+  deploy_velocity_m_s: 6.3       # at 12 s delay, nominal Cd
+  deploy_altitude_m: 1282
   target_mass_g: {nose_cone: 52.7, fin_can: 171.1}   # verify.py targets (+/-5 %). Fin can = parts/fin_can.py rev 1 model mass at 25 % infill
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
   fin_can_model_mass_g: 171.1        # parts/fin_can.py rev 1, verify mass model at 25 % infill (170.5 at 0 %, 173.0 at 100 %); out/fin_can/rev1/, 2026-11-20
@@ -179,4 +179,4 @@ fin_can:                   # part library (main session) — parts/fin_can.py re
   retention: {value: none_in_rev1, status: OPEN, note: "axial M3 inserts need ~3 mm walls around a 4 mm hole; only ~5 mm between bore and OD. Needs thrust-ring OD to choose a scheme"}
   thrust_ring_od_mm: {value: 33.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
   thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
-  target_mass_g: {value: 197.3, status: FROM_STABILITY, note: "stability ESTIMATE; update stability with the real model mass"}
+  target_mass_g: {value: 171.1, status: FROM_STABILITY, note: "stability budget 2026-11-20 uses the rev 1 model mass (25 % infill)"}

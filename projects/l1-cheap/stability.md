@@ -1,152 +1,162 @@
 # Project: l1-cheap — Phase 2 Stability & Integration
 
-**Status:** Phase 2 integration, 2026-11-20. **PROVISIONAL.** The Quasar-LR payload mass and bay
-length are TBD, and the tube, fin can, chute, epoxy and rail-button masses are estimates (see §2).
+**Status:** Phase 2 integration, rev 2, 2026-11-20. Uses the **real fin can mass** from `parts/fin_can.py`
+rev 1. **PROVISIONAL:** the Quasar-LR payload mass and bay are TBD, and the tube, liner, nose, chute,
+epoxy, rail-button and retention masses are estimates (§2).
 
-- **Sim:** `sims/l1_cheap.py` (RocketPy 1.13.0). It reads every number from `design.yaml` and the shop
-  constants. Each component takes the owning agent's value when it is a number, and otherwise falls back
-  to `stability.assumptions`. When an item is still TBD, a strict run stops; `--allow-tbd` leaves the
-  item out and stamps the run PROVISIONAL. The payload, chute mass, recovery pack and Cd slot in from
-  `design.yaml` with no code change.
-- **Sweeps:** `sims/l1_cheap_sweep.py [mass|payload|cd|all]`.
-- **Run used for every result below:**
-  `.venv/bin/python sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0`
+**Sim.** `sims/l1_cheap.py` (RocketPy 1.13.0) reads every number from `design.yaml` and the shop
+constants.
+- Each component takes the owning agent's value when it is a number, and falls back to
+  `stability.assumptions` otherwise.
+- A strict run stops on any TBD. `--allow-tbd` leaves the item out and stamps the run PROVISIONAL.
+- If the liftoff margin is ≤ 0, the flight is not simulated, because a tumble is meaningless.
+- Fin can: the sim uses `stability.fin_can_model_mass_g` and `fin_can_model_cg_from_aft_mm` when those
+  are numbers. Otherwise it falls back to the walls+infill estimate.
+- Liner: computed from `fin_can.liner_*` × `assumptions.cardboard_density_g_cm3`.
+
+**Sweeps.** `sims/l1_cheap_sweep.py [mass|payload|cd|nose|all]`.
+
+**Baseline run, used for every result below:**
+`.venv/bin/python sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0`
+
+**Rev 2 change.** The fin can went from a 197.3 g estimate at 1047.4 mm (weighted CG of the three
+estimate items) to 171.1 g at 1047.7 mm (80.3 mm forward of the aft face). The CG barely moved; the
+26 g mass cut is what matters. Adding the liner (+10.0 g),
+the solved ballast dropped from 96 g to **90 g**, and the liftoff mass from 736 g to 713 g.
 
 ## 1. Headline
 
 | Item | Value | vs. target |
 |---|---|---|
-| Configuration | 165 ogive nose + 863 mm BT-1.52 (uncut) + 100 mm exposed fin can, span 40, **96 g nose ballast** | |
-| Length / liftoff mass / burnout mass | 1128 mm / 736 g / 621 g | |
+| Configuration | 165 ogive nose + 863 mm BT-1.52 (uncut) + 100 mm exposed fin can, span 40, **90 g nose ballast** | |
+| Length / liftoff / burnout mass | 1128 mm / 713 g / 598 g | |
 | CP (Barrowman, M≈0) | 845.5 mm (RocketPy 845.4; 856.6 at M 0.9) | |
-| CG liftoff / burnout | 771.4 / 724.2 mm | |
-| **Static margin, liftoff** | **1.79 cal** | **PASS** (1.8 ± 0.2) |
-| **Static margin, burnout** | **2.94 cal** | **FAIL (high)** |
-| Margin at rail exit / max in flight (RocketPy) | 1.88 / 3.21 cal | |
+| CG liftoff / burnout | 770.8 / 721.6 mm | |
+| **Static margin, liftoff** | **1.81 cal** | **PASS** (1.8 ± 0.2) |
+| **Static margin, burnout** | **3.00 cal** | **FAIL (high)**, not forced |
+| Margin at rail exit / max in flight (RocketPy) | 1.90 / 3.27 cal | |
 
-**Why burnout fails.** The burn removes 115 g of propellant from about 255 mm aft of the CG, which
-adds **+0.8 to +1.15 cal** in every practical configuration (§4, §5). The band is only 0.4 cal wide, so no
-practical design holds both ends inside it.
-- A grid search found only a few designs that do: 565–715 mm long with 75–90 mm fins, which are bad
-  for flutter, and too short to hold the 40 in chute and the avionics bay.
-- So the owner must decide whether the ±0.2 band applies at liftoff only. Being over-stable at burnout
-  means more weathercocking into the wind. It is not an instability.
+**Why burnout fails.** The burn removes 115 g of propellant from about 256 mm aft of the CG, which
+adds **+0.8 to +1.2 cal** in every practical configuration (§4). The band is only 0.4 cal wide.
+- The only designs that hold both ends are 565–715 mm long with 75–90 mm fins (rev 1 grid). Those are
+  bad for flutter, and too short for the chute and the bay.
+- The owner has not yet ruled on whether the band applies at burnout.
 
-**Without ballast the rocket is unstable:** −0.74 cal at liftoff with span 40. Most of the reason is the
-207 g motor plus the ~197 g fin can, all in the aft 203 mm.
+**Without ballast the rocket is unstable:** −0.63 cal at liftoff.
 
 ## 2. Mass budget (no payload; x from the nose tip)
 
 | Item | g | x (mm) | Basis |
 |---|---|---|---|
-| Nose cone | 52.7 | 119.9 | nosecone.md (estimate) |
-| Ballast | 96 | 74.6 | stability. Fill tip→100 mm, so it needs ≥ 3.54 g/cm³ packed. Material TBD |
-| BT-1.52 tube, 863 mm | 93.6 | 596.5 | **ESTIMATE** 0.1085 g/mm = shop wall area 159.6 mm² × 0.68 g/cm³ (OpenRocket "cardboard" density). No published LOC mass found |
-| Fin can, exposed (OD 41.275, bore 29, 100 mm) | 77.7 | 1078.0 | **ESTIMATE**, walls+infill model at 25 % |
-| Fin can shoulder (OD 38.555, 103 mm) | 66.3 | 976.5 | **ESTIMATE**. Assumes the bore supports the full 203 mm motor |
-| 3 fins, solid 5 mm | 53.3 | 1090.9 | aero geometry × 1.27 g/cm³ |
-| Parachute, 40 in | 57 | 865.0 | recovery's ≤57 g estimate; weigh it |
-| Kevlar, 3.68 m × 2.91 g/m | 10.7 | 865.0 | owner; 3 × 1128 mm + 0.3 m loop allowance (estimate) |
-| Wadding | 2 | 915.0 | **ESTIMATE**, 8 sheets × ≤0.24 g |
+| Nose cone | 52.7 | 119.9 | nosecone.md, ESTIMATE |
+| Ballast | 90 | 74.6 | stability. Fill tip→100 mm (27.2 cm³) needs ≥ 3.31 g/cm³ packed |
+| BT-1.52 tube, 863 mm | 93.6 | 596.5 | **ESTIMATE** 0.1085 g/mm = shop wall area 159.6 mm² × 0.68 g/cm³ (OpenRocket cardboard) |
+| **Fin can incl. fins (rev 1 model)** | **171.1** | **1047.7** | verify mass model at 25 % infill (170.5–173.0 over 0–100 %). Solid-mesh CG 80.3 mm forward of the aft face |
+| Motor liner MMT-1.14, 203 mm | 10.0 | 1026.5 | **ESTIMATE** π/4 (30.5² − 28.956²) × 203 × 0.68 g/cm³. **OD 30.5 is a placeholder**. Placed at the motor midpoint |
+| Parachute, 40 in | 57 | 865.0 | recovery's ≤57 g estimate |
+| Kevlar, 3.68 m × 2.91 g/m | 10.7 | 865.0 | owner; 3 × 1128 + 0.3 m allowance (estimate) |
+| Wadding | 2 | 915.0 | **ESTIMATE** |
 | Epoxy | 10 | 976.5 | **ESTIMATE** |
-| Rail buttons | 5 | 828.0 | **ESTIMATE**, 2 × 2.5 g |
-| Retention screws + inserts | 4 | 1126.0 | **ESTIMATE** |
-| **Structure** | **528.7** | **671.2** | |
+| Rail buttons | 5 | 828.0 | **ESTIMATE** |
+| Retention (screws + inserts) | 4 | 1126.0 | **ESTIMATE**. fin_can rev 1 has no retention yet |
+| **Structure** | **506.1** | **666.2** | |
 | Motor, loaded / dry | 207 / 92 | 1026.5 | motor.md. CG assumed at mid-length |
 
-The recovery pack is placed resting on the motor's forward end, which is its most aft (conservative)
-position.
-
-**Fin can lever:** cutting the shoulder to 40 mm saves 40 g aft and 10 g of ballast.
+The recovery pack is placed resting on the motor's forward end, its most aft (conservative) position.
 
 ## 3. Flight (nominal Cd, vertical, no wind, standard atmosphere)
 
-The motor is the H182R.eng file. Cd is aero.md's table, held at 0.83 above M 0.7 with no transonic
-rise (assumption).
-- **Apogee:** 1280 m (4198 ft) at 13.97 s.
-- **Burnout:** 1.235 s. **Coast to apogee:** 12.73 s.
-- **Vmax:** 274.6 m/s (**M 0.81**). Max q 45.5 kPa.
-- **Rail exit:** **25.1 m/s** on the 1.5 m rail, **27.9 m/s** on the 1.83 m rail. Rail-button geometry is
-  not modelled. The owner's threshold is TBD.
+Cd is aero.md's table, held at 0.83 above M 0.7 with no transonic rise (assumption).
+- **Apogee:** 1284 m (4213 ft) at 13.88 s.
+- **Burnout:** 1.235 s. **Coast to apogee:** 12.65 s.
+- **Vmax:** 282.1 m/s (**M 0.83**). Max q 48.0 kPa.
+- **Rail exit:** **25.5 m/s** on the 1.5 m rail, **28.4 m/s** on the 1.83 m rail. Rail-button geometry is
+  not modelled.
 
 **Deployment vs. delay** (timed from burnout; recovery flags: ≤ 20 m/s preferred, ≤ 27 m/s limit)
 
 | Delay (s) | 14 | 13 | 12 | 11 | 10 | 9 | 8 | 6 | 4 |
 |---|---|---|---|---|---|---|---|---|---|
-| Altitude AGL (m) | 1272 | 1279 | 1277 | 1265 | 1243 | 1210 | 1167 | 1043 | 860 |
-| Speed (m/s) | 12.2↓ | 2.6↓ | 7.2↑ | 17.1↑ | 27.3↑ | 37.9 | 49.3 | 75.4 | 109.4 |
-| Flag | pref. | pref. | pref. | pref. | too fast | too fast | too fast | too fast | too fast |
+| Altitude AGL (m) | 1275 | 1283 | 1282 | 1271 | 1249 | 1218 | 1175 | 1053 | 871 |
+| Speed (m/s) | 12.8↓ | 3.4↓ | 6.3↑ | 16.3↑ | 26.4↑ | 37.1 | 48.4 | 74.6 | 108.9 |
+| Flag | pref. | pref. | pref. | pref. | limit | too fast | too fast | too fast | too fast |
 
 **Cd sensitivity at 12 / 13 / 14 s delay**
 
 | Cd scale | Coast to apogee | 12 s | 13 s | 14 s |
 |---|---|---|---|---|
-| × 0.85 | 13.56 s | 15.3 m/s | 5.5 m/s | 4.3 m/s |
-| × 1.15 | 12.04 s | 0.4 m/s | 9.4 m/s | 16.6 m/s |
-| × 1.30 | 11.46 s | 5.3 m/s | 14.2 m/s | 21.5 m/s |
+| × 0.85 | 13.48 s | 14.6 m/s | 4.8 m/s | 5.0 m/s |
+| × 1.15 | 11.95 s | 0.5 m/s | 10.2 m/s | 17.2 m/s |
+| × 1.30 | 11.36 s | 6.2 m/s | 14.6 m/s | 22.0 m/s |
 
-**Recommended delay: 12 s.** It stays ≤ 15.3 m/s across Cd × 0.85–1.3 and the +150 g cases. 13 s is
-equally good if the AeroTech tool offers 1 s steps. The 14 s uncut delay is acceptable at nominal Cd
-but goes over 20 m/s at Cd × 1.3. The delay-tool steps and the motor's delay tolerance are TBD.
+**Recommended delay: 12 s.** It stays ≤ 14.6 m/s across Cd × 0.85–1.3. 13 s is equally good if the
+AeroTech tool offers it. 14 s goes over 20 m/s at Cd × 1.3.
 
 ## 4. Mass trade: subsonic vs. light (owner decides)
 
 All rows use the 1.83 m rail. The "ballast" column is the ballast solved for a 1.8 cal liftoff margin,
 unless stated otherwise.
 
-| Config | Ballast | Liftoff | SM lo/bo | Vmax | Mach | Apogee | Rail |
+| Config | Ballast | Liftoff | SM lo/bo | Vmax | Mach | Apogee | v @ 12 s |
 |---|---|---|---|---|---|---|---|
-| s50, tube −200 mm | 58 | 687 g | 1.80/2.59 | 291 | 0.86 | 1287 | 28.9 |
-| s50, full tube | 43 | 696 g | 1.80/2.74 | 288 | 0.85 | 1286 | 28.7 |
-| s45, full tube | 65 | 711 g | 1.80/2.84 | 283 | 0.83 | 1284 | 28.4 |
-| **s40, full tube (baseline)** | **96** | **736 g** | **1.80/2.95** | **275** | **0.81** | **1280** | **27.9** |
-| s40, +50 g ballast | 146 | 786 g | 2.87/4.12 | 259 | 0.76 | 1266 | 27.0 |
-| s40, +100 g | 196 | 836 g | 3.82/5.13 | 245 | 0.72 | 1246 | 26.2 |
-| s40, +150 g | 246 | 886 g | 4.66/6.01 | 231 | 0.68 | 1221 | 25.5 |
+| s50, tube −200 mm | 48 | 647 g | 1.80/2.65 | 307 | 0.90 | 1289 | 3.3 |
+| s50, full tube | 34 | 657 g | 1.80/2.81 | 303 | 0.89 | 1289 | 3.8 |
+| s45, full tube | 57 | 680 g | 1.80/2.89 | 294 | 0.87 | 1288 | 5.0 |
+| **s40, full tube (baseline)** | **90** | **713 g** | **1.80/2.99** | **282** | **0.83** | **1284** | **6.3** |
+| s40, +50 g ballast | 140 | 763 g | 2.91/4.20 | 266 | 0.78 | 1273 | 8.0 |
+| s40, +100 g | 190 | 813 g | 3.88/5.24 | 251 | 0.74 | 1255 | 9.2 |
+| s40, +150 g | 240 | 863 g | 4.73/6.14 | 237 | 0.70 | 1233 | 9.8 |
 
-- **Every stable design is subsonic (M ≤ 0.86).** Aero's M 1.09 case assumed a 300 g structure. The
-  real budget is about 530 g, so it can't be that light.
-- **Apogee barely moves with mass:** −59 m for +150 g.
-- **Each 50 g cuts Vmax by about 14 m/s.** That is the main lever for flutter and Mach margin. It costs
-  over-stability, because ballast also pushes the margin far above the band, and rail-exit speed
-  (−0.8 m/s per 50 g).
-- **Cutting the tube shorter** saves almost no mass, because the ballast grows to compensate. It does
-  shrink the ejection free volume.
+- Each 50 g cuts Vmax by about 15 m/s, but apogee by only about 10–20 m.
+- Each 50 g of extra ballast adds about +1 cal of over-stability, and costs about 0.8 m/s of rail exit.
+- The lighter, bigger-fin options approach M 0.9, where the flat Cd is least trustworthy and flutter is
+  worst.
 
-## 5. Payload slot (Quasar-LR bay, cut from the same 863 mm stock; ballast solved)
+## 5. Nose cone mass sweep (CG held at 119.9 mm; ballast solved for 1.8 cal at liftoff)
 
-| Payload / bay | Ballast for 1.8 | Liftoff | Margin at 0 ballast | Vmax / Mach | Apogee |
-|---|---|---|---|---|---|
-| 0 g / 0 | 96 g | 736 g | −0.74 | 275 / 0.81 | 1280 |
-| 80 g / 180 mm | 37 g | 756 g | 0.93 | 268 / 0.79 | 1275 |
-| 120 g / 180 mm | 7 g | 767 g | 1.64 | 265 / 0.78 | 1272 |
+| Nose | Ballast | Liftoff | SM lo/bo | Vmax / Mach | Apogee | v @ 12 s |
+|---|---|---|---|---|---|---|
+| 40 g | 101.5 g | 712 g | 1.80/2.99 | 282.6 / 0.832 | 1284 | 6.3 |
+| 45 g | 96.8 g | 712 g | 1.80/2.99 | 282.5 / 0.832 | 1284 | 6.3 |
+| **52.7 g** | **89.6 g** | **713 g** | **1.80/2.99** | **282.3 / 0.831** | **1284** | **6.3** |
+| 60 g | 82.8 g | 713 g | 1.80/2.99 | 282.1 / 0.831 | 1284 | 6.3 |
+| 70 g | 73.4 g | 714 g | 1.80/2.99 | 281.9 / 0.830 | 1284 | 6.3 |
 
-The bay's forward mass helps the margin and lowers Vmax. **I will re-solve the ballast when the
-payload agent reports.**
+- **Nose mass error is absorbed by the ballast almost one-for-one:** −0.93 g of ballast per +1 g of nose,
+  because both sit forward.
+- The flight barely changes.
+- So the nose target stays **52.7 g**. Its ±5 % tolerance (±2.6 g) moves the ballast by about ∓2.5 g.
+- **Set the final ballast from the weighed nose**, and check it with a CG balance test on the built
+  rocket.
 
-## 6. Target masses for verify.py (±5 %)
+## 6. Payload slot (Quasar-LR bay cut from the 863 mm stock; ballast solved)
 
-- **Nose cone: 52.7 g.** This is the shell only; ballast is added after printing.
-- **Fin can: 197.3 g.**
-  - That is the 100 mm exposed section + the 103 mm shoulder + 3 fins.
-  - It is almost all solid (radial walls < 2 crusts), so infill barely moves it. The geometry has to match.
-  - Print height 203 mm, footprint 121 mm, both ≤ 256.
-  - If the can is designed lighter, tell me and I will re-run. Every 10 g taken off the can saves about
-    2.6 g of ballast.
+| Payload / bay | Ballast | Liftoff | Vmax / Mach | Apogee |
+|---|---|---|---|---|
+| 0 g / 0 | 90 g | 713 g | 282 / 0.83 | 1284 |
+| 80 g / 180 mm | 30 g | 733 g | 275 / 0.81 | 1280 |
+| 120 g / 180 mm | 1 g | 744 g | 272 / 0.80 | 1278 |
 
-## 7. Sources (accessed 2026-11-20)
+## 7. Target masses for verify.py (±5 %)
 
-- OpenRocket cardboard density, 0.68 g/cm³: [TRF post](https://www.rocketryforum.com/goto/post?id=2317962),
+- **Fin can: 171.1 g**, the value this budget uses. Rev 1 reaches 170.5–173.0 g, so it passes at any
+  infill.
+- **Nose cone: 52.7 g, unchanged.** This is the shell only, without ballast (§5).
+
+## 8. Sources (accessed 2026-11-20)
+
+- OpenRocket cardboard 0.68 g/cm³: [TRF post](https://www.rocketryforum.com/goto/post?id=2317962),
   [WSU OpenRocket model](https://hub.wsu.edu/aerospace/wp-content/uploads/sites/204/2015/02/OpenRocket-Model.pdf)
-- LOC BT-1.52, 34 in, no published mass: [Wildman](https://wildmanrocketry.com/products/bt-1-52),
+- LOC BT-1.52, no published mass: [Wildman](https://wildmanrocketry.com/products/bt-1-52),
   [LOC](https://locprecision.com/products/cardboard-airframes)
-- Wadding: [hobbyetc listing](https://store.hobbyetc.com/parts/view/123056) (17 g shipping weight, 72 sheets)
-- Chute: recovery's estimate (the-rocketman.com/?p=3121). Kevlar: owner's vendor table.
+- Wadding: [hobbyetc](https://store.hobbyetc.com/parts/view/123056). Chute: recovery (the-rocketman.com/?p=3121).
+  Kevlar: owner.
+- Fin can mass and CG: `out/fin_can/rev1/` (verify mass model, solid-mesh CG). Liner ID: `fin_can.liner_id_mm`.
 
-## 8. Open questions for the owner
+## 9. Open questions for the owner
 
-1. Does the ±0.2 band apply at **liftoff only**? Burnout is ~1 cal higher whatever we do.
-2. Ballast material and form: it needs ≥ 3.54 g/cm³ packed to fit tip→100 mm.
-3. The club's rail length and the minimum rail-exit speed you want.
-4. Lighter-and-faster (s50, 43 g ballast, M 0.85) or heavier-and-slower (s40 + ballast)?
-5. Weigh the tube, the chute and the Kevlar once they are in hand.
+1. Does the ±0.2 band apply at liftoff only? Burnout is about 1.2 cal higher.
+2. Ballast density: it needs ≥ 3.31 g/cm³ packed to fit tip→100 mm.
+3. Rail length and the minimum rail-exit speed you want.
+4. Light (s50, M 0.89) or heavier (s40 + ballast, M 0.83)?
+5. Measure the liner OD; weigh the tube, chute, nose and Kevlar.

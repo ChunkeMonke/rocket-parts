@@ -7,7 +7,7 @@
 | # | Check | Result | Detail |
 |---|---|---|---|
 | 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=136196.5 mm3, bodies=1 |
-| 2 | mass | FAIL | target 197.3 g (±5 %); reachable 170.5 g (0 %) – 173.0 g (100 %); infill to hit target = 1072.6 % |
+| 2 | mass | PASS | target 171.1 g (±5 %); reachable 170.5 g (0 %) – 173.0 g (100 %); infill to hit target = 25.3 % |
 | 3 | mating interference | PASS | tube_wall: 0.000 mm3, liner_and_motor: 0.000 mm3, motor_thrust_ring: 0.000 mm3 |
 | 4 | renders | PASS | written: fin_can_rev1_iso.png, fin_can_rev1_front.png, fin_can_rev1_section.png — VISUAL REVIEW REQUIRED |
 | 5 | build volume | PASS | extents X 93.2 / Y 107.6 / Z 203.0 mm vs limit 256/256/256 |
@@ -15,7 +15,7 @@
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
 - Solid (walls/skins) 134.23 cm³ · infill region 1.97 cm³ · mesh volume 136.20 cm³
-- Mass at 0 % / 100 % infill: 170.5 g / 173.0 g · target 197.3 g · infill needed: 1072.6 %
+- Mass at 0 % / 100 % infill: 170.5 g / 173.0 g · target 171.1 g · infill needed: 25.3 %
 
 ## Print orientation
 Aft face DOWN on the bed, axis vertical (+Z = forward). No supports: fin outlines shrink going up (TE square at the bed, LE swept back).
@@ -53,7 +53,7 @@ Aft face DOWN on the bed, axis vertical (+Z = forward). No supports: fin outline
 | `anchor_angle_deg` | 60 | PROPOSED | between fins |
 | `thrust_ring_od_mm` | 33 | PLACEHOLDER | not published; measure the motor (mating check only) |
 | `thrust_ring_thk_mm` | 3 | PLACEHOLDER | not published; measure the motor (mating check only) |
-| `target_mass_g` | 197.3 | FROM_STABILITY | stability ESTIMATE; update stability with the real model mass |
+| `target_mass_g` | 171.1 | FROM_STABILITY | stability budget 2026-11-20 uses the rev 1 model mass (25 % infill) |
 
 ## Not print-ready until resolved
 - `body_od_mm`: tube OD nominal; measure the BT-1.52 with calipers
