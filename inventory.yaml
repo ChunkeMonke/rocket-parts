@@ -5,8 +5,10 @@ printers:
 airframe: []
 motors_and_hardware: []    # reloads AND RMS cases (case_od feeds the motor-interference check)
 recovery:
-  - {item: Kevlar, qty: TBD, notes: "form (cord/tape), length and rating TBD"}
-electronics: []
+  - {item: "9KM DWLIFE Kevlar cord, hollow braided, 750 lb", qty: "16 m", notes: "2.3 mm dia, 16 strands, 88.7 g/100 ft (2.91 g/m); vendor: safe use 70% of rated (525 lb); melts 427 C"}
+  - {item: "Parachute, 40 in", qty: 1, notes: "brand/type/mass TBD"}
+electronics:
+  - {item: Quasar-LR altimeter, qty: 1, notes: "cost split with another person; model details TBD"}
 tools: []
 consumables:
   - {item: PETG filament, qty: TBD, notes: "$13/kg paid"}

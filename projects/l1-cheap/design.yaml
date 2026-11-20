@@ -14,7 +14,7 @@ motor:                     # motor agent
   # WORKING ASSUMPTION (owner has not formally chosen).
   # Primary source: AeroTech DMS H182R-14A spec sheet, supplied by owner 2026-11-20.
   # Cross-check (search, 2026-11-20): https://www.thrustcurve.org/motors/AeroTech/HP-H182R
-  designation: AeroTech H182R-14A (29 mm DMS single-use)  # working assumption; TRA certified
+  designation: AeroTech H182R-14A (29 mm DMS single-use) - CONFIRMED by owner 2026-11-20
   diameter_class_mm: 29    # spec sheet "29 mm x 203 mm (1.13 x 8.00 in)"; class, not measured case OD
   case_od_mm: TBD          # not published; measure the motor
   thrust_ring: TBD         # not on spec sheet; presence, OD, thickness TBD; measure
@@ -27,7 +27,7 @@ motor:                     # motor agent
   max_thrust_n: 205          # structural design value: max(plot read 205, RSE 200.8, label 192)
   burn_time_s: 1.235        # RSE file (label 1.2)
   delay_s: TBD             # 14 s max, adjustable shorter; set from stability sim
-  retention: TBD           # proposal in motor.md (screws + washers over thrust ring)
+  retention: screws + heat-set inserts (owner choice 2026-11-20); size TBD - motor agent to propose
   thrust_curve_source: projects/l1-cheap/motor/H182R.eng (from owner's ThrustCurve RSE, AT DMS data May 2014; curve Itot 216.1 N-s)
 
 aero:                      # aerodynamics agent
