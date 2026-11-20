@@ -2,6 +2,8 @@
 
 **Status:** Phase 2 · 2026-11-20 · payload agent
 
+> **2026-11-20 owner update:** no payload in this rocket. The Quasar-LR (owned, shared 50/50) is kept for a future build.
+
 > **SUPERSEDED (owner update 2026-11-20):** there WILL be a payload, a Quasar-LR. See §Quasar-LR at the end. The "no payload" default and add-on table below are kept for the record.
 
 ## Default: no payload
