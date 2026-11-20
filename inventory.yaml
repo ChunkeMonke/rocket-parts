@@ -10,8 +10,11 @@ recovery:
 electronics:
   - {item: "Eggtimer Quasar-LR + LCD-LR handheld receiver combo", qty: 1, notes: "$130 sale; shared 50/50; not used in l1-cheap"}
   - {item: "Eggtimer USB-serial interface", qty: 1, notes: "$5"}
-tools: []
+tools:
+  - {item: Calipers, qty: 1}
+  - {item: Kitchen scale, qty: 1}
 consumables:
+  - {item: Ballast (dense, for nose), qty: TBD, notes: owner has it}
   - {item: PETG filament, qty: TBD, notes: "$13/kg paid"}
   - {item: Epoxy, qty: TBD, notes: "type/brand/amount TBD"}
 memberships:

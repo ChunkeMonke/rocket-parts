@@ -3,7 +3,7 @@ id,item,tag,qty,mass_g,mass_basis,unit_price_usd,price_source,notes
 2,LOC BT-1.52 body tube 34 in,buy,1,93.6,ESTIMATE 0.1085 g/mm (stability),9.30,"Wildman / CS Rocketry / LOC, searched 2026-11-20",Full length uncut in the baseline. Weigh on arrival. Check oversize shipping cost
 3,Nose cone (tangent ogive 165 + 40 shoulder),print,1,52.7,target (nosecone agent),0.69,PETG $13/kg x mass,Prints tip-up 205 mm tall. Needs parts/nose_cone.py + verify
 4,Fin can (3 fins + 29 mm motor mount + cord anchor),print,1,197.3,target (stability; ESTIMATE),2.56,PETG $13/kg x mass,Prints aft-face-down ~203 mm tall. Slim it to cut ballast (~2.6 g ballast per 10 g)
-5,Nose ballast,TBD,96 g,96,stability (no payload),TBD,TBD,Needs >= 3.54 g/cm3 packed: steel BBs or lead shot potted in epoxy. Owner: what do you have?
+5,Nose ballast,have,96 g,96,stability (no payload),0,owned,"Needs >= 3.54 g/cm3 packed: steel BBs or lead shot potted in epoxy. (owner has it, 2026-11-20)"
 6,Epoxy (joints + ballast potting),have,-,10,ESTIMATE,0,owned,Type/brand TBD; must be suited to paper + PETG
 7,Parachute 40 in,have,1,57,ESTIMATE <=57 g (recovery),0,owned,Brand/type/mass TBD; reef to ~30 in to cut drift (free). Weigh it
 8,Kevlar cord 9KM DWLIFE 750 lb,have,3.68 m,10.7,2.91 g/m x 3.68 m,0,owned (16 m on hand),Spliced/sewn end loops recommended over knots
@@ -17,6 +17,6 @@ id,item,tag,qty,mass_g,mass_basis,unit_price_usd,price_source,notes
 16,Launch pad + rail + controller,borrow,1,-,-,0,club,Club provides
 17,Glue stick (bed adhesion),have,-,-,-,0,shop rules,
 18,Soldering iron (to set heat-set inserts),owner-handled,1,-,-,excluded,-,Owner 2026-11-20: handled by owner; not tracked in plan or budget
-19,Calipers,TBD,1,-,-,TBD,TBD,Needed to measure tube OD + motor case/ring. Owned?
-20,Scale (0.1 g or 1 g),TBD,1,-,-,TBD,TBD,Needed to weigh tube/chute/parts for the as-built sim. Owned?
+19,Calipers,have,1,-,-,0,owned,"Needed to measure tube OD + motor case/ring. (owner has it, 2026-11-20)"
+20,Scale (0.1 g or 1 g),have,1,-,-,0,owned,"Needed to weigh tube/chute/parts for the as-built sim. (owner has it, 2026-11-20)"
 21,Sandpaper / finish,optional,-,-,-,0,-,Raw print is fine for L1; finish slightly lowers drag
