@@ -11,14 +11,24 @@ owner:                     # set by the owner; agents never change these
   motor_class: 29mm H
 
 motor:                     # motor agent
-  designation: TBD         # Phase 1 recommends AeroTech H182R-14A (pending owner)
-  loaded_mass_g: TBD
-  burnout_mass_g: TBD
-  length_mm: TBD
-  total_impulse_ns: TBD
-  delay_s: TBD
-  retention: TBD
-  thrust_curve_source: TBD
+  # WORKING ASSUMPTION (owner has not formally chosen).
+  # Primary source: AeroTech DMS H182R-14A spec sheet, supplied by owner 2026-11-20.
+  # Cross-check (search, 2026-11-20): https://www.thrustcurve.org/motors/AeroTech/HP-H182R
+  designation: AeroTech H182R-14A (29 mm DMS single-use)  # working assumption; TRA certified
+  diameter_class_mm: 29    # spec sheet "29 mm x 203 mm (1.13 x 8.00 in)"; class, not measured case OD
+  case_od_mm: TBD          # not published; measure the motor
+  thrust_ring: TBD         # not on spec sheet; presence, OD, thickness TBD; measure
+  loaded_mass_g: 207       # spec sheet
+  propellant_mass_g: 115   # spec sheet
+  burnout_mass_g: 92       # derived 207 - 115 (ignores delay/ejection mass lost)
+  length_mm: 203           # spec sheet
+  total_impulse_ns: 218    # spec sheet (49.0 lb-s)
+  avg_thrust_n: 182        # derived 218 / 1.2
+  max_thrust_n: 205        # plot spike ~46 lb at ~1.18 s; spec sheet STATES 43 lb (192 N) - discrepancy flagged; larger used for structure
+  burn_time_s: 1.2         # spec sheet
+  delay_s: TBD             # 14 s max, adjustable shorter; set from stability sim
+  retention: TBD           # proposal in motor.md (screws + washers over thrust ring)
+  thrust_curve_source: "projects/l1-cheap/motor/H182R_digitized.eng - DIGITIZED FROM SPEC-SHEET PLOT (6 pts, scaled to 218 N-s), replace with the thrustcurve.org HP-H182R file"
 
 aero:                      # aerodynamics agent
   fin_count: TBD
