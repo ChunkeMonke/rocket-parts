@@ -41,13 +41,20 @@ aero:                      # aerodynamics agent
   cd_estimate: TBD
   max_velocity_m_s: TBD
 
-nosecone:                  # nosecone agent
-  shape: TBD
-  length_mm: TBD
-  shoulder_length_mm: TBD
-  wall_thickness_mm: TBD
-  mass_g: TBD
-  ballast_g: TBD
+nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.md (2026-11-20). PROPOSED, owner review pending
+  shape: tangent ogive     # subsonic flight; sharp-enough tip prints tip-up without supports (tip half-angle 14.3 deg)
+  length_mm: 165           # exposed length, tip to shoulder step; design choice, fineness 4.0 on nominal OD
+  base_od_mm: 41.275       # tube OD NOMINAL; od_measured_mm is TBD, so re-set once measured
+  fineness: 4.0            # 165 / 41.275
+  shoulder_length_mm: 40   # design choice, about 1 caliber (rule of thumb, see nosecone.md)
+  shoulder_od_mm: 38.555   # tube id_measured 38.735 - 2 x snug_slip 0.09 (skills/SKILL.md)
+  wall_thickness_mm: 2.2   # cone and shoulder; 2 outer lines + 3 inner lines = 2.19 mm; fully solid (< 2 x 2.67 mm crust)
+  aft_bulkhead_thickness_mm: 5  # integral, printed on the bed; Kevlar strap + ballast fill port, hole sizes TBD
+  print_height_mm: 205     # tip up; 205 <= 256 Z limit, X/Y 41.3
+  mass_g: 52.7             # ESTIMATE, walls + infill model at 25 % infill in the bulkhead core (51.7 at 0 %, 55.5 at 100 %)
+  cg_from_tip_mm: 119.9    # ESTIMATE, same model, no ballast
+  ballast_g: TBD           # stability agent to request; cavity volume and CG table in nosecone.md
+  ballast_cavity_cm3_to_100mm: 27.2   # interior from tip to 100 mm aft of tip; uniform-fill CG 74.6 mm from tip
 
 payload:                   # payload agent
   contents: none (pending owner confirmation)  # optional add-ons listed in payload.md
@@ -66,11 +73,18 @@ stability:                 # stability agent
   time_to_apogee_s: TBD
   rail_exit_velocity_m_s: TBD
 
-recovery:                  # recovery agent
-  deployment: TBD          # default proposal: single deploy, motor ejection
-  descent_rate_target_m_s: TBD
-  chute: TBD
-  chute_mass_g: TBD
-  shock_cord: TBD          # owner's Kevlar: form/length/rating TBD
-  ejection_protection: TBD
-  deploy_velocity_m_s: TBD
+recovery:                  # recovery agent — see projects/l1-cheap/recovery.md (2026-11-20)
+  deployment: single deploy, motor ejection charge (H182R-14A)  # PROPOSED; owner to confirm; no electronics owned
+  descent_rate_target_m_s: TBD   # owner to set; recovery.md tabulates 4.5 / 5.5 / 6.5 m/s
+  descent_mass_range_g: [450, 700]  # PLACEHOLDER range given by main session; replace with stability's burnout mass
+  chute_cd_assumed: 0.75     # flat sheet, Van Milligan / NASA GRC; 1.5 (Nakka) shown as optimistic bound
+  chute: TBD                 # 24" fits only if target >= ~6.5 m/s at 575 g; 30" covers 450-700 g at <= 5.7 m/s (Cd 0.75)
+  chute_mass_g: TBD          # weigh the chute or get vendor figure
+  shock_cord: TBD            # owner's Kevlar: form/length/rating TBD
+  shock_cord_length_rule: 3x rocket length (forum/4-H rule of thumb; 3-5x range)  # absolute length TBD until stability gives total_length_mm
+  shock_cord_min_rating_n: 1030  # ESTIMATE: 343 N opening load at 40 m/s (Cx 1.6) x proposed SF 3; owner to confirm SF; after knot derating
+  ejection_protection: Estes recovery wadding (PROPOSED, $5.43-5.99)  # Nomex 6x6 alt
+  deploy_velocity_m_s: TBD   # needs stability sim + motor delay
+  recovery_mass_g: TBD       # chute + cord + wadding; weigh
+  recovery_cg_from_nose_mm: TBD  # depends on bay position (stability/payload)
+  bay_length_mm: TBD         # pack test of chosen chute; tube free volume 117.8 cm3 per 100 mm
