@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# generated geometry is reproducible from make.py; keep spec sheets as the record
+out/**/*.step
+out/**/*.stl
+out/**/*.png
