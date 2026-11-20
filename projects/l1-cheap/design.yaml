@@ -148,3 +148,30 @@ recovery:                  # recovery agent — see projects/l1-cheap/recovery.m
   recovery_mass_g: TBD       # chute + cord + wadding; weigh
   recovery_cg_from_nose_mm: TBD  # depends on bay position (stability/payload)
   bay_length_mm: TBD         # pack test of chosen chute; tube free volume 117.8 cm3 per 100 mm
+
+fin_can:                   # part library (main session) — parts/fin_can.py rev 1 DRAFT, 2026-11-20
+  # One-piece PETG: fin can + motor mount + liner seat + centering + airframe shoulder.
+  # PLACEHOLDER = not measured/confirmed; the part is NOT print-ready while any remain.
+  body_od_mm: {value: 41.275, status: PLACEHOLDER, note: "tube OD nominal; measure the BT-1.52 with calipers"}
+  shoulder_fit: {value: snug_slip, status: PROPOSED, note: "slip leaves an epoxy gap (owner recommended choice pending)"}
+  exposed_length_mm: {value: 100, status: FROM_AERO, note: "= fin root chord, TE flush with aft face"}
+  shoulder_length_mm: {value: 103, status: FROM_STABILITY, note: "motor 203 - exposed 100: bore supports full motor"}
+  liner: {value: "LOC MMT-1.14 paper tube", status: OWNER, note: "owner 2026-11-20: plan for a paper liner"}
+  liner_id_mm: {value: 28.956, status: CITED, note: "1.140 in, OpenRocket catalogue via github.com/nrdptel/fusionspace-eridanus/issues/280 (third-party)"}
+  liner_od_mm: {value: 30.5, status: PLACEHOLDER, note: "not published; measure the liner"}
+  liner_length_mm: {value: 203, status: FROM_MOTOR, note: "= motor length"}
+  bore_fit: {value: snug_slip, status: PROPOSED, note: "shop snug-slip per side applied to the liner in the bore (borrowed tube rule; confirm)"}
+  airfoil: {value: naca4_symmetric, status: PROPOSED}
+  fin_thickness_mode: {value: constant, status: PROPOSED, note: "same max thickness root to tip (stiffer tip for flutter)"}
+  fin_te_thickness: {value: two_outer_lines, status: PROPOSED, note: "2 x outer-wall line width, printable trailing edge on the bed"}
+  root_fillet_r_mm: {value: 4, status: PROPOSED, note: "owner suggested range 3-5 not yet confirmed"}
+  root_fillet_sections: {value: 6, status: PROPOSED, note: "loft stations approximating the circular fillet"}
+  airfoil_points: {value: 41, status: PROPOSED, note: "cosine-spaced chord stations per side"}
+  anchor: {value: epoxy_groove, status: PROPOSED, note: "printed loop does not fit a ~4 mm wall; Kevlar laid in a shoulder-OD groove and epoxied under the tube"}
+  anchor_groove_width_mm: {value: 3.0, status: PROPOSED, note: "Kevlar 2.3 mm + clearance"}
+  anchor_groove_depth_mm: {value: 2.6, status: PROPOSED}
+  anchor_angle_deg: {value: 60, status: PROPOSED, note: "between fins"}
+  retention: {value: none_in_rev1, status: OPEN, note: "axial M3 inserts need ~3 mm walls around a 4 mm hole; only ~5 mm between bore and OD. Needs thrust-ring OD to choose a scheme"}
+  thrust_ring_od_mm: {value: 33.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
+  thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
+  target_mass_g: {value: 197.3, status: FROM_STABILITY, note: "stability ESTIMATE; update stability with the real model mass"}
