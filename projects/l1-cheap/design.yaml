@@ -31,15 +31,21 @@ motor:                     # motor agent
   thrust_curve_source: projects/l1-cheap/motor/H182R.eng (from owner's ThrustCurve RSE, AT DMS data May 2014; curve Itot 216.1 N-s)
 
 aero:                      # aerodynamics agent
-  fin_count: TBD
-  fin_root_chord_mm: TBD
-  fin_tip_chord_mm: TBD
-  fin_span_mm: TBD
-  fin_sweep_mm: TBD
-  fin_thickness_mm: TBD
-  cp_from_nose_tip_mm: TBD
-  cd_estimate: TBD
-  max_velocity_m_s: TBD
+  # Initial proposal 2026-11-20, see aero.md. Span is the tuning knob for the 1.8 cal margin (aero.md table 2).
+  fin_count: 3
+  fin_root_chord_mm: 100
+  fin_tip_chord_mm: 40
+  fin_span_mm: 40          # tuning knob: stability picks 30-50 mm from aero.md table once the CG is known
+  fin_sweep_mm: 60         # LE sweep, root LE to tip LE; = root - tip, so the TE is square and flush with the aft end
+  fin_thickness_mm: 5      # provisional; flutter check pending PETG shear modulus (TBD from owner)
+  fin_edges: LE rounded, TE square
+  cp_from_nose_tip_mm: 768.3   # Barrowman M~0; ASSUMES 165 mm tangent ogive + 863 mm body; formula in aero.md. RocketPy 1.13 agrees (768.2)
+  cp_formula: "CP = 0.2279*k*Ln + 0.7721*(Ln + Lb - 55.7)  [mm; k=0.466 ogive, 0.5 Haack/VK, 0.666 cone; Lb = nose base to aft end]"
+  cd_estimate: 0.70-0.83   # ESTIMATE, component buildup for M 0.1-0.7, 60 um roughness; no rail buttons, no nose wave drag
+  max_velocity_m_s: 284-369  # RocketPy, H182R.eng, ASSUMED structure 300-500 g + 207 g motor; Mach 0.84-1.09
+  max_mach: 0.84-1.09
+  fin_flutter_velocity_m_s: TBD  # needs PETG shear modulus G (owner)
+  fin_root_bending_mpa: 1.9      # t=5, alpha 5 deg at max q 81.8 kPa; within layers, compared to 15 MPa interlayer anyway
 
 nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.md (2026-11-20). PROPOSED, owner review pending
   shape: tangent ogive     # subsonic flight; sharp-enough tip prints tip-up without supports (tip half-angle 14.3 deg)
