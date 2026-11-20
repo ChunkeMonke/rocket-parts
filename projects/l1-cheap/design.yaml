@@ -99,11 +99,16 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   recommended_delay_s: 12        # deploy 7.2 m/s at 1277 m AGL (Cd x1); <= 15.3 m/s over Cd x0.85-1.3. 13 s equally good if the AT tool offers it. Motor agent to confirm steps
   deploy_velocity_m_s: 7.2       # at 12 s delay, nominal Cd
   deploy_altitude_m: 1277
-  target_mass_g: {nose_cone: 52.7, fin_can: 197.3}   # verify.py targets (+/-5 %). Fin can = exposed 77.7 + 103 mm shoulder 66.3 + 3 fins 53.3 (ESTIMATE); print height 203 mm
+  target_mass_g: {nose_cone: 52.7, fin_can: 171.1}   # verify.py targets (+/-5 %). Fin can = parts/fin_can.py rev 1 model mass at 25 % infill
+  # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
+  fin_can_model_mass_g: 171.1        # parts/fin_can.py rev 1, verify mass model at 25 % infill (170.5 at 0 %, 173.0 at 100 %); out/fin_can/rev1/, 2026-11-20
+  fin_can_model_cg_from_aft_mm: 80.3 # same model, solid-mesh CG forward of the aft face (part ~99 % solid)
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
     tube_linear_density_g_per_mm: 0.1085   # ESTIMATE: wall area from shop OD/ID (159.6 mm2) x 0.68 g/cm3 OpenRocket "cardboard" density (rocketryforum.com/goto/post?id=2317962, 2026-11-20). No published LOC tube mass found. WEIGH THE TUBE.
-    fin_can:                     # ESTIMATE, walls + infill model (skills/SKILL.md); no fin can part exists yet
+    cardboard_density_g_cm3: 0.68          # OpenRocket "cardboard" (same basis as the tube); used for the MMT-1.14 liner
+    liner_cg: motor_midpoint               # liner = motor length, coaxial with the motor
+    fin_can:                     # FALLBACK ESTIMATE only, used if fin_can_model_mass_g is not a number (walls + infill model, skills/SKILL.md)
       exposed_length_mm: root_chord        # fins' root spans the exposed section, TE flush with aft face (aero.md)
       shoulder_length_mm: motor_minus_exposed  # bore supports the full motor length (motor.md: bore runs along the motor axis)
       bore_diameter_mm: motor_class        # motor.case_od_mm is TBD; 29 mm class used for mass only

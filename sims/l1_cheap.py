@@ -204,12 +204,34 @@ def build(design, allow_tbd=False):
     infill = float(fc["infill_pct"])
     rho_p = const("material.petg.density_g_cm3") / 1000.0
     cnf, dx_cp, x_area, a_fin = fins_geometry(N, Cr, Ct, s, xs, d)
-    m_exp = annulus_mass_g(d, bore, Cr_exp, infill)
-    m_sh = annulus_mass_g(sh_od, bore, Ssh, infill)
-    m_fins = N * a_fin * t_fin * rho_p     # t_fin < 2 crusts -> solid
-    add("fin can body, exposed", m_exp, L - Cr_exp / 2, "ESTIMATE walls+infill")
-    add("fin can shoulder", m_sh, L - Cr_exp - Ssh / 2, "ESTIMATE walls+infill")
-    add("fins (printed with can)", m_fins, L - Cr + x_area, "ESTIMATE solid, aero geometry")
+    fc_m = _get(design, "stability.fin_can_model_mass_g")
+    fc_x = _get(design, "stability.fin_can_model_cg_from_aft_mm")
+    if _isnum(fc_m) and _isnum(fc_x):
+        # real part-library model mass (parts/fin_can.py); can body + fins in one item
+        m_exp, m_sh, m_fins = float(fc_m), 0.0, 0.0
+        add("fin can (part model, incl. fins)", fc_m, L - float(fc_x), "fin_can model (verify mass)")
+    else:
+        m_exp = annulus_mass_g(d, bore, Cr_exp, infill)
+        m_sh = annulus_mass_g(sh_od, bore, Ssh, infill)
+        m_fins = N * a_fin * t_fin * rho_p     # t_fin < 2 crusts -> solid
+        add("fin can body, exposed", m_exp, L - Cr_exp / 2, "ESTIMATE walls+infill")
+        add("fin can shoulder", m_sh, L - Cr_exp - Ssh / 2, "ESTIMATE walls+infill")
+        add("fins (printed with can)", m_fins, L - Cr + x_area, "ESTIMATE solid, aero geometry")
+
+    # motor liner (part library fin_can section; values are {value: ...} dicts)
+    def fcv(k):
+        v = _get(design, f"fin_can.{k}")
+        return v.get("value") if isinstance(v, dict) else v
+    l_id, l_od, l_len = fcv("liner_id_mm"), fcv("liner_od_mm"), fcv("liner_length_mm")
+    if all(_isnum(v) for v in (l_id, l_od, l_len)):
+        rho_c = I.pick(None, "cardboard_density_g_cm3") / 1000.0
+        m_liner = math.pi / 4 * (l_od**2 - l_id**2) * l_len * rho_c
+        add("motor liner (MMT-1.14 paper)", m_liner, x_motor_aft - m_len / 2,
+            f"ESTIMATE annulus x cardboard density; OD {fcv('liner_od_mm')} is a PLACEHOLDER")
+    elif fcv("liner") not in (None, "none"):
+        if not allow_tbd:
+            raise TBDValue("fin_can liner dimensions TBD")
+        I.missing.append("motor liner")
 
     # recovery
     x_pack_aft = x_motor_fwd
@@ -329,6 +351,8 @@ def load_design(path, sets):
 def run(design, allow_tbd=False, rails=None):
     b = build(design, allow_tbd)
     rails = rails or _get(design, "stability.assumptions.rail_lengths_m")
+    if b["sm_liftoff"] <= 0:   # statically unstable: a 6-DOF tumble is meaningless and very slow
+        return b, []
     sims = [simulate(design, b, r) for r in rails]
     return b, sims
 
@@ -352,14 +376,20 @@ def report(b, sims, design):
     print(f"  {'motor loaded / burnout':34s} {mo['loaded']:7.1f} {mo['x_cg']:7.1f}  motor ({mo['dry']:.0f} g dry)")
     print(f"  structure {b['m_struct']:.1f} g @ {b['x_struct']:.1f}; liftoff {b['m_liftoff']:.1f} g; burnout {b['m_burnout']:.1f} g")
     fc = b["fin_can"]
-    print(f"  fin can total {fc['total']:.1f} g (exposed {fc['exposed']:.1f} + shoulder {fc['shoulder']:.1f} "
-          f"[{fc['shoulder_len']:.0f} mm] + fins {fc['fins']:.1f}); print height {fc['height']:.0f} mm")
+    if fc["shoulder"] or fc["fins"]:
+        print(f"  fin can total {fc['total']:.1f} g ESTIMATE (exposed {fc['exposed']:.1f} + shoulder {fc['shoulder']:.1f} "
+              f"[{fc['shoulder_len']:.0f} mm] + fins {fc['fins']:.1f}); print height {fc['height']:.0f} mm")
+    else:
+        print(f"  fin can {fc['total']:.1f} g from the part model (stability.fin_can_model_mass_g)")
 
     def verdict(sm):
         return "PASS" if lo <= sm <= hi else ("FAIL (low)" if sm < lo else "FAIL (high)")
     print(f"\nCP (Barrowman, M~0) {b['cp']:.1f} mm   CG liftoff {b['cg_liftoff']:.1f}   CG burnout {b['cg_burnout']:.1f}")
     print(f"Static margin liftoff {b['sm_liftoff']:.2f} cal  {verdict(b['sm_liftoff'])}   "
           f"burnout {b['sm_burnout']:.2f} cal  {verdict(b['sm_burnout'])}   [target {tgt} +/- {band}]")
+    if not sims:
+        print("\nUNSTABLE at liftoff (margin <= 0): flight NOT simulated.")
+        return
     s0 = sims[0]
     print(f"RocketPy: CP M0 {s0['rp_cp_M0_mm']:.1f} / M0.9 {s0['rp_cp_M09_mm']:.1f} mm; static margin "
           f"{s0['rp_static_margin_liftoff']:.2f} / {s0['rp_static_margin_burnout']:.2f} cal; at rail exit "

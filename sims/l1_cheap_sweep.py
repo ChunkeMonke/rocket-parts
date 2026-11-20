@@ -5,7 +5,7 @@ Each case is a set of design.yaml overrides. Ballast can be 'solve', which finds
 nose ballast that puts the LIFTOFF static margin on owner.stability_target_cal.
 Runs with --allow-tbd semantics (payload slot defaults to the case's values).
 
-  .venv/bin/python sims/l1_cheap_sweep.py [mass|payload|cd|delay|all]
+  .venv/bin/python sims/l1_cheap_sweep.py [mass|payload|cd|nose|all]
 """
 from __future__ import annotations
 
@@ -111,6 +111,12 @@ def payload_cases():
     return rows
 
 
+def nose_cases(masses=(40, 45, 52.7, 60, 70)):
+    """Nose cone mass sensitivity; CG kept at nosecone.cg_from_tip_mm (same shape)."""
+    return [case(f"nose {m} g, ballast solved", {**NOPAY, "nosecone.mass_g": m, "stability.ballast_g": "solve"})
+            for m in masses]
+
+
 def cd_cases():
     rows = []
     for sc in (0.85, 1.0, 1.15, 1.3):
@@ -121,7 +127,8 @@ def cd_cases():
 
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
-    for name, fn in (("mass", mass_cases), ("payload", payload_cases), ("cd", cd_cases)):
+    for name, fn in (("mass", mass_cases), ("payload", payload_cases), ("cd", cd_cases),
+                     ("nose", nose_cases)):
         if which in (name, "all"):
             print(f"\n== {name} (rail {RAIL} m) ==")
             show(fn())
