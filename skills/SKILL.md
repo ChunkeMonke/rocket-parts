@@ -50,6 +50,22 @@ print_profile_petg:
   nozzle_diameter_mm: 0.4      # P1S stock
   wall_loops: 4                # Bambu Studio Strength tab
   # infill % is NOT fixed here: verify.py solves it per part from the target mass
+  # --- from Bambu Studio screenshots 2026-11-20 ---
+  initial_layer_height_mm: 0.2
+  line_width_mm: {default: 0.42, initial_layer: 0.5, outer_wall: 0.42, inner_wall: 0.45,
+                  top_surface: 0.42, sparse_infill: 0.45, internal_solid_infill: 0.42}
+  top_shell_layers: 5
+  top_shell_thickness_mm: 1.0    # Bambu uses the larger of layers x height and this
+  bottom_shell_layers: 3
+  bottom_shell_thickness_mm: 0   # 0 = layer count governs
+  sparse_infill_pattern: grid
+  sparse_infill_density_pct_default: 25
+  infill_wall_overlap_pct: 15
+  xy_hole_compensation_mm: 0
+  xy_contour_compensation_mm: 0
+  wall_generator: classic
+  wall_order: inner/outer
+  ensure_vertical_shell_thickness: enabled
 
 printer:
   bambu_p1s:
@@ -75,8 +91,7 @@ mating:
 verify:
   mass_tolerance_pct: 5        # +/- around declared target mass (provisional)
   mass_basis: walls_plus_infill  # shell (walls + top/bottom) solid, interior at infill_pct
-  top_layers: TBD              # Bambu Studio Strength tab -> top shell layers
-  bottom_layers: TBD           # Bambu Studio Strength tab -> bottom shell layers
+  # top/bottom shell settings live in print_profile_petg (from Bambu Studio)
   # target mass per part comes from the OpenRocket design or the build planner;
   # verify reports the infill % needed to hit it and fails if it is outside 0-100 %.
 ```
