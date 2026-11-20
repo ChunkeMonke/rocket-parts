@@ -16,8 +16,9 @@ Tripoli Level 1 certification flight, as cheaply as possible.
 | Budget cap | $100 total **including motor** | owner |
 | Filament cost | $13/kg PETG | owner |
 | Owned | P1S, epoxy, Kevlar | owner |
-| Launch site / club | TBD | — |
-| Deadline / target launch | TBD | — |
+| Launch | Palm Bay, FL — 2026-12-14 (club/prefecture name TBD) | owner |
+| Deadline | 2026-12-14 (24 days from 2026-11-20) | owner |
+| Age 18+ | confirmed | owner |
 
 ## Implications already visible (for Phase 1)
 - A 29 mm motor in a 38 mm tube is **not** minimum-diameter. It needs a 29 mm motor mount
