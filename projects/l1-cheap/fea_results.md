@@ -41,9 +41,16 @@ absolute values are scaled to the owner's ANSYS calibration.
 - The pre-build prediction for rev 6 (~350–400 N, FI 0.50–0.57 at 200 N) was **optimistic**. The actual gain is 2.9×, not the 4× from pure thickness² scaling, because the peak sits at the boss/fillet corner rather than in plain fin bending.
 - The axial capacity barely changed, because the axial peak is at the **aft-face root corner**, which the thickness taper doesn't reinforce.
 
-## 4. Combined loads (rev 6)
-Pending: `combined_Y200_Z770` (the owner's rev 5 ANSYS case: FI 3.28) and `combined_200N_at45` (a 200 N
-resultant at 45°). The rev 6 Y and Z peaks are at **different** locations, so simple superposition is not valid; the combined runs give the real number.
+## 4. Combined loads (rev 6, actual runs)
+| Case | Rev 6 FI (raw) | Rev 6 FI (ANSYS-scaled ×1.22) | Rev 5 reference | Verdict |
+|---|---|---|---|---|
+| **200 N at 45°** (141 N Y + 141 N Z): a realistic tilted landing | **0.56** at (23.1, −4.2, 9.9), fillet meets sleeve | ~0.69 | ~1.4 (superposed estimate) | ✅ survives, 1.45–1.8× |
+| 200 N Y + 770 N Z (the owner's severe rev 5 ANSYS case) | **1.38** at (29.4, −2.4, 6.4), boss/fillet | ~1.69 | **3.28** (owner ANSYS) | ❌ still fails, but ~2.4× better than rev 5 |
+
+- **The 200 N Y + 770 N Z case is extreme:** about 800 N total, which is rev 5's axial *failure* load plus a full sideways hit. It is not the realistic landing estimate (~200 N, main-session ESTIMATE).
+- Superposing the single-load results overestimates rev 6 (Y and Z peak at different spots), as predicted; the combined runs are the real numbers.
+
+Renders: `out/fea/rev6/combined_200N_at45/fi_overview.png` and `out/fea/rev6/combined_Y200_Z770/fi_overview.png`. The bright spot at the fin tip is the load-face spike, excluded from the FI read.
 
 ## 5. Suggested geometric improvements (for the part library; not built)
 1. Fillet the **top edge of the insert-boss cap** (the sharp concave edge that carries the sideways peak).
