@@ -234,4 +234,4 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   root_fillet_r_mm: {value: 4, status: PROPOSED}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
-  target_mass_g: {value: 78.87, status: OWNER, note: "Bambu Studio slicer estimate for rev 5, owner 2026-11-21 (was 120 g OR override); verify model reads 83.4-85.7 g (~6 % high)"}
+  target_mass_g: {value: 80, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 80 g for rev 5 (was 78.87, earlier 120 g OR override); verify model reads 83.4-85.7 g"}
