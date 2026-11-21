@@ -40,6 +40,10 @@ team. You own one living document per project: `projects/<project>/report/report
    steps. No paragraph longer than 3 lines.
 8. You can't interview the owner directly. Put missing information under "Open Items"
    and in your report to the main session.
+9. **Delivery:** subagents can't write report files, so return the complete updated report.md text
+   between the lines `=== BEGIN report.md ===` and `=== END report.md ===`. The main session saves it
+   verbatim and rebuilds the PDF with `tools/report_pdf.sh <project>`. You may still copy and generate figures
+   in `report/figures/`.
 
 ## Required structure (keep these headings)
 ```

@@ -10,7 +10,7 @@ HTML="$DIR/report.html"
 PDF="$DIR/report.pdf"
 [ -f "$MD" ] || { echo "no report at $MD" >&2; exit 1; }
 
-pandoc "$MD" -f gfm+tex_math_dollars -t html5 --standalone --mathml \
+pandoc "$MD" -f gfm-tex_math_dollars -t html5 --standalone --mathml \
   --metadata title="$(head -1 "$MD" | sed 's/^# //')" \
   --css "$ROOT/tools/report.css" --embed-resources \
   --resource-path="$DIR" -o "$HTML"

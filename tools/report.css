@@ -10,7 +10,9 @@ h1 + p em, h1 + p { color: var(--muted); }
 h2#briefing { page-break-before: avoid; background: #fff4ea; border: 1px solid #f0c9a6; border-radius: 6px; padding: 6px 10px; }
 h2:not(#briefing) { page-break-before: auto; }
 #briefing ~ h2#requirements-constraints, h2[id^="1-"] { page-break-before: always; }
-table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 9pt; page-break-inside: avoid; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 9pt; }
+tr { page-break-inside: avoid; }
+thead { display: table-header-group; }
 th { background: #2b3138; color: #fff; text-align: left; padding: 4px 6px; }
 td { border-bottom: 1px solid var(--rule); padding: 3px 6px; vertical-align: top; }
 tr:nth-child(even) td { background: var(--zebra); }

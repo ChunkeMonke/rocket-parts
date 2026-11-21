@@ -5,3 +5,4 @@ out/**/*.step
 out/**/*.stl
 out/**/*.png
 .venv/
+projects/*/report/report.html
