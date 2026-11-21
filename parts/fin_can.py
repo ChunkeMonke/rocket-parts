@@ -203,7 +203,7 @@ def _at_fins(p: dict, solid: cq.Workplane) -> cq.Workplane:
 def retention_bosses(p: dict) -> cq.Workplane:
     """Per fin: a cylinder around the insert (insert depth + a wall-thick cap), then a loft that
     tapers it into the fin root so the outside stays faired."""
-    r_b = p["insert_hole_d_mm"] / 2 + p["boss_wall_mm"]
+    r_b = p["insert_hole_d_mm"] / 2 + p["boss_wall_mm"] + p.get("boss_extra_wall_mm", 0.0)
     h_b = p["insert_depth_mm"] + p["boss_wall_mm"]
     cyl = cq.Solid.makeCylinder(r_b, h_b, cq.Vector(p["insert_radius_mm"], 0, 0))
     w0 = cq.Wire.makeCircle(r_b, cq.Vector(p["insert_radius_mm"], 0, h_b), cq.Vector(0, 0, 1))

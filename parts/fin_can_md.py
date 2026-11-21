@@ -18,6 +18,7 @@ Parameters (projects/<project>/design.yaml `fin_can_md:` + `aero:` + skills/SKIL
   fin params, insert/boss params: as parts/fin_can.py
   fin_tip_thickness_mm  mm  optional spanwise taper (aero.fin_tip_thickness_mm; default = root thickness)
   te_root_thickness_mm  mm  blunt TE thickness at the root, tapering to te_thickness at the tip
+  boss_extra_wall_mm    mm  extra plastic around the insert boss beyond the perimeter band (rev 7)
   target_mass_g       g    verify check 2 target
 """
 from __future__ import annotations
@@ -85,6 +86,7 @@ def params(project: str = "l1-cheap") -> dict:
         "insert_hole_d_mm": v["insert_hole_d_mm"],
         "insert_depth_mm": v["insert_depth_mm"],
         "boss_wall_mm": wall,
+        "boss_extra_wall_mm": v.get("boss_extra_wall_mm", 0.0),
         "insert_radius_mm": sleeve_bore / 2 + wall + v["insert_hole_d_mm"] / 2,
         "boss_fairing_length_mm": v["boss_fairing_length_mm"],
         "target_mass_g": v["target_mass_g"],

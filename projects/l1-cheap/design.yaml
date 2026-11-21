@@ -233,7 +233,8 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
   boss_fairing_length_mm: {value: 20, status: PROPOSED}
   root_fillet_r_mm: {value: 6, status: PROPOSED, note: "rev 6: 4 -> 6 mm at the ANSYS failure site (root fillet); larger collides with the sleeve bore geometry"}
-  te_root_thickness_mm: {value: 2.0, status: PROPOSED, note: "rev 6: blunt TE at the root (aft end = ANSYS crack origin), tapering to 2 outer lines (0.84) at the tip"}
+  te_root_thickness_mm: {value: 8.0, status: PROPOSED, note: "rev 7: blunt TE 8 mm at the root (was 2.0 in rev 6) so the aft root envelops the insert boss; both FEA peaks sat in the boss outer wall near the TE (fea_results.md). Tapers to 0.84 at the tip"}
+  boss_extra_wall_mm: {value: 1.0, status: PROPOSED, note: "rev 7: +1 mm around the insert boss (wall 2.67 -> 3.67 mm) where the in-house FEA peaks sit"}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
   target_mass_g: {value: 84.83, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 84.83 g for rev 6 at 25 % GYROID infill (88.43 g at 25 % grid/50 %; rev 5 was 80 g)"}
