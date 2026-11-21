@@ -7,7 +7,7 @@
 | # | Check | Result | Detail |
 |---|---|---|---|
 | 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=67472.7 mm3, bodies=1 |
-| 2 | mass | FAIL | target 120.0 g (±5 %); reachable 83.4 g (0 %) – 85.7 g (100 %); infill to hit target = 1633.1 % |
+| 2 | mass | PASS | target 80.0 g (±5 %); reachable 83.4 g (0 %) – 85.7 g (100 %); infill to hit target = -153.6 % |
 | 3 | mating interference | PASS | tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3 |
 | 4 | renders | PASS | written: fin_can_md_rev5_iso.png, fin_can_md_rev5_front.png, fin_can_md_rev5_section.png — VISUAL REVIEW REQUIRED |
 | 5 | build volume | PASS | extents X 102.6 / Y 118.4 / Z 120.0 mm vs limit 256/256/256 |
@@ -15,7 +15,7 @@
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
 - Solid (walls/skins) 65.70 cm³ · infill region 1.76 cm³ · mesh volume 67.47 cm³
-- Mass at 0 % / 100 % infill: 83.4 g / 85.7 g · target 120 g · infill needed: 1633.1 %
+- Mass at 0 % / 100 % infill: 83.4 g / 85.7 g · target 80 g · infill needed: -153.6 %
 
 ## Print orientation
 Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are vertical walls, fins shrink going up, the forward fairing narrows going up.
@@ -58,7 +58,7 @@ Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are v
 | `boss_wall_mm` | 2.67 | derived/shop |  |
 | `insert_radius_mm` | 25.398 | derived/shop |  |
 | `boss_fairing_length_mm` | 20 | PROPOSED |  |
-| `target_mass_g` | 120 | OWNER | owner OpenRocket fin-set mass override 0.265 lb = 120 g (2026-11-21) |
+| `target_mass_g` | 80 | OWNER | owner 2026-11-21: Bambu Studio slicer 80 g for rev 5 (was 78.87, earlier 120 g OR override); verify model reads 83.4-85.7 g |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 
 ## Not print-ready until resolved
