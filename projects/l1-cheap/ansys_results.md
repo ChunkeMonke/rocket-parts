@@ -60,7 +60,7 @@ Force on the tip face in Z. The structure behaves linearly: **0.0247 MPa per N**
 |---|---|---|
 | 400 N | 9.88 MPa | 0.52 |
 | 770 N | 19.0 MPa (failure index `SZ/19e6` = 1.0008) | 1.00 |
-| 900 N | 22.2 MPa | 1.17 |
+| 900 N | 22.2 MPa; failure index 1.1697 at the root fillet, aft end (`44_tipZ900_failure_index`) | 1.17 |
 | 2000 N | failure index `SZ/19e6` max 2.5994 (49.4 MPa); legend 0–1; failed band = root fillet at the aft end (`43_tipZ2000_failure_index`) | 2.60 |
 
 **Axial failure load ≈ 770 N.**
