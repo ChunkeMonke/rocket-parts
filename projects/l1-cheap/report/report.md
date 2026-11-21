@@ -453,7 +453,7 @@ Failure index: **FI = σ_Z / 19 MPa** (ANSYS expression `SZ/19e6`). FI ≥ 1 mea
 | 900 N | 22.2 MPa | 1.17 |
 | 2000 N | 49.4 MPa | 2.60 (max 2.5994) |
 
-**Axial failure load ≈ 770 N.** The 2000 N run shows where the fin breaks: a **thin strip along the fin-root fillet at the aft end** (figure 13).
+**Axial failure point: 770 N** (FI = 1.0008, figure 15). The 2000 N run shows how the crack spreads: a **thin strip along the fin-root fillet at the aft end** (figure 13).
 
 ![Axial tip strike 2000 N failure index](figures/ansys/43_tipZ2000_failure_index.webp)
 
@@ -463,9 +463,9 @@ Failure index: **FI = σ_Z / 19 MPa** (ANSYS expression `SZ/19e6`). FI ≥ 1 mea
 
 *Figure 14. Axial tip strike, 400 N in Z: normal stress Z, max 9.88 MPa (FI 0.52). Source: `report/figures/ansys/40_tipZ400_normalZ.webp`, fin can rev 5.*
 
-![Axial tip strike 770 N failure index](figures/ansys/41_tipZ770_failure_index.webp)
+![Axial tip strike 770 N: failure point](figures/ansys/45_tipZ770_failure_point.webp)
 
-*Figure 15. Axial tip strike, 770 N in Z: failure index σ_Z/19 MPa, max 1.0008, which is the onset of failure. Source: `report/figures/ansys/41_tipZ770_failure_index.webp`, fin can rev 5.*
+*Figure 15. **FAILURE POINT: 770 N axial tip load.** Failure index σ_Z/19 MPa with the legend fixed at 0–1, max **1.0008**: the first elements reach the across-layer strength. Failure starts at the **fin-root fillet, aft end**; the rest of the fin and the sleeve stay blue (FI < 0.1). Source: `report/figures/ansys/45_tipZ770_failure_point.webp`, fin can rev 5, owner, 2026-11-21.*
 
 ![Axial tip strike 900 N normal Z](figures/ansys/42_tipZ900_normalZ.webp)
 
