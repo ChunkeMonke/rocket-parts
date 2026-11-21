@@ -83,56 +83,61 @@ payload:                   # payload agent
   mass_g: 0
   bay_length_mm: 0
 
-stability:                 # stability agent — see projects/l1-cheap/stability.md (2026-11-20)
+stability:                 # stability agent — see projects/l1-cheap/stability.md section 0 (2026-11-21, H100W min-diameter)
   sim_tool: rocketpy 1.13.0
-  sim_script: sims/l1_cheap.py   # .venv/bin/python sims/l1_cheap.py [--allow-tbd] [--set key=value ...]
+  sim_script: sims/l1_cheap.py   # .venv/bin/python sims/l1_cheap.py --allow-tbd [--set key=value ...] [--margin-plot PNG]
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
-  body_tube_length_mm: 863       # full LOC BT-1.52 stock. If payload adds a bay cut from this stock, the main tube = 863 - bay (sweep does this)
-  fin_span_request_mm: null      # null = use aero.fin_span_mm (40, flutter-limited). 45/50 cut ballast to 65/43 g but worsen flutter; see stability.md
-  ballast_g: 90.5                # nose cavity, NO altimeter, fin can rev 2 (bosses) + 3 insert sets -> 1.80 cal liftoff (re-solved 2026-11-20; was 89 for rev 1 + tape). Re-solve when payload reports (~30 g at 80 g / 180 mm bay, ~1 g at 120 g). Set from the WEIGHED nose (1 g nose ~ 0.9 g ballast); ~1 g ballast per 1 mm of CG
-  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3 -> needs >= 3.27 g/cm3 packed; owner has ballast, material/density TBD)
-  aim_liftoff_margin_cal: 1.8    # RECOMMENDED aim (stability.md s.4): min in-flight margin = liftoff margin; 1.5 saves only 12 g ballast / +4 m/s
-  balance_check_cg_from_nose_mm: 771   # ready-to-fly (motor in, chute packed, ballast in) balance point to verify; +/- 8 mm = +/- 0.2 cal (owner band). Aft of 779 -> add ~1 g ballast per mm
-  # ---- results: sims/l1_cheap.py --allow-tbd --set payload.mass_g=0 --set payload.bay_length_mm=0 --margin-plot out/sims/l1_cheap_margin_vs_time.png (2026-11-20) ----
-  # PROVISIONAL: payload (Quasar-LR) mass/bay TBD; tube, liner, chute, epoxy, buttons, tape, nose are ESTIMATES (assumptions below)
-  total_length_mm: 1128          # nose 165 + tube 863 + fin can exposed 100
-  liftoff_mass_g: 710            # structure 503 + motor 207
-  burnout_mass_g: 595            # + up to 10 g less if the delay/ejection loss is real (unpublished; sensitivity 0/5/10 g)
-  cg_liftoff_from_nose_mm: 770.8
-  cg_burnout_from_nose_mm: 721.4
-  cp_from_nose_mm: 845.5         # Barrowman M~0 (aero.md formula, Lb 963); RocketPy 845.4 (M0), 856.6 from M 0.8 up (RocketPy caps its compressibility factor at M 0.8)
-  margin_liftoff_cal: 1.81       # PASS vs 1.8 +/- 0.2 (owner: band gates LIFTOFF ONLY)
-  margin_rail_exit_cal: 1.90     # 1.83 m rail, M 0.08 (RocketPy)
-  margin_min_in_flight_cal: 1.81 # at liftoff: CP moves aft with Mach and CG moves forward with burn, so the margin only rises during boost
-  margin_max_in_flight_cal: 3.28 # at burnout, M 0.83 (CP(M) + burnt-out CG)
-  margin_burnout_cal: 3.01       # static (M 0) burnout margin, REPORTED not gated; 3.01-3.09 at apogee for 0-10 g delay/ejection loss
-  apogee_m: 1285                 # 4214 ft AGL; Cd x0.85..x1.3 -> ~1413..1096 m; 4.5 m/s wind -> 1279 m
-  time_to_apogee_s: 13.87
-  burnout_time_s: 1.235
-  coast_to_apogee_s: 12.64       # for the motor delay (Cd x0.85..x1.3 -> 13.48..11.36 s)
-  max_velocity_m_s: 283.1        # at 1.20 s
-  max_mach: 0.83                 # subsonic; 0.87-0.90 for the light span-45/50 options (657-680 g)
-  max_q_kpa: 48.3
-  rail_exit_velocity_m_s: {rail_1p5m: 25.6, rail_1p83m: 28.4}   # no rail-button geometry modelled (travel = rail length)
-  recommended_delay_s: 12        # deploy 6.2 m/s at 1283 m AGL (Cd x1); <= 14.6 m/s over Cd x0.85-1.3. 13 s equally good if the AT tool offers it. Motor agent to confirm steps
-  deploy_velocity_m_s: 6.2       # at 12 s delay, nominal Cd
-  deploy_altitude_m: 1283
-  target_mass_g: {nose_cone: 52.7, fin_can: 171.1}   # verify.py targets (+/-5 %). Fin can = parts/fin_can.py rev 1 model mass at 25 % infill
+  body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
+  fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
+  ballast_g: 70                  # 2026-11-21: solved 69.7 g -> 1.81 cal liftoff (ref 41.275), pack ON THE MOTOR, nose shell 52.7. Was 90.5 (H182R layout). 2.0 cal = 78.1 g. Pack at owner's OR 457 mm: 32.9 g (1.8) / 40.9 g (2.0). Set the final value from the BALANCE CHECK below
+  ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
+  aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
+  balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
+  # ---- results 2026-11-21: sims/l1_cheap.py --allow-tbd --margin-plot out/sims/l1_cheap_margin_vs_time.png ----
+  # PROVISIONAL: tube, chute, stop ring, epoxy, buttons, retention, nose shell are ESTIMATES; CP gap vs owner OR unresolved (stability.md 0.3)
+  total_length_mm: 1030.7        # nose 165 + tube 863 + aft lip 2.67 (min-diameter; sleeve over the aft 100 mm)
+  liftoff_mass_g: 660            # structure 399 (incl. 70 g ballast) + motor 261
+  burnout_mass_g: 539            # 0-10 g less if delay/ejection loss is real (unpublished)
+  cg_liftoff_from_nose_mm: 730.1
+  cg_burnout_from_nose_mm: 680.0
+  cp_from_nose_mm: 804.7         # Barrowman M0 with sleeve step + fairing (fins on r 23.40); RocketPy 804.6 (M0), 810.9 (M0.5), 822.0 (M0.8). No sleeve: 792.8 (Barrowman) / 792.7 (RocketPy). OWNER OR 836.0 (unresolved; = a 4-fin set in RocketPy, 837.0 @ M0.3)
+  margin_liftoff_cal: 1.81       # PASS vs 1.8 +/- 0.2, ref 41.275 (gate, liftoff only). Ref 46.795: 1.59 = FAIL (low) on that reference
+  margin_rail_exit_cal: 1.88     # 1.83 m rail, M 0.07 (RocketPy)
+  margin_min_in_flight_cal: 1.81 # at liftoff
+  margin_max_in_flight_cal: 3.34 # ~2.2 s, M 0.7 (RocketPy)
+  margin_burnout_cal: 3.02       # static M0, reported not gated; 3.02-3.11 at apogee for 0-10 g delay/ejection loss
+  apogee_m: 1233                 # 4044 ft AGL, NO deployment before apogee. Cd x0.7 / 0.85 / 1.3 -> 1509 / 1352 / 1061 m; 4.5 m/s wind 1224
+  time_to_apogee_s: 13.59
+  burnout_time_s: 2.398          # end of the .eng curve
+  coast_to_apogee_s: 11.19       # = the DELAY to drill. Cd x0.7..1.3 -> 12.96..10.01 s. Owner OR "optimum delay" 11.6 s agrees
+  max_velocity_m_s: 250.0        # at 1.93 s
+  max_mach: 0.737
+  max_q_kpa: 37.3
+  rail_exit_velocity_m_s: {rail_1p5m: 21.6, rail_1p83m: 24.0}   # no rail-button geometry modelled
+  recommended_delay_s: 12        # DRILL 14A -> 12 s: deploy 7.9 m/s descending, 1230 m (nominal); <= 17 m/s over Cd x0.7-1.3. NOT 7 s (deploys climbing at 31-63 m/s). Motor agent to confirm the drill steps
+  deploy_velocity_m_s: 7.9       # 12 s delay, nominal Cd
+  deploy_altitude_m: 1230
+  target_mass_g: {nose_cone_shell: 52.7, nose_cone_with_ballast: 122.7, fin_can_md: 84.0}   # verify targets. fin_can_md = rev 5 model at 25 % infill; the OWNER 120 g target is unreachable (83.4-85.7 g) and should be replaced by 84.0 (part library / owner decision)
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
-  fin_can_model_mass_g: 171.8        # parts/fin_can.py rev 2 (Option A bosses), verify mass model at 25 % infill (171.0 at 0 %, 174.1 at 100 %); out/fin_can/rev2/, 2026-11-20
-  fin_can_model_cg_from_aft_mm: 79.8 # rev 2, solid-mesh CG forward of the aft face (part ~99 % solid)
+  fin_can_model_mass_g: 84.0         # parts/fin_can_md.py REV 5 (owner OR fins), verify mass model at 25 % infill (83.4 at 0 %, 85.7 at 100 %); out/fin_can_md/rev5/, 2026-11-21. Was 171.8 (29 mm fin_can rev 2)
+  fin_can_model_cg_from_aft_mm: 43.3 # rev 5 model CG forward of the aft face (main session, 2026-11-21). Was 79.8
+  nose_shell_mass_g: 52.7            # nosecone.md printed-shell ESTIMATE (CG = nosecone.cg_from_tip_mm). nosecone.mass_g (80) is the owner's WHOLE-nose target = shell + ballast
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
     tube_linear_density_g_per_mm: 0.1085   # ESTIMATE: wall area from shop OD/ID (159.6 mm2) x 0.68 g/cm3 OpenRocket "cardboard" density (rocketryforum.com/goto/post?id=2317962, 2026-11-20). No published LOC tube mass found. WEIGH THE TUBE.
     cardboard_density_g_cm3: 0.68          # OpenRocket "cardboard" (same basis as the tube); used for the MMT-1.14 liner
-    liner_cg: motor_midpoint               # liner = motor length, coaxial with the motor
+    liner_cg: motor_midpoint               # SUPERSEDED (29 mm layout). Min-diameter: no liner (owner 2026-11-21)
     fin_can:                     # FALLBACK ESTIMATE only, used if fin_can_model_mass_g is not a number (walls + infill model, skills/SKILL.md)
       exposed_length_mm: root_chord        # fins' root spans the exposed section, TE flush with aft face (aero.md)
       shoulder_length_mm: motor_minus_exposed  # bore supports the full motor length (motor.md: bore runs along the motor axis)
       bore_diameter_mm: motor_class        # motor.case_od_mm is TBD; 29 mm class used for mass only
       shoulder_od_mm: snug_slip            # shop id_measured - 2 x snug_slip, same as the nose shoulder
       infill_pct: 25                       # print profile default
-    motor_aft_offset_mm: 0       # ASSUMPTION: motor aft end flush with fin can aft face (thrust ring thickness TBD)
+    motor_aft_offset_mm: 0       # main session 2026-11-21: motor aft end at the fin can aft face (thrust ring on the 2.67 mm lip). Ring thickness TBD (measure)
+    motor_stop_g: 10             # ESTIMATE (main session 2026-11-21): proposed aft Kevlar anchor / forward motor stop ring, not designed yet
+    motor_stop_length_mm: 10     # ESTIMATE: ring length, sets where the pack's aft end sits; part not designed
+    motor_stop_cg_fwd_of_motor_mm: 5   # = half the ESTIMATED length; ring sits on the motor's forward end
+    retention_cg_from_aft_mm: 2  # 3 insert sets in the fin-root bosses at the aft end (same basis as rev 2)
     motor_dry_cg: midpoint       # ASSUMPTION: case + propellant CG at motor mid-length (no published CG)
     motor_nozzle_radius_mm: 7    # ASSUMPTION, unpublished; RocketPy needs it, no pressure correction used so it does not change thrust
     chute_mass_g: 57             # ESTIMATE from recovery (owner's 40 in chute, <=57 g: 42 in hex nylon 2.01 oz, the-rocketman.com/?p=3121); used while recovery.chute_mass_g is TBD. WEIGH IT.
@@ -141,11 +146,12 @@ stability:                 # stability agent — see projects/l1-cheap/stability
     shock_cord_loop_allowance_mm: 300  # ESTIMATE (recovery: allowance TBD); 0.3 m = 0.9 g, negligible
     wadding_g: 2                 # ESTIMATE: 8 sheets x 0.24 g; 0.24 g = 17 g shipping weight / 72 sheets (hobbyetc listing), an upper bound
     recovery_pack_length_mm: 120 # ESTIMATE: 57 g chute at a guessed 0.4 g/cm3 packed = 143 cm3 / 117.8 cm3 per 100 mm, + cord + wadding. Pack test pending (recovery)
-    recovery_pack_position: on_motor  # pack rests on the motor forward end (gravity on the pad, inertia in boost) = most aft = conservative
+    recovery_pack_position: on_motor  # 'on_motor' = pack rests on the stop ring ahead of the motor (most aft = conservative), or a number = pack CG from tip (mm)
+    recovery_pack_cg_owner_or_mm: 457.2  # owner's OpenRocket: chute ~18 in from the nose tip (main session relay 2026-11-21); sensitivity case
     epoxy_g: 10                  # ESTIMATE: shoulder joint film + rail buttons + cord anchor; no measured value
     epoxy_cg: fin_can_shoulder
     rail_buttons_g: 5            # ESTIMATE: 2 x 2.5 g (Delrin button + screw); no published mass found; rail size TBD
-    rail_button_cg_from_aft_mm: 300  # ESTIMATE: average of one button at the fin can and one near the CG
+    rail_button_cg_from_aft_mm: 300  # ESTIMATE: average of one button at the fin can and one near the CG (kept 2026-11-21)
     retention_g: 5               # ESTIMATE: 3 x (M3 brass heat-set insert + M3 screw + M3 washer), not weighed; motor agent carried 4 g for 2 sets. Owner chose Option A inserts (fin_can rev 2). Placed at the aft face
     payload_cg_from_nose_mm: TBD # Quasar-LR altimeter slot: mass from payload.mass_g, position from payload (TBD)
     cd_vs_mach: [[0.0, 0.70], [0.1, 0.70], [0.5, 0.76], [0.7, 0.83], [1.2, 0.83]]  # aero.md table (M 0.1-0.7); held flat above 0.7 = no transonic rise (ASSUMPTION, biases Vmax and apogee high)
@@ -153,6 +159,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
     rail_lengths_m: [1.5, 1.83]  # club rail TBD; both reported
     launch_inclination_deg: 90   # vertical, no wind: sets apogee time for the delay
     wind_m_s: 0                  # constant wind (toward +east), standard atmosphere; 0 = calm. Sweeps use 4.5 (10 mph, a sample value, not a forecast)
+    delay_range_s: [4, 14]       # delay table range: H100W-14A drilled down (motor agent sets the real steps)
     delay_ejection_loss_g: 0     # ASSUMPTION: mass lost by the delay grain + ejection charge is UNPUBLISHED; the 92 g burnout mass treats it as 0
     delay_ejection_loss_sensitivity_g: [0, 5, 10]  # sensitivity cases; modelled burning linearly over the delay at the motor forward end
     propellant_mass_model: rocketpy  # RocketPy impulse-proportional m(t) = RSE file m(t) within 0.05 g (RSE auto-calc-mass=1, same method)

@@ -1,5 +1,97 @@
 # Project: l1-cheap — Phase 2 Stability & Integration
 
+## 0. H100W-14A minimum-diameter re-simulation (2026-11-21) — CURRENT
+
+**Configuration.**
+- Motor: H100W-14A (`motor/H100W.eng`, 228.4 N·s, burns to 2.398 s), 261 g loaded / 140 g burnt out, aft end at the fin can's aft face, no liner.
+- Airframe: 165 mm ogive + 863 mm BT-1.52 + fin_can_md **rev 5**. The sleeve (OD 46.795) covers the aft 100 mm, with a 20 mm fairing (43.135 → 46.795) and a 2.67 mm lip.
+- Fins: owner OR set, 3 × 50/30/43.18/20.32/6.
+
+**Run.** `.venv/bin/python sims/l1_cheap.py --allow-tbd --margin-plot out/sims/l1_cheap_margin_vs_time.png`, with all inputs from `design.yaml`. The sim now models the sleeve step and fairing as RocketPy tails, with the fins on the sleeve radius. Case drivers are in the session scratchpad and are reproducible with `--set`.
+
+### 0.1 Mass budget (liftoff, pack on the motor; x from the tip)
+| Item | g | x mm | Basis |
+|---|---|---|---|
+| Nose shell | 52.7 | 119.9 | nosecone.md ESTIMATE |
+| **Ballast** | **70** | 74.6 | solved for 1.8 cal; fill tip → 100 mm needs ≥ 2.57 g/cm³ packed |
+| Tube 863 mm | 93.6 | 596.5 | ESTIMATE 0.1085 g/mm (OR "LOC avg" gives 150.6 g, so weigh it) |
+| Fin can rev 5 | 84.0 | 987.4 | model at 25 % infill, CG 43.3 mm forward of the aft face |
+| Stop/anchor ring | 10 | 870.7 | ESTIMATE, not designed |
+| Chute 57 + Kevlar 9.9 (3 × L + 0.3 m) | 66.9 | 805.7 | ESTIMATES; pack rests on the ring |
+| Wadding / epoxy / buttons / retention | 2 / 10 / 5 / 5 | 855.7 / 980.7 / 730.7 / 1028.7 | ESTIMATES |
+| Motor | 261 → 140 | 953.2 | motor: (CG at mid-length ASSUMED) |
+| **Liftoff / burnout** | **660 / 539** | **730.1 / 680.0** | |
+
+### 0.2 Static margin (gate 1.8 ± 0.2, liftoff only)
+CP = **804.7 mm** (Barrowman M0: nose 2.000 @ 76.9, step 0.184 @ 910.7, fairing 0.386 @ 920.8, fins 7.117 @ 1000.2). RocketPy gives 804.6.
+
+| Case (liftoff) | Ballast g | CG mm | ref 41.275 | ref 46.795 |
+|---|---|---|---|---|
+| Zero ballast, pack on motor | 0 | 807.8 | **−0.08 UNSTABLE** | −0.07 |
+| Owner 80 g nose (27.3 ballast), pack on motor | 27.3 | 775.4 | 0.71 FAIL | 0.63 FAIL |
+| Owner 80 g nose, pack at OR 457 mm | 27.3 | 736.4 | 1.66 PASS | 1.46 FAIL |
+| **Solved 1.8, pack on motor (design value)** | **69.7** | **730.1** | **1.81 PASS** | **1.59 FAIL (low)** |
+| Solved 2.0, pack on motor | 78.1 | 722.2 | 2.00 PASS | 1.76 PASS |
+| Solved 1.8 / 2.0, pack at OR 457 mm | 32.9 / 40.9 | 730 / 722 | 1.80 / 2.00 | 1.59 / 1.76 |
+| 1.8 on the 46.795 ref, pack on motor | 79.8 | — | 2.04 FAIL (high) | 1.80 |
+
+- **Pack position sensitivity:** moving chute + cord from 805.7 to 457 mm is worth **+0.99 cal**, or about 37 g of ballast.
+- **On the motor is the case to design for.** A 66.9 g pack in a plain tube has nothing to hold it 18 in from the tip during boost, so it settles on the ring. OR's position only holds if the pack is fixed there.
+- **Balance check:** the ready-to-fly CG must be at **730 mm (722–739)**. That holds wherever the pack ends up, because the check measures the real CG.
+- **Fin can 120 g vs 84 g:** the rev 5 model cannot reach the owner's 120 g (83.4–85.7 g), so verify FAILS. If the real can were 120 g, the CG would move aft 10.4 mm (−0.25 cal) and need 83.8 g of ballast. The lighter part is the better outcome. Replace the target with 84.0 g; that is a part-library or owner decision.
+- **In flight:** the margin is lowest at liftoff (1.81), 1.88 at rail exit, peaks at 3.34 (M 0.74), and is 3.02 at burnout. See `out/sims/l1_cheap_margin_vs_time.png`.
+
+### 0.3 CP versus the owner's OR (836.0 mm, sleeve not modelled)
+- Without the sleeve, Barrowman gives **792.8 mm** and RocketPy 792.7 (OR lengths). Adding the sleeve moves the CP 12 mm aft to 804.7.
+- OR's 836.0 mm implies a fin CNα of 9.36 instead of 6.97, which is **34 % more fin lift**.
+- RocketPy with **4 fins** on the plain tube gives 835.0 (M0) and 837.0 (M 0.3), matching OR to 1 mm. **Check the fin count in the .ork.**
+- If OR really has 3 fins, the owner should send its Component Analysis table.
+- **Consequence:** if OR's CP is right, the 70 g build sits at 2.57 cal (FAIL high), and 1.8 would need about 40 g of ballast instead of 70 (CG 761.7). Until this is resolved, I use our CP (two independent methods agree), which is the stable-side choice.
+- The CG side reconciles: with OR's assumptions (80 g nose, 120 g can, pack at 457 mm) we get CG 750.2 mm, against OR's 750.3.
+
+### 0.4 Flight (pack on motor, 70 g, no wind, vertical)
+- Apogee **1233 m (4044 ft)** at **13.59 s**. Burnout is at 2.40 s, so the coast to apogee is **11.19 s**.
+- Vmax **250.0 m/s, M 0.737**. Max q 37.3 kPa.
+- Rail exit 21.6 m/s (1.5 m rail), 24.0 m/s (1.83 m rail).
+- Sensitivity: Cd ×0.7 / 0.85 / 1.3 gives 1509 / 1352 / 1061 m and coasts of 12.96 / 11.97 / 10.01 s. A 4.5 m/s wind gives 1224 m.
+
+| Delay s | Deploy t s | Alt m | Speed m/s (nominal) | Direction | Speed m/s over Cd ×0.7–1.3 |
+|---|---|---|---|---|---|
+| 14 (undrilled) | 16.40 | 1199 | 21.2 | falling | 10–28 |
+| 13 | 15.40 | 1218 | 15.2 | falling | 0–22 |
+| **12** | **14.40** | **1230** | **7.9** | falling | **≤ 17** |
+| 11 | 13.40 | 1233 | 1.9 | at apogee | ≤ 19 |
+| 10 | 12.40 | 1226 | 11.7 | climbing | ≤ 30 |
+| 9 | 11.40 | 1209 | 21.8 | climbing | 10–40 |
+| 8 | 10.40 | 1182 | 32.3 | climbing | 20–51 |
+| 7 | 9.40 | 1144 | 43.5 | climbing | 31–63 |
+| 6 | 8.40 | 1095 | 55.8 | climbing | 42–77 |
+| 5 | 7.40 | 1032 | 69.5 | climbing | — |
+| 4 | 6.40 | 955 | 85.4 | climbing | — |
+
+**Recommendation: DRILL TO 12 s.** It has the lowest worst-case deploy speed over the Cd spread. The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s with 12 s.
+
+**Do NOT drill to ~7 s.** The "9.5 s time to apogee → 7.2 s coast" reading is wrong:
+- The owner's OR and Monte Carlo fly **H100W_DMS-6**. The chute opens at about 2.3 + 6 = 8.3 s, while the rocket is still climbing, so their 9.4–9.5 s "time to apogee" is cut short by the chute.
+- OR's own deploy speed (137 mph = 61 m/s) matches our 6 s row (56 m/s).
+- OR's "optimum delay 11.6 s" is the undisturbed coast, and it agrees with our 11.19 s.
+- A 7 s delay deploys at 31–63 m/s while climbing. recovery.md puts the knotted-Kevlar limit at about 27 m/s, so that is a zipper or shred risk.
+
+The motor agent should confirm the AeroTech drill steps.
+
+### 0.5 Against the owner's OR and Monte Carlo
+- **Vmax:** OR now gives 550 mph (245.9 m/s), M 0.726. We get 250.0 m/s, M 0.737 (+1.7 %). Boost drag and mass agree.
+- **Apogee:** OR gives 3327 ft (1014 m); we get 1233 m.
+  - If OR's current config still uses the −6 delay, its apogee is cut short. Ours is not: at 6 s we are at 1095 m, still climbing at 56 m/s.
+  - The rest of the gap is coast drag. Our Cd comes from aero's ESTIMATE; OR's Cd is unknown. Our Cd ×1.3 gives 1061 m.
+- **Monte Carlo:** 1199–1213 m (balsa 3 mm fins, −6 delay) is not comparable to the 6 mm printed fins.
+- **Need from the owner:** OR's delay setting and the "optimum delay" for the current config.
+
+---
+
+> **SUPERSEDED (H182R-14A 29 mm layout, 2026-11-20).** Everything below is the old motor and
+> layout (fin can rev 1–3, liner, 90.5 g ballast, 12 s on H182R). Kept for history; do not use.
+
 **Status:** Phase 2 integration, rev 3, 2026-11-20.
 - Real fin can mass (rev 2).
 - Owner decisions (rev 3): the stability band gates **liftoff only**, and motor retention is a
