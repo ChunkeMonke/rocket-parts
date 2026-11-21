@@ -210,10 +210,10 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   sleeve_overlap_mm: {value: 100, status: FROM_AERO, note: "length of sleeve on the tube = fin root chord (fins TE flush with aft face)"}
   fairing_length_mm: {value: 20, status: PROPOSED, note: "forward taper from sleeve OD down to the tube OD (no step in the flow)"}
   lip_thickness: {value: wall_band, status: PROPOSED, note: "aft lip under the tube end; motor thrust ring bears on it (compression across layers)"}
-  motor_case_od_mm: {value: 38.0, status: PLACEHOLDER, note: "38 mm class, NOT measured; lip bore = case OD + 2 x snug slip"}
+  motor_case_od_mm: {value: 38.10, status: PLACEHOLDER, note: "1.500 in nominal from AeroTech I500T (different 38 mm DMS) page, via motor agent; MEASURE the H100W"}
   thrust_ring_od_mm: {value: 41.0, status: PLACEHOLDER, note: "not published yet (motor agent researching); must be > lip bore to bear"}
   thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; mating check only"}
-  motor_length_mm: {value: 153, status: CITED, note: "ThrustCurve H100W_DMS via search (38 x 153 mm); motor agent confirming"}
+  motor_length_mm: {value: 155, status: CITED, note: "motor agent 2026-11-21 (38 x 155 mm; ThrustCurve snippet said 153) — measure"}
   retention: {value: insert_bosses_at_fin_roots, status: OWNER, note: "Option A carried over from fin_can rev 2"}
   insert_hole_d_mm: {value: 4.0, status: CITED, note: "accu-components chart (motor.md)"}
   insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
