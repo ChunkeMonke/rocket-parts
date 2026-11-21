@@ -6,3 +6,10 @@ out/**/*.stl
 out/**/*.png
 .venv/
 projects/*/report/report.html
+out/fea/**/*.inp
+out/fea/**/*.frd
+out/fea/**/*.dat
+out/fea/**/*.sta
+out/fea/**/*.cvg
+out/fea/**/*.12d
+out/fea/**/spooles.out

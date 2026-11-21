@@ -1,9 +1,9 @@
 # l1-cheap — Design & Research Report
-_Last updated: 2026-11-21 · 65aa51e_
+_Last updated: 2026-11-21 · 201e22e_
 
-> Living document, maintained by the `rocket-docs` agent. Every number is copied from a project source and cited inline. Labels ESTIMATE / PLACEHOLDER / PROPOSED / TBD are carried over from the sources.
+> Living document, maintained by the `rocket-docs` agent. Every number is copied from a project source and cited inline. Labels ESTIMATE / PLACEHOLDER / PROPOSED / TBD / PREDICTION are carried over from the sources.
 >
-> **Current basis (2026-11-21):** AeroTech H100W-14A, minimum-diameter, **fin can rev 5** with the **owner's OpenRocket fins**, 70 g nose ballast. The flight numbers come from the H100W re-sim (stability.md §0, design.yaml `stability`). H182R material is kept only as history. Where sources disagree, both values are shown and the conflict is listed in §11.
+> **Current basis (2026-11-21):** AeroTech H100W-14A, minimum-diameter, **fin can rev 6 (landing-tough)** with the **owner's OpenRocket planform**, **71 g nose ballast**. The flight numbers come from the H100W re-sim (stability.md §0, design.yaml `stability`), which was run on rev 5. The main session re-solved the margin for rev 6 and reports apogee and delay essentially unchanged. Rev 6 structural numbers are a **PREDICTION** until the owner re-runs ANSYS. H182R material is kept only as history. Where sources disagree, both values are shown and the conflict is listed in §11.
 
 ---
 
@@ -17,37 +17,37 @@ _Last updated: 2026-11-21 · 65aa51e_
 |---|---|
 | Motor | AeroTech **H100W-14A DMS, 38 mm**, $54.99, HAZMAT. Curve: 228.4 N·s, peak 130.2 N, burn 2.40 s (design.yaml `motor`) |
 | Layout | Minimum-diameter: motor directly in the LOC BT-1.52, 863 mm. Length 1030.7 mm (design.yaml `stability.total_length_mm`) |
-| Nose | 165 mm ogive, 52.7 g shell ESTIMATE + **70 g ballast** (design.yaml `stability.ballast_g`) |
-| Fins | **Owner's OR set**: 3 × 50.0 / 30.0 / 43.18 span / 20.32 sweep / 6.0 mm (design.yaml `aero`) |
-| Fin can | **Rev 5** sleeve, model 83.4–85.7 g, owner slicer **80 g**. Verify **5/5 PASS** at 80 g (re-run 2026-11-21) |
+| Nose | 165 mm ogive, 52.7 g shell ESTIMATE + **71 g ballast** (design.yaml `stability.ballast_g`) |
+| Fins | **Owner's OR planform**: 3 × 50.0 / 30.0 / 43.18 span / 20.32 sweep; **rev 6: 12 mm root tapering to 6 mm tip**, fillet 6 mm (design.yaml `aero`, `fin_can_md`) |
+| Fin can | **Rev 6** sleeve, owner slicer **84.83 g at 25 % gyroid**. Verify **5/5 PASS** at 84.83 g (out/fin_can_md/rev6) |
 | Recovery | Motor ejection, **drill to 12 s**; owned 40 in chute; 750 lb Kevlar |
 
-**Key performance** (stability.md §0, H100W re-sim, PROVISIONAL mass estimates)
+**Key performance** (margin: main session rev 6 re-solve; the rest: stability.md §0, rev 5 basis, PROVISIONAL mass estimates)
 
 | Margin, liftoff | Apogee | Vmax / Mach | Rail exit 1.5 / 1.83 m | Deploy at 12 s |
 |---|---|---|---|---|
-| **1.81 cal** (ref 41.275; 1.59 on 46.795) | **1233 m** | 250.0 m/s / **0.737** | **21.6 / 24.0 m/s** | 7.9 m/s, falling |
+| **1.82 cal** (71 g, CG 729.8 mm, ref 41.275) | **1233 m** | 250.0 m/s / **0.737** | **21.6 / 24.0 m/s** | 7.9 m/s, falling |
 
-**Fin can structure** (ANSYS, rev 5; ansys_results.md)
-- Flight loads: **PASS, ~11×** (gust case, 1.72 MPa across layers vs 19 MPa).
-- Flutter: **PASS, ~5×** (Vf ≈ 1330 m/s vs Vmax 250 m/s, at G = 394 MPa).
-- Sideways landing tip strike: **FAIL**, capacity ~90 N vs ~200 N realistic (ESTIMATE).
+**Fin can structure** (ANSYS on rev 5, ansys_results.md; rev 6 = PREDICTION)
+- Flight loads: **PASS, ~11×** (rev 5 gust case, 1.72 MPa across layers vs 19 MPa).
+- Flutter: **PASS, ~5×** (rev 5, Vf ≈ 1330 m/s vs Vmax 250 m/s, at G = 394 MPa).
+- Sideways landing: rev 5 FAIL (~88 N); rev 6 predicted ~350–400 N, ANSYS confirmation pending.
 
 **Phase status**
 
 | 0 Goal | 1 Feas. | 2 Design | 3 BOM | 4 Budget | 5 Sched. | 6 Parts | 7 Build | 8 Flight |
 |---|---|---|---|---|---|---|---|---|
-| done | Cond. GO | re-sim done; OR CP open | needs update | not started | — | fin can rev 5; nose not generated | — | — |
+| done | Cond. GO | rev 6 re-solve done; OR CP open (CFD planned) | needs update | not started | — | fin can rev 6 5/5; nose not generated | — | — |
 
 **Top risks**
-1. **Fin root breaks on a sideways landing:** ~90 N capacity vs a ~200 N realistic estimate (§4.3).
-2. **CP disagrees with OpenRocket:** 804.7 vs 836.0 mm. 70 g gives 1.81 cal on our CP, 2.57 on OR's (§3.3).
+1. **Rev 6 landing strength is a prediction only** (1/t² scaling of the rev 5 ANSYS result). The 12 mm root now has an infill core (§4.3.7).
+2. **CP disagrees with OpenRocket:** 804.7 vs 836.0 mm. A 3D Fluent run is planned to settle it (§3.6).
 3. **Unmeasured fit and masses:** case OD, thrust ring, tube OD; tube 93.6 g ESTIMATE vs OR's 123 g.
 
 **Next steps**
-- Owner: measure the tube and motor, and weigh the parts. Then do the balance check (CG 730 mm, window 722–739).
-- Owner: choose between a drop test and a landing-tough rev 6. Run the thrust FEA case.
-- Owner: check the fin count in the .ork.
+- Owner: re-run the ANSYS cases on `out/fin_can_md/rev6/fin_can_md_rev6.step` (50 N Y, 200 N Y, 200 N Y + 770 N Z).
+- Owner: run the 3D Fluent case on `out/cfd/rocket_oml.step` (M 0.3, α 0/2/4°). Check the fin count in the .ork.
+- Owner: measure the tube and motor, weigh the parts, drop-test, then do the balance check (CG 730 mm, window 722–739).
 
 ---
 
@@ -78,7 +78,7 @@ _Last updated: 2026-11-21 · 65aa51e_
 | Average thrust > 80 N (forum claim only) | 93.4–100 N: pass, **but with only a 13–20 N margin** |
 | Rocket built by the flyer | plan |
 | Witnesses: 2× L1 or 1× L2/L3; form to the prefect before the flight | arrange at launch |
-| Safe recovery; rocket flyable again | design for it (see the landing-strike result, §4.3) |
+| Safe recovery; rocket flyable again | design for it (see the landing-strike results, §4.3) |
 
 ### 1.3 Shop and printer constants (skills/SKILL.md)
 
@@ -137,7 +137,8 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
 
 ### 2.4 Delay: drill to 12 s (stability.md §0.4, design.yaml `stability.recommended_delay_s`)
 - The delay timer starts at burnout, so **delay = t_apogee − t_burnout** (recovery.md §6).
-- Re-sim: burnout 2.398 s, apogee 13.59 s, so the coast is **11.19 s**. Over Cd ×0.7–1.3 the coast is 12.96–10.01 s.
+- Re-sim (rev 5 basis): burnout 2.398 s, apogee 13.59 s, so the coast is **11.19 s**. Over Cd ×0.7–1.3 the coast is 12.96–10.01 s.
+- **Rev 6:** the main session reports apogee and delay essentially unchanged; the delay stays at **12 s**.
 - **Recommendation: drill the 14 s delay to 12 s.** It gives the lowest worst-case deploy speed over the Cd spread: 7.9 m/s nominal, ≤ 17 m/s worst case, falling. Full table in §6.5.
 - **Why not ~7 s (the OR "−6" delay):**
   - The owner's OR and Monte Carlo fly **H100W_DMS-6**. The chute opens at about 2.3 + 6 = 8.3 s, while the rocket is still climbing. OR's 9.4–9.5 s "time to apogee" is therefore cut short by the chute.
@@ -161,22 +162,24 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
 
 ## 3. Aerodynamics
 
-### 3.1 Fins (design.yaml `aero`, aero.md §0, fin_can_md rev 5 spec)
+### 3.1 Fins (design.yaml `aero`, `fin_can_md`, aero.md §0, fin_can_md rev 5 and rev 6 specs)
 
-| Item | Owner's OR set (current, rev 5) | Aero optimisation (rev 4, PROPOSED, not adopted) | Old (rev 1–3) |
-|---|---|---|---|
-| Count | 3 | 3 | 3 |
-| Root / tip chord | **50.0 / 30.0 mm** | 50 / 30 | 100 / 40 |
-| Span | **43.18 mm** | 77 | 40 |
-| LE sweep (= Cr − Ct, TE flush with aft face) | **20.32 mm** | 20 | 60 |
-| Thickness | **6.0 mm** | 6 | 5 |
-| Section | NACA 4-digit symmetric, TE 0.84 mm | same | same |
-| Fin root diameter | on the sleeve, 46.795 mm (r = 23.40) | same | rev 3: sleeve |
-| Margin claimed | OR 2.08 cal (owner's mass model) | 2.00 cal at zero ballast (aero's mass model) | −0.70 (unstable, aero.md §0.3) |
+| Item | Owner's OR planform, **rev 6 (current)** | Rev 5 (owner OR, ANSYS basis) | Aero optimisation (rev 4, PROPOSED, not adopted) | Old (rev 1–3) |
+|---|---|---|---|---|
+| Count | 3 | 3 | 3 | 3 |
+| Root / tip chord | **50.0 / 30.0 mm** | 50.0 / 30.0 | 50 / 30 | 100 / 40 |
+| Span | **43.18 mm** | 43.18 | 77 | 40 |
+| LE sweep (= Cr − Ct, TE flush with aft face) | **20.32 mm** | 20.32 | 20 | 60 |
+| Thickness | **12 mm root → 6 mm tip, linear** (`aero.fin_thickness_mm`, `fin_tip_thickness_mm`) | 6.0 constant | 6 | 5 |
+| Section / TE | NACA 4-digit symmetric; **blunt TE 2.0 mm at the root → 0.84 mm at the tip** (`fin_can_md.te_root_thickness_mm`, PROPOSED) | TE 0.84 | same | same |
+| Root fillet | **r 6 mm** (PROPOSED) | r 4 (PROPOSED) | — | — |
+| Fin root diameter | on the sleeve, 46.795 mm (r = 23.40) | same | same | rev 3: sleeve |
+| Margin claimed | 1.82 cal with 71 g (main session) | OR 2.08 cal (owner's mass model) | 2.00 cal at zero ballast (aero's mass model) | −0.70 (unstable, aero.md §0.3) |
 
 - **Aero's optimisation** (aero.md §0.5) targeted 2.0 cal with zero ballast and recommended 50/30/77/6. Its 816.5 mm CG assumed the chute pack on the motor and a 52.7 g nose.
-- **The owner then chose their OpenRocket fins** (design.yaml `aero`, 2026-11-21). Rev 5 builds them. The stability re-sim restores the margin with nose ballast instead (§6).
-- Root fillet r = 4 mm (PROPOSED). The owner's 3–5 mm range is not confirmed.
+- **The owner then chose their OpenRocket fins** (design.yaml `aero`, 2026-11-21). Rev 5 builds them; rev 6 keeps the planform and thickens the root for landing loads (§4.3.7).
+- **Fillet:** 6 mm is the largest that does not collide with the sleeve bore geometry (spec `root_fillet_r_mm`). The owner's 3–5 mm range is not confirmed.
+- Barrowman CP does not depend on thickness, so the rev 6 CP is taken as unchanged (balance point 730 mm unchanged, main session). Thicker fins and the blunt TE add drag that the sim's Cd table does not model (§3.4).
 
 ### 3.2 Barrowman centre of pressure (stability.md §0.2, aero.md §0.3)
 
@@ -197,7 +200,7 @@ Symbols: N fin count; s span; Cr, Ct root and tip chord; xs LE sweep; l_m mid-ch
 
 **Total:** CP = Σ(CNα,i · X_i) / Σ CNα,i.
 
-| Component (owner fins, rev 5) | CNα | X (mm) |
+| Component (owner planform, rev 5 = rev 6) | CNα | X (mm) |
 |---|---|---|
 | Nose | 2.000 | 76.9 |
 | Step | 0.184 | 910.7 |
@@ -227,7 +230,8 @@ OR config H100W_DMS-6, Mach 0.300, AoA 0, ref length 1.625 in (41.275 mm). OR to
   - a 6 g inner tube at 37.45 in (there is no inner tube in the min-diameter layout);
   - a 123 g body tube (our ESTIMATE is 93.6 g);
   - owner overrides for the nose (80 g) and the fin set (120 g).
-- **Plan: fly 70 g of ballast.** That gives 1.81 cal on our CP, and about **2.57 cal on OR's CP** (FAIL high on that reference). Our CP is the stable-side choice until the fin count is checked (stability.md §0.3). If OR is right, 1.8 cal needs about 40 g.
+- **Rev 5 basis (stability.md §0.3):** 70 g gave 1.81 cal on our CP and about **2.57 cal on OR's CP** (FAIL high on that reference); if OR is right, 1.8 cal needs about 40 g. The OR-CP margin has not been re-stated for rev 6 / 71 g.
+- Our CP is the stable-side choice until the fin count is checked. The planned 3D CFD run (§3.6.2) is meant to settle the gap.
 
 ### 3.4 Drag and Mach
 
@@ -236,8 +240,8 @@ OR config H100W_DMS-6, Mach 0.300, AoA 0, ref length 1.625 in (41.275 mm). OR to
 | Sim input `stability.assumptions.cd_vs_mach` (ESTIMATE) | 0.70 | 0.76 | 0.83 | old 100/40/40/5 fins |
 | design.yaml `aero.cd_estimate` (ESTIMATE) | 0.73 | 0.89 | 1.13 | 77 mm aero proposal |
 
-- Neither table is for the owner's fins (§11). Above M 0.7 the sim holds Cd flat (ASSUMPTION, no transonic rise).
-- **Re-sim (owner fins):** Vmax **250.0 m/s, M 0.737**, max q 37.3 kPa (design.yaml `stability`).
+- Neither table is for the owner's fins, and neither includes the rev 6 thick root or 2.0 mm blunt TE (§11). Above M 0.7 the sim holds Cd flat (ASSUMPTION, no transonic rise).
+- **Re-sim (owner fins, rev 5):** Vmax **250.0 m/s, M 0.737**, max q 37.3 kPa (design.yaml `stability`).
 - **Owner's OR:** 550 mph (245.9 m/s), M 0.726. That is within 1.7 % of ours (stability.md §0.5).
 
 ### 3.5 Flutter (ansys_results.md Case 2; method aero.md §4)
@@ -248,32 +252,57 @@ V_f = a · √( G / [ 1.337·AR³·P·(λ + 1) / (2(AR + 2)(t/Cr)³) ] ), with A
 
 Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); P air pressure (Pa); λ = Ct/Cr taper ratio; t thickness; Cr root chord; A_fin fin area.
 
-| Owner fins 50/30/43.18/6, sea level | G | V_f | V_f / Vmax (250 m/s) |
+| Owner fins 50/30/43.18/6 (rev 5), sea level | G | V_f | V_f / Vmax (250 m/s) |
 |---|---|---|---|
 | Conservative PETG set (the one ANSYS used) | 394 MPa | ≈ 1330 m/s | **≈ 5.3×** |
 | Higher G | 620 MPa | ≈ 1670 m/s | ≈ 6.7× |
 
 - The estimate comes from the main session and is recorded in ansys_results.md. The G values are not measured; see the material caveat in §4.3.
-- The ANSYS modal run (§4.3) gives a first mode of 567.9 Hz.
+- **Rev 6:** not recomputed. The tip stays 6 mm and the root doubles to 12 mm (design.yaml notes the taper is for flutter and mass).
+- The ANSYS modal run (§4.3, rev 5) gives a first mode of 567.9 Hz.
 - design.yaml `aero.fin_flutter_velocity_m_s` is still TBD. Its G_req values (71 MPa at 268 m/s) are for the 77 mm proposal.
 
-### 3.6 CFD domain tool: `tools/fluent_domain.py`
-- It writes Fluent-ready 2D C-domains around the fin root and tip sections into `out/cfd/`: STEP with named edges, airfoil CSVs, check PNGs and `fluent_setup.md`.
-- The domain size defaults to 20 chords. The setup is density-based, ideal gas, Sutherland viscosity and k-ω SST, at AoA 0, 2, 4 and 6°.
-- **Caveat:** the setup sheet's speeds (28.4 m/s, 283.1 m/s, "Mach 0.83") are H182R basis. It points to the rev 2 fin STEP and the old 100/40 mm chords. All of this is stale (§11).
-- No CFD results exist yet.
+### 3.6 CFD: tools and planned work
+
+#### 3.6.1 2D fin-section domains: `tools/fluent_domain.py` (updated for rev 6)
+- Writes Fluent-ready 2D C-domains around the fin root and tip sections into `out/cfd/`: STEP with named edges, airfoil CSVs, check PNGs and `fluent_setup.md`.
+- **Rev 6 sections:** root 50 × 12 mm with a 2.0 mm TE; tip 30 × 6 mm (TE 0.84). The tool reads `fin_tip_thickness_mm` and `te_root_thickness_mm` from design.yaml.
+- Domain size defaults to 20 chords. Setup: density-based, ideal gas, Sutherland viscosity, k-ω SST, AoA 0, 2, 4 and 6°.
+- First-cell heights (y+ ≈ 1, ESTIMATE from flat-plate Cf = 0.026 Re^-1/7) now use H100W speeds: rail exit 24.0 m/s to Vmax 250.0 m/s (out/cfd/fluent_setup.md).
+- **Still stale in fluent_setup.md:** "compressible up to Mach 0.83" (H182R basis; H100W Vmax is M 0.737), and it points to `fin_can_rev2_fin_only.step` for 3D (§11).
+
+#### 3.6.2 Whole-rocket OML and planned 3D Fluent run (PLANNED, no results yet)
+- `tools/rocket_oml.py` → `out/cfd/rocket_oml.step` (and `.stl`): solid, watertight outer mould line of nose + tube + fin can **rev 6**, aft face at z = 0. Length **1029 mm** (main session; design.yaml `stability.total_length_mm` is 1030.7, §11).
+- Meshing conventions (not part dimensions): **0.3 mm tip flat** (`TIP_FLAT_R_MM`), insert holes filled, motor and bore filled.
+
+![Rocket OML, side section](figures/rocket_oml_side.png)
+
+*Figure 22. Whole-rocket OML for 3D CFD, side section y = 0, rev 6 fin can, aft face at 0 mm. Source: `out/cfd/rocket_oml_side.png`, `tools/rocket_oml.py`, 2026-11-21.*
+
+**Planned run** (main session):
+
+| Item | Value |
+|---|---|
+| Geometry | `out/cfd/rocket_oml.step` (rev 6) |
+| Mach | 0.3 (same as the OR component analysis) |
+| α | 0, 2, 4° |
+| Reference area | 1.338e-3 m² (π/4 · d², d = 41.275 mm) |
+| Reference length | 0.041275 m |
+| Outputs | CNα and CP |
+
+Method for the outputs:
+- **CNα = ΔC_N / Δα** (per rad), from the normal-force coefficient C_N at α = 0, 2, 4°.
+- **X_CP = X_ref − (C_m / C_N) · L_ref**, where C_m is the pitching-moment coefficient about the moment reference point X_ref (mm from the nose tip) and L_ref = 0.041275 m.
+
+**Purpose: resolve the OR CP gap.** OR: CNα 11.36, CP 836 mm. Ours: CNα ≈ 9.0 and CP ≈ 805 mm (main session). The Barrowman component table in §3.2 sums to a different total CNα (§11).
 
 ---
 
 ## 4. Structures & Manufacturing
 
-### 4.1 Fin can rev 5: min-diameter sleeve, owner's fins (DRAFT, NOT PRINT-READY)
+### 4.1 Fin can rev 6: landing-tough, current flight candidate (DRAFT, NOT PRINT-READY)
 
-`parts/fin_can_md.py`, built with `make.py fin_can_md --rev 5` on 2026-11-21 (out/fin_can_md/rev5/fin_can_md_rev5_spec.md). The part is a PETG sleeve that slides **over** the BT-1.52's aft end. It has:
-- 3 fins;
-- a 20 mm forward fairing;
-- an **aft lip** under the tube end, which is the thrust stop;
-- M3 heat-set insert bosses at the fin roots.
+`parts/fin_can_md.py` (taper support in `parts/fin_can.py`), built with `make.py fin_can_md --rev 6` on 2026-11-21 (out/fin_can_md/rev6/fin_can_md_rev6_spec.md). Same sleeve, lip, fairing and insert bosses as rev 5; only the fins changed (§4.3.7).
 
 | Parameter | Value | Status |
 |---|---|---|
@@ -283,11 +312,59 @@ Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); 
 | Lip thickness / lip bore | 2.67 mm / 38.28 mm | PROPOSED / derived |
 | Motor case OD / length | 38.10 / 155 mm | **PLACEHOLDER** / CITED |
 | Thrust ring OD × thickness | 41.0 × 3.0 mm | **PLACEHOLDER** |
-| Fins | 50 / 30 / 43.18 / 20.32 / 6 mm, TE 0.84, fillet r 4 | owner OR / PROPOSED fillet |
+| Fins | 50 / 30 / 43.18 / 20.32 mm, **12 mm root → 6 mm tip** | owner OR planform / rev 6 |
+| TE | **2.0 mm at the root → 0.84 mm at the tip** | PROPOSED |
+| Root fillet | **r 6 mm** (was 4) | PROPOSED |
 | Retention | One M3 insert per fin (Ø4.0 × 5.7 mm), insert radius 25.398 mm, washer min. OD 13.795 mm | OWNER / CITED / derived |
 | Kevlar anchor | not in the part; the sim carries a 10 g stop/anchor ring ESTIMATE | open (§11) |
 | Extents / print | 102.6 × 118.4 × 120.0 mm; lip down, axis vertical, no supports | verify check 5; spec |
-| Mass model / target | **83.4–85.7 g** (0–100 % infill) / **80 g** owner slicer (Bambu Studio; earlier 78.87 g, before that 120 g OR override) | verify; design.yaml `fin_can_md.target_mass_g` |
+| Mass model / target | **87.0–101.9 g** (0–100 % infill) / **84.83 g owner slicer at 25 % gyroid** (88.43 g at the other settings tried) | verify; design.yaml `fin_can_md.target_mass_g` (OWNER) |
+| CG | 40.5 mm forward of the aft face (rev 5: 43.3) | design.yaml `stability.fin_can_model_cg_from_aft_mm` |
+
+![Fin can rev 6, iso](figures/fin_can_md_rev6_iso.png)
+
+*Figure 3a. Fin can rev 6, iso view in print orientation (aft lip on the bed, Z up). The fins are visibly thicker at the root and blend into the sleeve with the 6 mm fillet. Source: `out/fin_can_md/rev6/fin_can_md_rev6_iso.png`, `make.py fin_can_md --rev 6`, 2026-11-21. Built with the placeholder tube OD, case OD and ring.*
+
+![Fin can rev 6, section](figures/fin_can_md_rev6_section.png)
+
+*Figure 3b. Fin can rev 6, axial section through a fin (y = 0).*
+- *Left: the 2.67 mm sleeve wall with the inward lip at Z = 0.*
+- *Right: the 50 mm root, 30 mm tip and 43.18 mm span, with the M3 insert hole entering from the aft face.*
+
+*Source: `out/fin_can_md/rev6/fin_can_md_rev6_section.png`, 2026-11-21.*
+
+![Rev 5 vs rev 6 root slices](figures/rev5_vs_rev6_root.png)
+
+*Figure 3c. Rev 5 (grey) vs rev 6 (orange) fin-root cross-sections at print layers z = 3 mm (through the insert boss) and z = 25 mm (mid-root). Rev 6 has about twice the root thickness and a larger fillet blend into the sleeve. Source: main-session scratchpad `rev5_vs_rev6.png`, copied 2026-11-21.*
+
+**Verify results, rev 6** (`fin_can_md_rev6_verify.json`): **5/5 PASS**.
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Mesh integrity | PASS: watertight, 1 body, 80 276.6 mm³ |
+| 2 | Mass | PASS: target 84.83 g (±5 %); model 87.0 g (0 %) – 101.9 g (100 %); "infill to hit target" −14.6 % |
+| 3 | Mating interference | PASS: 0 mm³ with the tube wall, case and ring (**placeholders**) |
+| 4 | Renders | PASS: iso, front and section written; iso and section reviewed for this report |
+| 5 | Build volume | PASS: 102.6 / 118.4 / 120.0 mm vs 256 |
+
+- The mass pass relies on the ±5 % tolerance: the model's **0 % infill value (87.0 g) is already above the slicer's 84.83 g**. The main session puts the model ~6 % high vs the slicer (§4.4).
+
+**Loads vs layers (rev 6, printed axis-vertical, lip down).** Sources: rev 6 spec; ansys_results.md.
+
+| Load | Direction vs layers | Bond loading |
+|---|---|---|
+| Motor thrust: ring pushes +Z on the lip underside | across layers | **compression** (good). FEA not yet run (§4.3.8) |
+| Fin aero gust (side load on a fin) | root bending; ANSYS shows normal-Z stress at the root | across-layer tension/compression, low (rev 5: 1.72 MPa) |
+| Sideways tip strike (landing) | root bending; peak normal Z at the root fillet | **across-layer tension: the governing failure** (rev 5 ~88 N; rev 6 PREDICTION ~350–400 N) |
+| Axial tip strike (landing, Z) | pushes the fin along the layer-stacking direction | **across-layer tension at the aft root fillet** (rev 5 ~770 N) |
+| Sleeve-to-tube epoxy joint | shear on vertical cylindrical faces | in-plane shear |
+| Ejection kick (−Z): ring pulls the screws out of the inserts | across layers | **pull-out: shear + tension (weak direction)** |
+
+Note: the rev 5 and rev 6 spec sheets say fin root bending is carried "within the layers". The ANSYS results show the peak stress is normal-Z (across layers) at the root fillet. This report follows ANSYS (§11).
+
+### 4.1b Fin can rev 5: ANSYS basis (superseded by rev 6 for flight)
+
+`make.py fin_can_md --rev 5`, 2026-11-21 (out/fin_can_md/rev5/fin_can_md_rev5_spec.md). Same sleeve as rev 6; fins 50 / 30 / 43.18 / 20.32 / **6 mm constant**, TE 0.84, fillet r 4. Model mass 83.4–85.7 g; owner slicer 80 g.
 
 ![Fin can rev 5, iso](figures/fin_can_md_rev5_iso.png)
 
@@ -302,32 +379,9 @@ Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); 
 
 *Source: `out/fin_can_md/rev5/fin_can_md_rev5_section.png`, 2026-11-21.*
 
-**Verify results.**
+**Verify (rev 5):** the on-disk `fin_can_md_rev5_verify.json` has been re-run at the **80.0 g** target (model 83.4–85.7 g), so the earlier 120 g record conflict is resolved. 5/5 PASS as reported by the main session.
 
-| # | Check | On-disk result (`fin_can_md_rev5_verify.json`, 01:40, target 120 g) | At the owner's 80 g target |
-|---|---|---|---|
-| 1 | Mesh integrity | PASS: watertight, 1 body, 67 472.7 mm³ | — |
-| 2 | Mass | **FAIL**: target 120 g; model 83.4–85.7 g | **Reported as PASS by the main session; no verify file shows it** |
-| 3 | Mating interference | PASS: 0 mm³ with the tube wall, case and ring (**placeholders**) | — |
-| 4 | Renders | PASS: iso and section reviewed for this report | — |
-| 5 | Build volume | PASS: 102.6 / 118.4 / 120.0 mm vs 256 | — |
-
-- The main session reports **5/5 PASS** with the 80 g target (model 83.4–85.7 g; slicer 78.87 → 80 g).
-- The verify JSON and spec on disk predate the 80 g target (design.yaml change, git 937c29b) and still read 120 g. **Re-run `make.py fin_can_md --rev 5`** so the record matches (§11).
-- The model's upper value (85.7 g at 100 % infill) sits above 80 g + 5 %. The pass depends on the infill used.
-
-**Loads vs layers (rev 5, printed axis-vertical, lip down).** Sources: rev 5 spec; ansys_results.md.
-
-| Load | Direction vs layers | Bond loading |
-|---|---|---|
-| Motor thrust: ring pushes +Z on the lip underside | across layers | **compression** (good). FEA not yet run (§4.3) |
-| Fin aero gust (side load on a fin) | root bending; ANSYS shows normal-Z stress at the root | across-layer tension/compression, low (1.72 MPa) |
-| Sideways tip strike (landing) | root bending; peak normal Z at the root | **across-layer tension: the governing failure** (~88–90 N) |
-| Axial tip strike (landing, Z) | pushes the fin along the layer-stacking direction | **across-layer tension at the aft root fillet** (~770 N) |
-| Sleeve-to-tube epoxy joint | shear on vertical cylindrical faces | in-plane shear |
-| Ejection kick (−Z): ring pulls the screws out of the inserts | across layers | **pull-out: shear + tension (weak direction)** |
-
-### 4.2 Structural hand checks (rev 3/5 geometry, H100W)
+### 4.2 Structural hand checks (rev 3/5/6 geometry, H100W)
 
 **Thrust bearing on the lip** (motor.md §D): σ = F / A, with A = π/4 · (ring OD² − lip ID²).
 - σ is bearing stress (MPa), F force (N), A bearing area (mm²).
@@ -341,7 +395,8 @@ Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); 
 
 **Fin root bending (hand calc, aero.md §0.4)**
 - σ = M/Z with Z = Cr·t²/6, at α 5° and q 44.0 kPa.
-- design.yaml `aero.fin_root_bending_mpa` = 6.5 MPa is for the **77 mm** proposal. No hand value is recorded for the owner's fins; ANSYS (§4.3) replaces it.
+- Symbols: σ root bending stress (MPa); M root bending moment (N·mm); Z section modulus (mm³); Cr root chord (mm); t root thickness (mm).
+- design.yaml `aero.fin_root_bending_mpa` = 6.5 MPa is for the **77 mm** proposal. No hand value is recorded for the owner's fins; ANSYS (§4.3) replaces it. The same Z ∝ t² relation is the basis of the rev 6 sizing (§4.3.7).
 
 **Interlayer net-area check for printed anchors** (recovery.md §4): A_net ≥ F·SF / 15.
 - **191 mm²** for a 40 m/s deploy on the 40 in chute; **48 mm²** for a deploy at ≤ 20 m/s.
@@ -352,6 +407,7 @@ Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); 
 **Tool:** Ansys Mechanical Enterprise 2023 R1. Owner's runs, 2026-11-20/21.
 - Geometry: `out/fin_can_md/rev5/fin_can_md_rev5.step`. Units mm; Z = rocket axis = print direction.
 - **Boundary condition (all static cases):** one Fixed Support on the sleeve bore (R 20.727 mm), standing in for the epoxied joint to the tube.
+- **All results in §4.3.1–4.3.6 are for rev 5.** Rev 6 has not been run yet; its predicted values are in §4.3.7.
 
 #### 4.3.1 Material: orthotropic `3D_Printed_PETG` (Z = across layers)
 
@@ -508,16 +564,54 @@ Method:
 | Drop-test height to reproduce | 0.8 m | 1.5 m |
 
 - **Realistic design value: ~200 N.**
-  - Axial: OK, ~3.8× margin against the ~770 N failure load.
-  - Sideways: **fails** (~90 N capacity).
+  - Axial: OK, ~3.8× margin against the ~770 N failure load (rev 5).
+  - Sideways: rev 5 **fails** (~90 N capacity).
 - **Mitigations** (ansys_results.md):
   1. Fly the 40 in chute unreefed (conflicts with recovery.md's reefing advice; §11).
   2. Drop-test the fit-test print: 0.8 m for the 40 in chute, 1.5 m for the 28 in.
-  3. Or a landing-tough **rev 6**, which needs ~2.3× root bending strength: a thicker fin, a bigger fillet or a shorter span. Owner decision.
+  3. A landing-tough **rev 6** (~2.3× root bending strength needed). **Chosen by the owner and built 2026-11-21** (§4.3.7).
 
-#### 4.3.7 Not yet run
+#### 4.3.7 Rev 6 design rationale: sizing from the owner's ANSYS data (PREDICTION)
+
+**All rev 6 strength values below are PREDICTIONS** by the main session (design.yaml `aero.fin_thickness_mm` note; git 2c62fb5). The owner will re-run the ANSYS cases on `out/fin_can_md/rev6/fin_can_md_rev6.step`.
+
+**Sizing steps:**
+1. Rev 5 sideways FI per unit load: 0.571 / 50 N = **0.01142 per N** (figure 12b).
+2. At 200 N sideways (the realistic landing value, §4.3.6): 0.01142 × 200 = **2.28** on rev 5.
+3. Root bending stress scales as σ = M/Z with Z = Cr·t²/6 (§4.2), so at a fixed load and chord **σ ∝ 1/t²**.
+4. Doubling the root from 6 to 12 mm: (12/6)² = **4**, so FI at 200 N Y ≈ 2.28 / 4 = **0.57** (~1.75× margin) before fillet credit.
+5. The fillet increase (4 → 6 mm) and the 2.0 mm blunt root TE (at the aft-end crack origin, figure 13) are credited to about **FI 0.50 (~2×)**.
+
+Symbols: FI failure index σ_Z / 19 MPa (–); σ_Z across-layer normal stress (MPa); M root bending moment (N·mm); Z section modulus (mm³); Cr root chord (mm); t root thickness (mm).
+
+| Predicted (rev 6) vs ANSYS (rev 5) | Rev 5 (ANSYS) | Rev 6 (PREDICTION) |
+|---|---|---|
+| 50 N Y, FI | 0.571 | ~0.14 |
+| 200 N Y, FI | 2.28 (scaled) | ~0.5–0.57 |
+| Sideways capacity (FI = 1) | ~88 N | **~350–400 N** |
+| 200 N Y + 770 N Z, FI | 3.28 | ~0.75–0.8 |
+
+**Changes rev 5 → rev 6** (design.yaml, rev 6 spec):
+
+| Item | Rev 5 | Rev 6 | Why |
+|---|---|---|---|
+| Planform | 50 / 30 / 43.18 / 20.32 | same | owner OR set, keeps the CP |
+| Root thickness | 6 mm | **12 mm** | 4× root section-modulus factor |
+| Tip thickness | 6 mm | 6 mm (linear taper) | flutter and mass |
+| Root fillet | r 4 mm | **r 6 mm** | at the ANSYS failure site; larger collides with the sleeve bore |
+| TE | 0.84 mm | **2.0 mm root → 0.84 tip** | aft-end root is the ANSYS crack origin |
+| Mass | 80 g slicer | **84.83 g slicer, 25 % gyroid** | owner |
+| Verify | 5/5 at 80 g | **5/5 at 84.83 g** | — |
+
+**Caveats on the prediction:**
+- The 1/t² rule assumes the same solid section. The rev 5 fin (6 mm) was almost all wall; the 12 mm rev 6 root is wider than two 2.67 mm wall bands, so it has a **25 % gyroid core**. The verify model's infill region grew from 1.76 cm³ (rev 5) to 11.76 cm³ (rev 6). ANSYS models the part as solid, so it will not capture this.
+- The fillet credit (0.57 → ~0.50) is a judgement, not a calculation.
+- The axial part of the combined prediction is not derived in the sources.
+
+#### 4.3.8 Not yet run
+- **ANSYS re-run on rev 6:** 50 N Y (predicted ~0.14), 200 N Y (~0.5–0.57), 200 N Y + 770 N Z (~0.75–0.8).
 - **Motor thrust:** +138 N on the lip underside.
-- **Mode-shape identification** for modes 4–6.
+- **Mode-shape identification** for modes 4–6 (and a rev 6 modal run).
 
 ### 4.4 Mass model (walls + infill): skills/SKILL.md, verify check 2
 
@@ -529,13 +623,15 @@ Symbols:
 - V_interior: infill region (cm³).
 - f: infill fraction (0–1).
 
-| Rev | V_shell (cm³) | V_interior (cm³) | m at f = 0 / f = 1 |
-|---|---|---|---|
-| rev 2 | 134.67 | 2.39 | 171.0 / 174.1 g |
-| rev 3 | 76.84 | 0.54 | 97.6 / 98.3 g |
-| **rev 5** | **65.70** | **1.76** | **83.4 / 85.7 g** |
+| Rev | V_shell (cm³) | V_interior (cm³) | m at f = 0 / f = 1 | Owner slicer |
+|---|---|---|---|---|
+| rev 2 | 134.67 | 2.39 | 171.0 / 174.1 g | — |
+| rev 3 | 76.84 | 0.54 | 97.6 / 98.3 g | — |
+| rev 5 | 65.70 | 1.76 | 83.4 / 85.7 g | 80 g |
+| **rev 6** | **68.51** | **11.76** | **87.0 / 101.9 g** | **84.83 g at 25 % gyroid** (88.43 g at other settings) |
 
-The owner's slicer (Bambu Studio) estimates **80 g** for rev 5 (design.yaml `fin_can_md.target_mass_g`). The sim uses the model's 84.0 g at 25 % infill (§11).
+- The model reads **~6 % high** vs the slicer (main session). For rev 6 even its 0 % value (87.0 g) is above the slicer figure, so the verify's "infill to hit target" is −14.6 %.
+- The stability re-solve uses the slicer's **84.83 g** (design.yaml `stability.fin_can_model_mass_g`).
 
 ### 4.5 Fin can revision history
 
@@ -545,11 +641,12 @@ The owner's slicer (Bambu Studio) estimates **80 g** for rev 5 (design.yaml `fin
 | rev 2 | `fin_can.py`, 29 mm | Option A insert bosses | 171.0–174.1 g | 5/5 | **SUPERSEDED** (29 mm dropped) |
 | rev 3 | `fin_can_md.py`, sleeve | Sleeve, aft lip, fairing; old 100/40/40/5 fins | 97.6–98.3 g | 4/5 (no target) | superseded (unstable fins, aero.md §0.3) |
 | rev 4 | `fin_can_md.py` | Aero-optimised fins 50/30/77/6 | 105.2–108.7 g | 5/5 (target 108.7 g) | PROPOSED, not adopted |
-| **rev 5** | **`fin_can_md.py`** | **Owner's OR fins 50/30/43.18/20.32/6** | **83.4–85.7 g** | **on disk 4/5 (120 g); reported 5/5 at 80 g** (§4.1) | **current DRAFT** |
+| rev 5 | `fin_can_md.py` | Owner's OR fins 50/30/43.18/20.32/6 | 83.4–85.7 g (slicer 80 g) | 5/5 at 80 g (re-run) | superseded for flight; ANSYS basis (§4.3) |
+| **rev 6** | **`fin_can_md.py` + taper in `fin_can.py`** | **Landing-tough: root 12 → tip 6 mm, fillet 6, TE 2.0 → 0.84; same planform** | **87.0–101.9 g (slicer 84.83 g, 25 % gyroid)** | **5/5 at 84.83 g** | **current flight candidate, DRAFT; ANSYS pending** |
 
 ![Fin can rev 3, iso (superseded)](figures/fin_can_md_rev3_iso.png)
 
-*Figure 17. SUPERSEDED. Fin can rev 3 (old 100/40/40/5 fins), iso view in print orientation. Source: `out/fin_can_md/rev3/fin_can_md_rev3_iso.png`, 2026-11-21.*
+*Figure 18a. SUPERSEDED. Fin can rev 3 (old 100/40/40/5 fins), iso view in print orientation. Source: `out/fin_can_md/rev3/fin_can_md_rev3_iso.png`, 2026-11-21.*
 
 ![Fin can rev 3, section (superseded)](figures/fin_can_md_rev3_section.png)
 
@@ -573,14 +670,14 @@ The owner's slicer (Bambu Studio) estimates **80 g** for rev 5 (design.yaml `fin
 | Wall | 2.2 mm (fully solid) | PROPOSED |
 | Aft bulkhead | 5 mm, integral; Kevlar strap holes and a ballast fill port (sizes TBD) | PROPOSED |
 | Shell mass / CG | **52.7 g ESTIMATE**, CG 119.9 mm from the tip | ESTIMATE |
-| Ballast | **70 g** at 74.6 mm; filling tip → 100 mm (27.2 cm³) needs ≥ 2.57 g/cm³ packed; material TBD | design.yaml `stability.ballast_*` |
-| Owner's nose target | **80 g** whole nose (OR); the plan is 52.7 + 70 = 122.7 g | design.yaml `nosecone.mass_g`, `stability.target_mass_g` (§11) |
+| Ballast | **71 g** at 74.6 mm; filling tip → 100 mm (27.2 cm³) needs ≥ 2.57 g/cm³ packed (stated for 70 g); material TBD | design.yaml `stability.ballast_*` |
+| Owner's nose target | **80 g** whole nose (OR); the plan is 52.7 g shell + 71 g ballast | design.yaml `nosecone.mass_g`, `stability.target_mass_g` (§11) |
 | Print | Tip up, bulkhead on the bed, 41.3 × 41.3 × 205 mm, no supports | |
 
 **Loads vs layers (nose, printed tip-up)**, nosecone.md §4. The snatch load pulls the strap aft (−Z).
 - The bulkhead web bends in-plane.
 - The shoulder wall carries the load in **Z tension across the layers**, the weak link. Its 251 mm² annulus reaches 15 MPa at 3.77 kN.
-- 70 g of ballast adds inertia load at deploy. That is not checked yet.
+- The ballast adds inertia load at deploy. That is not checked yet.
 
 `parts/nose_cone.py` does not exist, so the nose has no verify run.
 
@@ -615,7 +712,7 @@ Symbols:
 | Cd 1.5 | 2.43 m/s | 2.75 m/s | 3.04 m/s |
 | Reefed to ~30 in, Cd 0.75 | 4.59 m/s | 5.19 m/s | 5.72 m/s |
 
-- The new burnout mass is **539 g** (design.yaml `stability.burnout_mass_g`), between the 450 g and 575 g columns. recovery.md has not tabulated it.
+- The burnout mass is **539 g** (design.yaml `stability.burnout_mass_g`, rev 5 basis), between the 450 g and 575 g columns. recovery.md has not tabulated it.
 - **Chute decision:** the 40 in chute is kept. A 28 in chute was considered; it roughly doubles the landing energy (§4.3.6).
 - **Reefing:** recovery.md recommends reefing in wind. The ANSYS mitigation is to fly unreefed for gentler landings (§11).
 
@@ -650,63 +747,68 @@ Estes recovery wadding is PROPOSED ($5.43–5.99). A Nomex 6×6 (~$5) is the reu
   3. otherwise the item is left out and the run is stamped PROVISIONAL.
 - Conditions: standard atmosphere, vertical rail, no wind unless stated.
 - The run is **PROVISIONAL**: the tube, chute, stop ring, epoxy, buttons, retention and nose shell masses are ESTIMATES.
+- **Basis:** stability.md §0 and the design.yaml result block were run on **rev 5 with 70 g**. The main session re-solved the margin for **rev 6 (84.83 g, CG 40.5 mm forward of the aft face) with 71 g**; apogee and delay are essentially unchanged. Rev 5 rows are kept for reference.
 
 ### 6.1 Static margin
 **SM = (CP − CG) / d**
 
 Symbols: SM static margin (calibers); CP and CG measured from the nose tip (mm); d reference diameter, 41.275 mm (tube) for the gate. 46.795 mm (sleeve) is shown for comparison.
 
-Liftoff: (804.7 − 730.1) / 41.275 = **1.81 cal, PASS** (1.8 ± 0.2). On the 46.795 reference it is 1.59, FAIL low on that reference (design.yaml `stability.margin_liftoff_cal`).
+**Rev 6, 71 g:** (804.7 − 729.8) / 41.275 = **1.82 cal, PASS** (1.8 ± 0.2) (main session re-solve).
 
 | Case (liftoff) | Ballast g | CG mm | ref 41.275 | ref 46.795 |
 |---|---|---|---|---|
-| Zero ballast, pack on motor | 0 | 807.8 | **−0.08 UNSTABLE** | −0.07 |
-| Owner 80 g nose (27.3 g ballast), pack on motor | 27.3 | 775.4 | 0.71 FAIL | 0.63 FAIL |
-| Owner 80 g nose, pack at OR 457 mm | 27.3 | 736.4 | 1.66 PASS | 1.46 FAIL |
-| **Solved 1.8, pack on motor (design value)** | **69.7 → 70** | **730.1** | **1.81 PASS** | **1.59** |
-| Solved 2.0, pack on motor | 78.1 | 722.2 | 2.00 PASS | 1.76 PASS |
-| Solved 1.8 / 2.0, pack at OR 457 mm | 32.9 / 40.9 | 730 / 722 | 1.80 / 2.00 | 1.59 / 1.76 |
+| **Rev 6, design value (pack on motor)** | **71** | **729.8** | **1.82 PASS** | — |
+| Rev 6, solved 1.80 | 70.4 | — | 1.80 | — |
+| Rev 6, solved 2.0 | 78.8 | — | 2.00 | — |
+| Rev 5: zero ballast, pack on motor | 0 | 807.8 | **−0.08 UNSTABLE** | −0.07 |
+| Rev 5: owner 80 g nose (27.3 g ballast), pack on motor | 27.3 | 775.4 | 0.71 FAIL | 0.63 FAIL |
+| Rev 5: owner 80 g nose, pack at OR 457 mm | 27.3 | 736.4 | 1.66 PASS | 1.46 FAIL |
+| Rev 5: solved 1.8, pack on motor | 69.7 → 70 | 730.1 | 1.81 PASS | 1.59 |
+| Rev 5: solved 2.0, pack on motor | 78.1 | 722.2 | 2.00 PASS | 1.76 PASS |
+| Rev 5: solved 1.8 / 2.0, pack at OR 457 mm | 32.9 / 40.9 | 730 / 722 | 1.80 / 2.00 | 1.59 / 1.76 |
 
-- **On OR's CP (836.0 mm)** the 70 g build reads about **2.57 cal** (§3.3).
-- **Fin can at 120 g** (the old owner target) instead of 84 g: the CG moves 10.4 mm aft (−0.25 cal), and 83.8 g of ballast would be needed (stability.md §0.2).
+- **On OR's CP (836.0 mm)** the rev 5 / 70 g build read about **2.57 cal** (§3.3). Not re-stated for rev 6.
+- **Fin can at 120 g** (the old owner target) instead of 84 g: the CG moves 10.4 mm aft (−0.25 cal), and 83.8 g of ballast would be needed (stability.md §0.2, rev 5).
+- design.yaml's `stability.ballast_g` note records "solved 70.4 g for 1.80 cal"; the 71 g → 1.82 cal figure is the main session's sim result.
 
 ### 6.2 Mass budget: liftoff, pack on the motor (stability.md §0.1; x from the nose tip)
 
 | Item | g | x (mm) | Basis |
 |---|---|---|---|
 | Nose shell | 52.7 | 119.9 | nosecone.md ESTIMATE |
-| **Ballast** | **70** | 74.6 | solved for 1.8 cal |
+| **Ballast** | **71** (rev 5 run: 70) | 74.6 | solved for 1.8 cal; final value from the balance check |
 | Tube 863 mm | 93.6 | 596.5 | ESTIMATE 0.1085 g/mm (OR "LOC avg" gives 150.6 g; OR model 123 g; weigh it) |
-| Fin can rev 5 | 84.0 | 987.4 | model at 25 % infill; CG 43.3 mm forward of the aft face (owner slicer: 80 g) |
+| **Fin can rev 6** | **84.83** | CG 40.5 mm forward of the aft face | owner slicer, 25 % gyroid (rev 5 run: 84.0 g at 987.4 mm, CG 43.3 mm fwd of aft face) |
 | Stop/anchor ring | 10 | 870.7 | ESTIMATE, not designed |
 | Chute 57 + Kevlar 9.9 | 66.9 | 805.7 | ESTIMATES; pack rests on the ring |
 | Wadding / epoxy / buttons / retention | 2 / 10 / 5 / 5 | 855.7 / 980.7 / 730.7 / 1028.7 | ESTIMATES |
 | Motor H100W | 261 → 140 | 953.2 | CG at mid-length ASSUMED |
-| **Liftoff / burnout** | **660 / 539** | **CG 730.1 / 680.0** | |
+| **Liftoff / burnout** | **660 / 539 (rev 5 run)** | **CG 729.8 (rev 6, 71 g)**; rev 5 run 730.1 / 680.0 | |
 
-**Balance check (ready to fly):** the CG must be at **730 mm (window 722–739)**. If it is aft of 739, add ballast at about 1.1 g per mm (design.yaml `stability.balance_check_cg_from_nose_mm`).
+**Balance check (ready to fly):** the CG must be at **730 mm (window 722–739)**, unchanged for rev 6. If it is aft of 739, add ballast at about 1.1 g per mm (design.yaml `stability.balance_check_cg_from_nose_mm`).
 
 ### 6.3 Margin vs time
 
 ![Static margin vs time](figures/l1_cheap_margin_vs_time.png)
 
-*Figure 21. Static margin CP(Mach) − CG(t) for the H100W, fin can rev 5 and 70 g ballast, on a 1.83 m rail. It is plotted from liftoff to apogee with 0 / 5 / 10 g of delay and ejection mass loss; the dotted line is Mach. The shaded band is the owner's 1.8 ± 0.2 liftoff gate. Source: `out/sims/l1_cheap_margin_vs_time.png`, `sims/l1_cheap.py`, 2026-11-21.*
+*Figure 21. Static margin CP(Mach) − CG(t) for the H100W, **fin can rev 5 and 70 g ballast** (not regenerated for rev 6), on a 1.83 m rail. It is plotted from liftoff to apogee with 0 / 5 / 10 g of delay and ejection mass loss; the dotted line is Mach. The shaded band is the owner's 1.8 ± 0.2 liftoff gate. Source: `out/sims/l1_cheap_margin_vs_time.png`, `sims/l1_cheap.py`, 2026-11-21.*
 
 Method (stability.md §3a):
 - CP(M) comes from RocketPy's Mach-dependent Barrowman.
 - Propellant m(t) is impulse-proportional.
 - The propellant CG is at the motor midpoint.
 
-| Event | t (s) | Mach | SM (cal) | Source |
+| Event (rev 5 run) | t (s) | Mach | SM (cal) | Source |
 |---|---|---|---|---|
-| Liftoff | 0 | 0 | **1.81 (min)** | design.yaml `stability.margin_liftoff_cal` |
+| Liftoff | 0 | 0 | **1.81 (min)**; rev 6 / 71 g: 1.82 | design.yaml `stability.margin_liftoff_cal`; main session |
 | Rail exit (1.83 m) | — | 0.07 | 1.88 | `margin_rail_exit_cal` |
 | Max margin | ~2.2 | ~0.7 | 3.34 | `margin_max_in_flight_cal` |
 | Vmax | 1.93 | 0.737 | — | `max_velocity_m_s` |
 | Burnout | 2.398 | — | 3.02 (static M0) | `margin_burnout_cal` |
 | Apogee | 13.59 | 0 | 3.02–3.11 (0–10 g loss) | `margin_burnout_cal` note |
 
-### 6.4 Flight summary (stability.md §0.4)
+### 6.4 Flight summary (stability.md §0.4, rev 5 run; rev 6 essentially unchanged per the main session)
 
 | Quantity | Value | Owner's OR |
 |---|---|---|
@@ -717,7 +819,7 @@ Method (stability.md §3a):
 | Liftoff / burnout mass | 660 / 539 g | 637 g |
 
 - **Apogee gap:** if OR still uses the −6 delay, its apogee is cut short. Ours is not; at 6 s we are at 1095 m, still climbing at 56 m/s. The rest of the gap is coast drag: our Cd is an ESTIMATE, and OR's Cd is unknown.
-- The owner's Monte Carlo (1199–1213 m, balsa 3 mm fins, −6 delay) is not comparable to the printed 6 mm fins.
+- The owner's Monte Carlo (1199–1213 m, balsa 3 mm fins, −6 delay) is not comparable to the printed fins.
 
 ### 6.5 Delay table (stability.md §0.4)
 
@@ -735,7 +837,7 @@ Method (stability.md §3a):
 | 5 | 7.40 | 1032 | 69.5 | climbing | — |
 | 4 | 6.40 | 955 | 85.4 | climbing | — |
 
-The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s with 12 s (stability.md §0.4).
+The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s with 12 s (stability.md §0.4). The main session confirms 12 s for rev 6.
 
 ### 6.6 Sensitivity
 - **Cd ×0.7 / 0.85 / 1.3:** apogee 1509 / 1352 / 1061 m; coast 12.96 / 11.97 / 10.01 s. A 4.5 m/s wind gives 1224 m (design.yaml `stability.apogee_m`).
@@ -743,6 +845,7 @@ The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s 
 - **Ballast vs CG:** about 1.1 g per mm of CG shift (design.yaml `stability.balance_check_cg_from_nose_mm`).
 - **Mass estimates** (aero.md §0.6): +10 g nose → +0.27 cal; +10 g tube → +0.09 cal; tube at 151 g → +0.46 cal.
 - **Delay/ejection mass loss** of 0–10 g moves the apogee margin from 3.02 to 3.11 cal.
+- **Rev 6 drag:** the thick root and blunt TE are not in the Cd table (§3.4); a higher Cd lowers apogee and shortens the coast (Cd ×1.3 row).
 
 ---
 
@@ -755,11 +858,11 @@ The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s 
 | buy | Motor: bom.csv lists the H182R-14A | 1 | 207 | 42.29–56.40 | **H100W-14A DMS, 261 g, $54.99, HAZMAT** (motor.md §A) |
 | buy | LOC BT-1.52 tube, 34 in | 1 | 93.6 ESTIMATE | 9.30 | OR model: 123 g |
 | buy | Estes recovery wadding | 1 pack | 2 ESTIMATE | 5.43–5.99 | — |
-| buy | M3 brass heat-set inserts | 2 (pack of 100) | ~1 ESTIMATE | 10.99 / 100 | rev 5 uses 3 |
+| buy | M3 brass heat-set inserts | 2 (pack of 100) | ~1 ESTIMATE | 10.99 / 100 | rev 6 uses 3 |
 | TBD | M3 screws + washers | 2 + 2 | ~3 ESTIMATE | TBD | 3 + 3; washer min. OD 13.795 mm (placeholder ring) |
 | print | Nose cone | 1 | 52.7 | 0.69 | owner target 80 g whole nose |
-| print | Fin can | 1 | 197.3 (stale) | 2.56 | **rev 5: model 83.4–85.7 g, slicer 80 g** |
-| have | Ballast, 40 in chute, Kevlar, epoxy, PETG, glue stick, calipers, scale | — | — | 0 | **ballast 70 g** |
+| print | Fin can | 1 | 197.3 (stale) | 2.56 | **rev 6: slicer 84.83 g at 25 % gyroid** (model 87.0–101.9 g) |
+| have | Ballast, 40 in chute, Kevlar, epoxy, PETG, glue stick, calipers, scale | — | — | 0 | **ballast 71 g** |
 | borrow | AeroTech delay tool; pad, rail, controller | — | — | 0 | **UDDT**; source TBD |
 | owner-handled | Rail buttons, igniter, soldering iron | — | — | excluded | — |
 | — | MMT-1.14 liner | — | — | — | **dropped** (min-diameter) |
@@ -778,10 +881,12 @@ The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s 
 Phase 5 has not started, and there is no `schedule.md`.
 - Deadline: launch on 2026-12-14 (goal.md).
 - **Ordering constraints:**
-  - measure the tube OD and the motor → regenerate the fin can (rev 5 or rev 6) → print;
+  - ANSYS re-run on rev 6 → confirm or revise the fins;
+  - measure the tube OD and the motor → regenerate rev 6 with measured values → print;
+  - drop-test the print → final fin can;
   - weigh the parts → re-sim → set the final ballast → balance check;
-  - drop test or rev 6 decision → final fin can print;
   - drill the delay to 12 s once the motor is in hand.
+- The 3D CFD run is not on the critical path, but it decides the ballast if OR's CP turns out right (§3.3).
 - The motor is HAZMAT. If it is bought at the field, its dimensions may not be known before printing (fin_can_design.md, Risks).
 - Project difficulty is 3 / 5 (feasibility.md §5).
 
@@ -791,19 +896,20 @@ Phase 5 has not started, and there is no `schedule.md`.
 
 ### 9.1 verify.py (skills/SKILL.md)
 
-| # | Check | Pass condition | Fin can rev 5 | Nose cone |
-|---|---|---|---|---|
-| 1 | Mesh integrity | watertight, manifold, one body | PASS | not generated |
-| 2 | Mass | within ±5 % of target | on disk FAIL (120 g target); **reported PASS at 80 g, re-run to record it** | — |
-| 3 | Mating interference | 0 mm³ with each mating solid | PASS (vs placeholders) | — |
-| 4 | Renders | written and looked at | PASS (iso and section reviewed) | — |
-| 5 | Build volume | ≤ 256 mm on each axis | PASS | — |
+| # | Check | Pass condition | Fin can rev 6 | Fin can rev 5 | Nose cone |
+|---|---|---|---|---|---|
+| 1 | Mesh integrity | watertight, manifold, one body | PASS | PASS | not generated |
+| 2 | Mass | within ±5 % of target | PASS (84.83 g; model 87.0–101.9 g) | PASS (80 g; model 83.4–85.7 g) | — |
+| 3 | Mating interference | 0 mm³ with each mating solid | PASS (vs placeholders) | PASS (vs placeholders) | — |
+| 4 | Renders | written and looked at | PASS (iso and section reviewed) | PASS | — |
+| 5 | Build volume | ≤ 256 mm on each axis | PASS | PASS | — |
 
 A part is not "good" until every check passes and its renders have been reviewed (CLAUDE.md).
 
 ### 9.2 FEA (ANSYS, §4.3)
-- Done: flight gust, modal, sideways tip strike (50 N), and axial tip strike (400 / 770 / 900 / 2000 N).
-- **To do:** the thrust case (+138 N on the lip underside); identify the mode shapes for modes 4–6; confirm the material source data.
+- Done on rev 5: flight gust, modal, sideways tip strike (50 N), axial tip strike (400 / 770 / 900 / 2000 N), combined 200 N Y + 770 N Z.
+- **To do on rev 6** (predictions in §4.3.7): 50 N Y (~0.14), 200 N Y (~0.5–0.57), combined (~0.75–0.8); modal.
+- **Also to do:** the thrust case (+138 N on the lip underside); identify the mode shapes for modes 4–6; confirm the material source data.
 
 ### 9.3 Measurements and fit tests before printing
 - **Tube OD** (calipers): sets the sleeve bore and the nose base OD.
@@ -817,8 +923,9 @@ A part is not "good" until every check passes and its renders have been reviewed
 - **Fit test:** slide the motor into the BT-1.52, and the sleeve onto the tube.
 
 ### 9.4 Drop test (PROPOSED, ansys_results.md)
-- Drop the fit-test print from **0.8 m** (40 in chute equivalent) or **1.5 m** (28 in equivalent).
+- Drop the rev 6 fit-test print from **0.8 m** (40 in chute equivalent) or **1.5 m** (28 in equivalent).
 - Land it on a fin tip sideways. Inspect the root fillet at the aft end (figure 13).
+- This is the only test that includes the real 25 % gyroid core in the 12 mm root (§4.3.7 caveats).
 
 ### 9.5 Weigh-and-balance
 - Weigh the nose, tube, fin can, chute and Kevlar, then re-run the sim with the as-built masses.
@@ -832,7 +939,8 @@ A part is not "good" until every check passes and its renders have been reviewed
 
 ### 9.7 Analysis tools
 - `sims/l1_cheap.py`: RocketPy flight and stability (§6).
-- `tools/fluent_domain.py`: 2D fin-section CFD domains (§3.6). No results yet.
+- `tools/fluent_domain.py`: 2D fin-section CFD domains, rev 6 tapered sections (§3.6.1). No results yet.
+- `tools/rocket_oml.py`: whole-rocket OML STEP for the planned 3D Fluent run (§3.6.2). No results yet.
 - Ansys Mechanical 2023 R1 (owner): FEA (§4.3).
 
 ---
@@ -861,23 +969,28 @@ A part is not "good" until every check passes and its renders have been reviewed
 | 2026-11-21 | H100W thrust curve from the owner's ThrustCurve CSV → `motor/H100W.eng` | owner | design.yaml `motor.thrust_curve_source`; git c94c472 |
 | 2026-11-21 | Aero optimisation proposes fins 50/30/77/6 (rev 4, 2.0 cal at zero ballast). **Not adopted** | aero (PROPOSED) | aero.md §0.5 |
 | 2026-11-21 | **Fins: the owner's OpenRocket set, 50.0 / 30.0 / 43.18 / 20.32 / 6.0 mm** → fin can rev 5 | owner | design.yaml `aero`; git 94b621b |
-| 2026-11-21 | **Fin can target mass 80 g** from the owner's Bambu Studio slicer (was 120 g OR override, then 78.87 g) | owner | design.yaml `fin_can_md.target_mass_g`; git aa0c1ba, 937c29b |
-| 2026-11-21 | **Fly 70 g ballast**: 1.81 cal on our CP, ~2.57 on OR's CP; our CP is the stable-side choice | owner plan / stability (PROPOSED) | design.yaml `stability.ballast_g`; stability.md §0.3 |
-| 2026-11-21 | **Drill the delay to 12 s** (not ~7 s) | stability (PROPOSED) | stability.md §0.4 |
+| 2026-11-21 | Fin can target mass 80 g from the owner's Bambu Studio slicer (was 120 g OR override, then 78.87 g). **Superseded by rev 6** | owner | git aa0c1ba, 937c29b |
+| 2026-11-21 | Fly 70 g ballast (rev 5): 1.81 cal on our CP, ~2.57 on OR's CP. **Superseded by 71 g** | owner plan / stability (PROPOSED) | stability.md §0.3 |
+| 2026-11-21 | **Drill the delay to 12 s** (not ~7 s); unchanged for rev 6 | stability (PROPOSED) | stability.md §0.4; main session |
 | 2026-11-21 | **Keep the 40 in chute**; a 28 in chute was considered and roughly doubles the landing energy | owner | ansys_results.md landing context |
 | 2026-11-21 | ANSYS runs use the **conservative PETG set** (Exy 1472, Ez 1087, Gyz = Gxz 394 MPa) | owner (confirmed) | ansys_results.md; git b467173 |
+| 2026-11-21 | **Build a landing-tough fin can rev 6**, sized from the owner's ANSYS data: root 12 → tip 6 mm, fillet 6, TE 2.0 mm at the root; same planform | owner request; main session sizing | design.yaml `aero.fin_thickness_mm`; git 2c62fb5 |
+| 2026-11-21 | **Print the fin can at 25 % gyroid; target 84.83 g** (owner slicer; 88.43 g at the other settings tried, briefly used as the target in git f3004e0) | owner | design.yaml `fin_can_md.target_mass_g`; git 201e22e |
+| 2026-11-21 | **Ballast 71 g → 1.82 cal** on rev 6 (70.4 g = 1.80; 2.0 cal = 78.8 g); final value from the balance check | main session (stability re-solve) | design.yaml `stability.ballast_g`; git 201e22e |
+| 2026-11-21 | Plan a 3D Fluent run on the whole-rocket OML (M 0.3, α 0/2/4°) to resolve the OR CP gap | main session (PROPOSED) | git 87fc346 |
 
 ---
 
 ## 11. Open Items & Placeholders
 
 ### 11.1 Structures and FEA
+- **ANSYS re-run on rev 6** (owner): 50 N Y → predicted ~0.14; 200 N Y → ~0.5–0.57; 200 N Y + 770 N Z → ~0.75–0.8 (§4.3.7, PREDICTION).
+- **Rev 6 infill core:** the 12 mm root has a 25 % gyroid core; the 1/t² prediction and the solid ANSYS model assume a solid section. Decide whether to raise infill or walls in the fin region (owner).
+- **Drop test** of the rev 6 fit-test print (0.8 m / 1.5 m).
 - **Thrust FEA case:** +138 N on the lip underside, not yet run.
-- **Mode shapes:** identify modes 4–6 (1530 Hz) as torsion or 2nd bending.
+- **Mode shapes:** identify modes 4–6 (1530 Hz) as torsion or 2nd bending; no rev 6 modal run.
+- **Flutter** not recomputed for the rev 6 taper (§3.5).
 - **PETG properties:** ANSYS used the conservative set, but both recommended sets came from search-result summaries. Read the JuggerBot and Ultimaker sources and confirm them.
-- **Drop test** of the fit-test print (0.8 m / 1.5 m).
-- **Rev 6 (landing-tough) decision:** sideways capacity ~90 N vs ~200 N realistic. It needs ~2.3× root bending strength.
-- **Re-run the rev 5 verify** at 80 g. The on-disk JSON and spec still record the 120 g target (4/5).
 
 ### 11.2 Placeholders that block printing
 - `tube_od_mm` 41.275: measure the tube.
@@ -886,29 +999,33 @@ A part is not "good" until every check passes and its renders have been reviewed
 - Nose cone: `parts/nose_cone.py` not written; ballast material for ≥ 2.57 g/cm³ packed is TBD.
 
 ### 11.3 Weigh the parts
-Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (80 g slicer vs 84.0 g model), chute (≤ 57 g ESTIMATE) and Kevlar. Then re-sim and do the balance check.
+Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (84.83 g slicer vs 87.0–101.9 g model), chute (≤ 57 g ESTIMATE) and Kevlar. Then re-sim and do the balance check.
 
-### 11.4 OR CP discrepancy
+### 11.4 OR CP discrepancy and CFD
 - Our CP is 804.7 mm; OR's is 836.0 mm. OR's fin CNα is 9.364, against 6.97 / 7.08 for 3 fins and 9.43 for 4 fins. **Check the fin count in the .ork.**
+- **3D Fluent run** on `out/cfd/rocket_oml.step` (M 0.3, α 0/2/4°, ref area 1.338e-3 m², ref length 0.041275 m): not yet run.
 - OR has a 2 g bulkhead at 19.461 in that holds the pack forward. Is that a planned part? Without it the pack sits on the motor (−0.99 cal).
 - OR has a 6 g inner tube, which does not exist in the min-diameter layout.
 - Needed from OR: its delay setting and the "optimum delay" for the current config.
 
 ### 11.5 Stale or conflicting source entries
-1. **Rev 5 verify JSON (120 g, 4/5) vs design.yaml `fin_can_md.target_mass_g` 80 g** and the main session's 5/5 report.
-2. **Fin can mass:** `stability.target_mass_g.fin_can_md` and `fin_can_model_mass_g` are 84.0 g; the owner's slicer says 80 g.
-3. **Nose mass:** the owner's `nosecone.mass_g` is 80 g; stability's planned nose with ballast is 122.7 g.
-4. **design.yaml `aero`:** `cp_from_nose_tip_mm` 899.0, `cg_liftoff` 816.5, `margin_liftoff_cal` 2.00, `cd_estimate`, `fin_root_bending_mpa` 6.5 and `max_velocity_m_s` 268 are all for the 77 mm proposal or the owner's OR, not the rev 5 sim.
-5. **Drag inputs:** the sim uses `cd_vs_mach` for the old 100/40/40/5 fins (0.70–0.83); aero's estimate for the 77 mm fins is 0.73–1.13. Neither is for the owner's fins.
-6. **H100W data disagree:** impulse 226.8 / 228.4 (curve) / 234 / 223.9 N·s; max thrust 137.8 / 130.2 (curve) / 131 N; burn 2.32 / 2.40 (curve) / 2.3 s; length 155 / 153 / 157.5 mm; the unlabelled TC 116.1 N.
-7. **Reefing:** recovery.md recommends reefing in wind; ansys_results.md recommends flying the 40 in unreefed.
-8. **design.yaml `owner.motor_class` "29mm H"**, goal.md and feasibility.md ("not min-diameter") conflict with the 2026-11-21 change.
-9. **design.yaml `recovery.deployment`** names the H182R-14A; `recovery.descent_mass_range_g` is still the 450–700 g PLACEHOLDER (burnout is now 539 g).
-10. **out/cfd/fluent_setup.md** uses H182R speeds and the rev 2 fin STEP.
-11. **design.yaml `motor.retention`** says "sleeve geometry TBD", but rev 5 defines it (insert radius 25.398 mm).
-12. **bom.csv:** the motor row is the H182R; inserts and screws are qty 2; fin can 197.3 g; the delay tool row is for the AeroTech tool, not the UDDT.
-13. **fin_can_design.md** describes the 29 mm design. **payload.md** has two contradictory banners.
-14. **Ballast packing density:** ≥ 2.57 g/cm³ (current, design.yaml) vs the H182R-era ≥ 3.27 (stability.md) and ≥ 3.54 g/cm³ (bom.csv).
+1. **Stability basis:** stability.md §0, design.yaml `stability` results (CG 730.1, 1.81 cal, 660 / 539 g) and the margin plot (figure 21) are rev 5 / 70 g. The rev 6 / 71 g re-solve (1.82 cal, CG 729.8) is only in the main-session report and the `ballast_g` note (which says 70.4 g → 1.80).
+2. **Fin can mass:** design.yaml `stability.target_mass_g.fin_can_md` is still 84.0 (rev 5); `fin_can_md.target_mass_g` and `fin_can_model_mass_g` are 84.83. The verify model (87.0–101.9 g) reads ~6 % above the slicer.
+3. **Our total CNα:** the main session gives ≈ 9.0 for the CFD comparison; the Barrowman components in §3.2 sum to 2.000 + 0.184 + 0.386 + 7.117 (stability.md §0.2). Clarify which value and Mach the ≈ 9.0 refers to.
+4. **Rocket length:** OML 1029 mm (main session) vs design.yaml `stability.total_length_mm` 1030.7.
+5. **Loads vs layers:** rev 5/6 spec sheets say fin root bending is "within the layers"; ANSYS shows across-layer normal-Z failure at the root fillet.
+6. **Nose mass:** the owner's `nosecone.mass_g` is 80 g; the plan is 52.7 g shell + 71 g ballast. `stability.target_mass_g.nose_cone_with_ballast` is 122.7 (70 g basis).
+7. **design.yaml `aero`:** `cp_from_nose_tip_mm` 899.0, `cg_liftoff` 816.5, `margin_liftoff_cal` 2.00, `cd_estimate`, `fin_root_bending_mpa` 6.5 and `max_velocity_m_s` 268 are for the 77 mm proposal or the owner's OR, not the current sim.
+8. **Drag inputs:** the sim uses `cd_vs_mach` for the old 100/40/40/5 fins (0.70–0.83); aero's estimate for the 77 mm fins is 0.73–1.13. Neither covers the rev 6 thick root and blunt TE.
+9. **H100W data disagree:** impulse 226.8 / 228.4 (curve) / 234 / 223.9 N·s; max thrust 137.8 / 130.2 (curve) / 131 N; burn 2.32 / 2.40 (curve) / 2.3 s; length 155 / 153 / 157.5 mm; the unlabelled TC 116.1 N.
+10. **Reefing:** recovery.md recommends reefing in wind; ansys_results.md recommends flying the 40 in unreefed.
+11. **design.yaml `owner.motor_class` "29mm H"**, goal.md and feasibility.md ("not min-diameter") conflict with the 2026-11-21 change.
+12. **design.yaml `recovery.deployment`** names the H182R-14A; `recovery.descent_mass_range_g` is still the 450–700 g PLACEHOLDER (burnout is 539 g).
+13. **out/cfd/fluent_setup.md** still says "compressible up to Mach 0.83" and points to `fin_can_rev2_fin_only.step` for 3D (rev 6 has `fin_can_md_rev6_fin_only.step`).
+14. **design.yaml `motor.retention`** says "sleeve geometry TBD", but rev 5/6 define it (insert radius 25.398 mm).
+15. **bom.csv:** the motor row is the H182R; inserts and screws are qty 2; fin can 197.3 g; the delay tool row is for the AeroTech tool, not the UDDT.
+16. **fin_can_design.md** describes the 29 mm design. **payload.md** has two contradictory banners. design.yaml `fin_can.fin_thickness_mode` (old 29 mm part) still says "constant".
+17. **Ballast packing density:** ≥ 2.57 g/cm³ (design.yaml, stated for 70 g) vs the H182R-era ≥ 3.27 (stability.md) and ≥ 3.54 g/cm³ (bom.csv).
 
 ### 11.6 Owner inputs still TBD
 - Approve or reject the forward backup stop; choose the aft Kevlar anchor.
@@ -918,7 +1035,7 @@ Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (80 
 - Heat protection for the paper tube around the case.
 - Carried over:
   - club rail size, club name, waiver altitude (apogee 1233 m);
-  - descent-rate target; chute brand and mass; cord SF; fillet radius;
+  - descent-rate target; chute brand and mass; cord SF; fillet radius (6 mm proposed);
   - confirm the ±0.2 cal reading and single deploy on motor ejection;
   - epoxy type; whether M3 screws and washers are owned;
   - check the Tripoli L1 rules on tripoli.org.
@@ -1021,6 +1138,14 @@ Accessed 2026-11-20 unless noted (as recorded in the project files).
 
 ## Changelog
 
+- **2026-11-21 (201e22e)**: fin can rev 6 (landing-tough), rev 6 stability re-solve, CFD prep (rocket-docs).
+  - Briefing: fin can row rev 6, 84.83 g at 25 % gyroid; ballast 71 g → 1.82 cal; sideways-landing line (rev 5 FAIL ~88 N, rev 6 predicted ~350–400 N, ANSYS pending); new risks and next steps.
+  - §3: fin table gains rev 6 (12 → 6 mm taper, TE 2.0 → 0.84, fillet 6); flutter not recomputed; §3.6 split into 2D domains (rev 6 sections) and the new whole-rocket OML with the planned 3D Fluent run (figure 22).
+  - §4: new §4.1 rev 6 (figures 3a–3c, verify 5/5, loads vs layers); rev 5 moved to §4.1b, its verify-record conflict closed. New §4.3.7 rev 6 design rationale (sizing math, prediction table, change table, infill-core caveat). §4.4 rev 6 mass row; §4.5 rev 6 row. Rev 3 iso renumbered to figure 18a (duplicate 17).
+  - §6: rev 6 margin rows (71 g → 1.82 cal, CG 729.8; 70.4 g → 1.80; 78.8 g → 2.0); mass budget fin can and ballast rows; rev 5 basis labelled.
+  - §7–§9: BOM fin can and ballast; schedule order; verify table rev 6 column; FEA to-do on rev 6; drop test on rev 6; `tools/rocket_oml.py`.
+  - §10: rev 6 build, 25 % gyroid 84.83 g, 71 g ballast, CFD plan. §11: rev 6 decision removed; ANSYS re-run, CFD, infill core and new conflicts added.
+  - Figures added: `fin_can_md_rev6_iso.png`, `fin_can_md_rev6_section.png`, `rev5_vs_rev6_root.png`, `rocket_oml_side.png`.
 - **2026-11-21 (65aa51e)**: owner's fins, fin can rev 5, H100W re-sim, OR comparison, ANSYS (rocket-docs).
   - Briefing: rev 5 and owner fins; new key-performance table; three ANSYS result lines; new top risks and next steps.
   - §2: H100W thrust curve (figure 1, replotted from `motor/H100W.eng`); curve values; delay drilled to 12 s, with the OR "−6" explanation.
@@ -1055,4 +1180,7 @@ Project history (git log):
   - 3911aa5: OR component analysis and fin CNα comparison.
   - aa0c1ba, 937c29b: fin can target 78.87 g, then 80 g (owner slicer).
   - ec9cbab: ChatGPT handoff prompt.
-  - 51d28f4, b467173, 65aa51e: owner's ANSYS results (gust, modal, landing); conservative PETG set confirmed; 2000 N axial failure-index run.
+  - 51d28f4, b467173, 65aa51e, 90c24c2, c74f1a1, 22651b2, de24f7b, 0294b1a: owner's ANSYS results (gust, modal, landing, axial 900/2000/770 N, sideways FI, combined run); conservative PETG set confirmed; living report rev 5 build.
+  - 2c62fb5: fin can rev 6, landing-tough fins sized from the owner's ANSYS.
+  - 87fc346: CFD tools, rev 6 2D domains and whole-rocket OML STEP.
+  - f3004e0, 201e22e: rev 6 target 88.43 g, then 84.83 g at 25 % gyroid (owner slicer); verify 5/5; ballast 72 g, then 71 g.
