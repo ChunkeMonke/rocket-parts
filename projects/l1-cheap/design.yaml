@@ -90,38 +90,38 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
   fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
-  ballast_g: 71                  # 2026-11-21: fin can REV 6 at 84.83 g (owner slicer, 25 % gyroid), CG 40.5 mm -> solved 70.4 g for 1.80 cal (ref 41.275), pack on motor, nose shell 52.7. 2.0 cal = 78.8 g. Set final value from the BALANCE CHECK
+  ballast_g: 73                  # 2026-11-21: fin can REV 7 at 90 g (owner slicer, 25 % gyroid), CG 38.0 mm -> solved 72.8 g for 1.80 cal (ref 41.275); 1.6 cal 64.4 g, 2.0 cal 81.3 g. Was 71 (rev 6). Set final value from the BALANCE CHECK
   ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
   aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
   balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
-  # ---- results 2026-11-21: sims/l1_cheap.py --allow-tbd --margin-plot out/sims/l1_cheap_margin_vs_time.png ----
+  # ---- results 2026-11-21 (REV 7 fin can 90 g, ballast 73 g): sims/l1_cheap.py --allow-tbd --margin-plot out/sims/l1_cheap_margin_vs_time.png ----
   # PROVISIONAL: tube, chute, stop ring, epoxy, buttons, retention, nose shell are ESTIMATES; CP gap vs owner OR unresolved (stability.md 0.3)
   total_length_mm: 1030.7        # nose 165 + tube 863 + aft lip 2.67 (min-diameter; sleeve over the aft 100 mm)
-  liftoff_mass_g: 660            # structure 399 (incl. 70 g ballast) + motor 261
-  burnout_mass_g: 539            # 0-10 g less if delay/ejection loss is real (unpublished)
-  cg_liftoff_from_nose_mm: 730.1
-  cg_burnout_from_nose_mm: 680.0
+  liftoff_mass_g: 669            # structure 408 (incl. 73 g ballast, rev 7 fin can 90 g) + motor 261
+  burnout_mass_g: 548            # 0-10 g less if delay/ejection loss is real (unpublished)
+  cg_liftoff_from_nose_mm: 730.2
+  cg_burnout_from_nose_mm: 680.9
   cp_from_nose_mm: 804.7         # Barrowman M0 with sleeve step + fairing (fins on r 23.40); RocketPy 804.6 (M0), 810.9 (M0.5), 822.0 (M0.8). No sleeve: 792.8 (Barrowman) / 792.7 (RocketPy). OWNER OR 836.0 (unresolved; = a 4-fin set in RocketPy, 837.0 @ M0.3)
   margin_liftoff_cal: 1.81       # PASS vs 1.8 +/- 0.2, ref 41.275 (gate, liftoff only). Ref 46.795: 1.59 = FAIL (low) on that reference
-  margin_rail_exit_cal: 1.88     # 1.83 m rail, M 0.07 (RocketPy)
+  margin_rail_exit_cal: 1.87     # 1.83 m rail, M 0.07 (RocketPy)
   margin_min_in_flight_cal: 1.81 # at liftoff
-  margin_max_in_flight_cal: 3.34 # ~2.2 s, M 0.7 (RocketPy)
-  margin_burnout_cal: 3.02       # static M0, reported not gated; 3.02-3.11 at apogee for 0-10 g delay/ejection loss
-  apogee_m: 1233                 # 4044 ft AGL, NO deployment before apogee. Cd x0.7 / 0.85 / 1.3 -> 1509 / 1352 / 1061 m; 4.5 m/s wind 1224
-  time_to_apogee_s: 13.59
+  margin_max_in_flight_cal: 3.31 # ~2.2 s, M 0.7 (RocketPy)
+  margin_burnout_cal: 3.00       # static M0, reported not gated; 3.02-3.11 at apogee for 0-10 g delay/ejection loss
+  apogee_m: 1234                 # 4044 ft AGL, NO deployment before apogee. Cd x0.7 / 0.85 / 1.3 -> 1509 / 1352 / 1061 m; 4.5 m/s wind 1224
+  time_to_apogee_s: 13.64
   burnout_time_s: 2.398          # end of the .eng curve
-  coast_to_apogee_s: 11.19       # = the DELAY to drill. Cd x0.7..1.3 -> 12.96..10.01 s. Owner OR "optimum delay" 11.6 s agrees
-  max_velocity_m_s: 250.0        # at 1.93 s
-  max_mach: 0.737
-  max_q_kpa: 37.3
-  rail_exit_velocity_m_s: {rail_1p5m: 21.6, rail_1p83m: 24.0}   # no rail-button geometry modelled
+  coast_to_apogee_s: 11.24       # = the DELAY to drill. Cd x0.7..1.3 -> 12.96..10.01 s. Owner OR "optimum delay" 11.6 s agrees
+  max_velocity_m_s: 248.3        # at 1.93 s
+  max_mach: 0.732
+  max_q_kpa: 36.7
+  rail_exit_velocity_m_s: {rail_1p5m: 21.4, rail_1p83m: 23.8}   # no rail-button geometry modelled
   recommended_delay_s: 12        # DRILL 14A -> 12 s: deploy 7.9 m/s descending, 1230 m (nominal); <= 17 m/s over Cd x0.7-1.3. NOT 7 s (deploys climbing at 31-63 m/s). Motor agent to confirm the drill steps
-  deploy_velocity_m_s: 7.9       # 12 s delay, nominal Cd
-  deploy_altitude_m: 1230
-  target_mass_g: {nose_cone_shell: 52.7, nose_cone_with_ballast: 122.7, fin_can_md: 84.0}   # verify targets. fin_can_md = rev 5 model at 25 % infill; the OWNER 120 g target is unreachable (83.4-85.7 g) and should be replaced by 84.0 (part library / owner decision)
+  deploy_velocity_m_s: 7.4       # 12 s delay, nominal Cd
+  deploy_altitude_m: 1231
+  target_mass_g: {nose_cone_shell: 52.7, nose_cone_with_ballast: 122.7, fin_can_md: 90.0}   # verify targets. fin_can_md = REV 7 owner slicer 90 g at 25 % gyroid (2026-11-21)
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
-  fin_can_model_mass_g: 84.83        # REV 6, OWNER Bambu Studio slicer 2026-11-21, 25 % gyroid (verify model 87.0-101.9 g). Was 88.43 / 84.0 (rev 5)
-  fin_can_model_cg_from_aft_mm: 40.5 # rev 6 solid-mesh CG forward of the aft face (main session 2026-11-21). Was 43.3 (rev 5)
+  fin_can_model_mass_g: 90.0         # REV 7, OWNER Bambu Studio slicer 2026-11-21, 25 % gyroid (verify model 90.6-113.7 g). Rev 6 was 84.83
+  fin_can_model_cg_from_aft_mm: 38.0 # REV 7 solid-mesh CG forward of the aft face (main session 2026-11-21). Rev 6 40.5, rev 5 43.3
   nose_shell_mass_g: 52.7            # nosecone.md printed-shell ESTIMATE (CG = nosecone.cg_from_tip_mm). nosecone.mass_g (80) is the owner's WHOLE-nose target = shell + ballast
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
@@ -237,5 +237,5 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   boss_extra_wall_mm: {value: 1.0, status: PROPOSED, note: "rev 7: +1 mm around the insert boss (wall 2.67 -> 3.67 mm) where the in-house FEA peaks sit"}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
-  target_mass_g: {value: 84.83, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 84.83 g for rev 6 at 25 % GYROID infill (88.43 g at 25 % grid/50 %; rev 5 was 80 g)"}
+  target_mass_g: {value: 90.0, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 90 g for REV 7 at 25 % GYROID infill (rev 6 was 84.83 g; rev 5 80 g)"}
   print_infill: {value: "25 % gyroid", status: OWNER, note: "owner 2026-11-21 for the fin can (shop default is 25 % grid); gyroid bonds to walls in all directions"}

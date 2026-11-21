@@ -7,7 +7,7 @@
 | # | Check | Result | Detail |
 |---|---|---|---|
 | 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=89534.5 mm3, bodies=1 |
-| 2 | mass | FAIL | target 84.8 g (±5 %); reachable 90.6 g (0 %) – 113.7 g (100 %); infill to hit target = -25.1 % |
+| 2 | mass | PASS | target 90.0 g (±5 %); reachable 90.6 g (0 %) – 113.7 g (100 %); infill to hit target = -2.7 % |
 | 3 | mating interference | PASS | tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3 |
 | 4 | renders | PASS | written: fin_can_md_rev7_iso.png, fin_can_md_rev7_front.png, fin_can_md_rev7_section.png — VISUAL REVIEW REQUIRED |
 | 5 | build volume | PASS | extents X 102.6 / Y 118.4 / Z 120.0 mm vs limit 256/256/256 |
@@ -15,7 +15,7 @@
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
 - Solid (walls/skins) 71.36 cm³ · infill region 18.17 cm³ · mesh volume 89.53 cm³
-- Mass at 0 % / 100 % infill: 90.6 g / 113.7 g · target 84.83 g · infill needed: -25.1 %
+- Mass at 0 % / 100 % infill: 90.6 g / 113.7 g · target 90.0 g · infill needed: -2.7 %
 
 ## Print orientation
 Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are vertical walls, fins shrink going up, the forward fairing narrows going up.
@@ -61,7 +61,7 @@ Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are v
 | `boss_extra_wall_mm` | 1 | PROPOSED | rev 7: +1 mm around the insert boss (wall 2.67 -> 3.67 mm) where the in-house FEA peaks sit |
 | `insert_radius_mm` | 25.398 | derived/shop |  |
 | `boss_fairing_length_mm` | 20 | PROPOSED |  |
-| `target_mass_g` | 84.83 | OWNER | owner 2026-11-21: Bambu Studio slicer 84.83 g for rev 6 at 25 % GYROID infill (88.43 g at 25 % grid/50 %; rev 5 was 80 g) |
+| `target_mass_g` | 90 | OWNER | owner 2026-11-21: Bambu Studio slicer 90 g for REV 7 at 25 % GYROID infill (rev 6 was 84.83 g; rev 5 80 g) |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 
 ## Not print-ready until resolved
