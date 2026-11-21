@@ -1,0 +1,38 @@
+{
+  "rev": 6,
+  "calibration": {
+    "sideways": 1.293978449992963,
+    "axial": 1.2218546779743313
+  },
+  "all_pass_C1_C4": false,
+  "rows": [
+    {
+      "criterion": "C1 sideways 200 N",
+      "FI_raw": 0.6069957894736843,
+      "FI_scaled": 0.7854394708154129,
+      "limit": 0.5,
+      "result": "FAIL"
+    },
+    {
+      "criterion": "C3 axial 200 N",
+      "FI_raw": 0.17816894736842104,
+      "FI_scaled": 0.21769656181186767,
+      "limit": 0.5,
+      "result": "PASS"
+    },
+    {
+      "criterion": "C2 tilted 200 N @45\u00b0",
+      "FI_raw": null,
+      "FI_scaled": null,
+      "limit": null,
+      "result": "MISSING"
+    },
+    {
+      "criterion": "C4 flight gust 15 N",
+      "FI_raw": null,
+      "FI_scaled": null,
+      "limit": null,
+      "result": "MISSING"
+    }
+  ]
+}

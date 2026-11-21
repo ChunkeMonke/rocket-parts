@@ -18,3 +18,7 @@ to the owner's ANSYS calibration using rev 5 run at those same settings.
 
 **Stop rule:** stop when a revision meets C1–C7 and the next, lighter step fails one of them. Hard cap: rev 10.
 Then hand off to stability (ballast), docs (report) and the owner (slicer mass, ANSYS cross-check, print).
+
+**Outcome (2026-11-21):** the owner stopped the loop at **rev 7** (C1–C4 ALL PASS: C1 0.28, C2 0.25,
+C3 0.084, C4 0.022 scaled FI; `out/fea/rev7/criteria.json`). Rev 8 (root 10 mm) was not analysed: its
+FEA mesh failed in gmsh (ScaledJac) and the owner chose rev 7. C6 mass check still needs the slicer mass.
