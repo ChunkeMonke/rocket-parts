@@ -90,7 +90,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
   fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
-  ballast_g: 70                  # 2026-11-21: solved 69.7 g -> 1.81 cal liftoff (ref 41.275), pack ON THE MOTOR, nose shell 52.7. Was 90.5 (H182R layout). 2.0 cal = 78.1 g. Pack at owner's OR 457 mm: 32.9 g (1.8) / 40.9 g (2.0). Set the final value from the BALANCE CHECK below
+  ballast_g: 72                  # 2026-11-21: re-solved for fin can REV 6 (88.43 g, CG 40.5 mm) -> 1.80 cal liftoff (ref 41.275), pack on motor, nose shell 52.7. 2.0 cal = 80.3 g. Was 70 (rev 5). Set final value from the BALANCE CHECK
   ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
   aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
   balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
@@ -120,8 +120,8 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   deploy_altitude_m: 1230
   target_mass_g: {nose_cone_shell: 52.7, nose_cone_with_ballast: 122.7, fin_can_md: 84.0}   # verify targets. fin_can_md = rev 5 model at 25 % infill; the OWNER 120 g target is unreachable (83.4-85.7 g) and should be replaced by 84.0 (part library / owner decision)
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
-  fin_can_model_mass_g: 84.0         # parts/fin_can_md.py REV 5 (owner OR fins), verify mass model at 25 % infill (83.4 at 0 %, 85.7 at 100 %); out/fin_can_md/rev5/, 2026-11-21. Was 171.8 (29 mm fin_can rev 2)
-  fin_can_model_cg_from_aft_mm: 43.3 # rev 5 model CG forward of the aft face (main session, 2026-11-21). Was 79.8
+  fin_can_model_mass_g: 88.43        # REV 6 (landing-tough fins), OWNER Bambu Studio slicer mass 2026-11-21 (verify model 87.0-101.9 g). Was 84.0 (rev 5 model)
+  fin_can_model_cg_from_aft_mm: 40.5 # rev 6 solid-mesh CG forward of the aft face (main session 2026-11-21). Was 43.3 (rev 5)
   nose_shell_mass_g: 52.7            # nosecone.md printed-shell ESTIMATE (CG = nosecone.cg_from_tip_mm). nosecone.mass_g (80) is the owner's WHOLE-nose target = shell + ballast
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
@@ -236,4 +236,4 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   te_root_thickness_mm: {value: 2.0, status: PROPOSED, note: "rev 6: blunt TE at the root (aft end = ANSYS crack origin), tapering to 2 outer lines (0.84) at the tip"}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
-  target_mass_g: {value: 80, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 80 g for rev 5 (was 78.87, earlier 120 g OR override); verify model reads 83.4-85.7 g"}
+  target_mass_g: {value: 88.43, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 88.43 g for rev 6 (rev 5 was 80 g)"}

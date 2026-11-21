@@ -12,8 +12,8 @@
   {
     "num": 2,
     "name": "mass",
-    "passed": false,
-    "detail": "target 80.0 g (\u00b15 %); reachable 87.0 g (0 %) \u2013 101.9 g (100 %); infill to hit target = -46.9 %",
+    "passed": true,
+    "detail": "target 88.4 g (\u00b15 %); reachable 87.0 g (0 %) \u2013 101.9 g (100 %); infill to hit target = 9.5 %",
     "data": {
       "solid_mm3": 68508.71268290107,
       "infill_region_mm3": 11757.833526739942,
@@ -24,8 +24,8 @@
       "layer_mm": 0.2,
       "n_top": 5,
       "n_bottom": 3,
-      "infill_needed_pct": -46.91839432922018,
-      "target_g": 80
+      "infill_needed_pct": 9.5358432690136,
+      "target_g": 88.43
     }
   },
   {
