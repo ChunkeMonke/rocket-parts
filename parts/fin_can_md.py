@@ -16,6 +16,8 @@ Parameters (projects/<project>/design.yaml `fin_can_md:` + `aero:` + skills/SKIL
   lip_bore_d_mm       mm   = motor case OD + 2 x fit
   motor_case_od_mm, motor_length_mm, thrust_ring_od_mm, thrust_ring_thk_mm   mm   mating geometry
   fin params, insert/boss params: as parts/fin_can.py
+  fin_tip_thickness_mm  mm  optional spanwise taper (aero.fin_tip_thickness_mm; default = root thickness)
+  te_root_thickness_mm  mm  blunt TE thickness at the root, tapering to te_thickness at the tip
   target_mass_g       g    verify check 2 target
 """
 from __future__ import annotations
@@ -73,9 +75,11 @@ def params(project: str = "l1-cheap") -> dict:
         "tip_chord_mm": aero["fin_tip_chord_mm"],
         "span_mm": aero["fin_span_mm"],
         "sweep_mm": aero["fin_sweep_mm"],
-        "fin_thickness_mm": aero["fin_thickness_mm"],
+        "fin_thickness_mm": aero["fin_thickness_mm"],          # root max thickness
+        "fin_tip_thickness_mm": aero.get("fin_tip_thickness_mm", aero["fin_thickness_mm"]),
         "te_thickness_mm": 2 * lw["outer_wall"],
         "root_fillet_r_mm": v["root_fillet_r_mm"],
+        "te_root_thickness_mm": v.get("te_root_thickness_mm", 2 * lw["outer_wall"]),
         "root_fillet_sections": v["root_fillet_sections"],
         "airfoil_points": v["airfoil_points"],
         "insert_hole_d_mm": v["insert_hole_d_mm"],

@@ -125,10 +125,13 @@ def chord_stations(n: int) -> np.ndarray:
     return (1 - np.cos(beta)) / 2
 
 
-def section_points(p: dict, chord: float, scale: float) -> list[tuple[float, float]]:
+def section_points(p: dict, chord: float, scale: float, t: float | None = None,
+                   te: float | None = None) -> list[tuple[float, float]]:
     """Closed (y, z) loop: upper TE -> LE -> lower TE. LE at z = chord, TE at z = 0."""
     x = chord_stations(p["airfoil_points"])
-    yt = scale * naca_half_thickness(x, p["fin_thickness_mm"], p["te_thickness_mm"])
+    t = p["fin_thickness_mm"] if t is None else t
+    te = p["te_thickness_mm"] if te is None else te
+    yt = scale * naca_half_thickness(x, t, te)
     z = chord * (1 - x)
     upper = [(yt[i], z[i]) for i in range(len(x) - 1, -1, -1)]      # TE -> LE
     lower = [(-yt[i], z[i]) for i in range(1, len(x))]               # LE -> TE
@@ -154,8 +157,13 @@ def fin_solid(p: dict) -> cq.Solid:
     for r in stations:
         u = min(max((r - r_start) / run, 0.0), 1.0)
         extra = f * (1 - math.sqrt(max(1 - (1 - u) ** 2, 0.0)))   # concave arc: f at the body -> 0
-        scale = (t + 2 * extra) / t
-        pts = section_points(p, chord_at(p, r), scale)
+        # optional spanwise taper of max thickness and TE thickness (root -> tip)
+        frac = min(max((r - rb) / p["span_mm"], 0.0), 1.0)
+        t_r = t + (p.get("fin_tip_thickness_mm", t) - t) * frac
+        te0 = p.get("te_root_thickness_mm", p["te_thickness_mm"])
+        te_r = te0 + (p["te_thickness_mm"] - te0) * frac
+        scale = (t_r + 2 * extra) / t_r
+        pts = section_points(p, chord_at(p, r), scale, t_r, te_r)
         wires.append(cq.Wire.makePolygon([cq.Vector(r, y, z) for y, z in pts], close=True))
     return cq.Solid.makeLoft(wires, ruled=True)
 

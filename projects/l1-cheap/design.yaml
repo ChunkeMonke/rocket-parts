@@ -50,7 +50,8 @@ aero:                      # aerodynamics agent — see aero.md section 0 (2026-
   fin_tip_chord_mm: 30.0   # OWNER OR: 1.181 in
   fin_span_mm: 43.18       # OWNER OR: height 1.7 in -> OR 2.08 cal (CG 29.541 in, CP 32.914 in). Aero proposal was 77 mm (its CG 816 mm assumed chute pack on the motor, nose 52.7 g)
   fin_sweep_mm: 20.32      # OWNER OR: sweep length 0.8 in (= root - tip, TE flush)
-  fin_thickness_mm: 6.0    # OWNER OR: 0.236 in
+  fin_thickness_mm: 12.0   # ROOT max thickness, rev 6 (owner request 2026-11-21: withstand landing). Was 6.0 (owner OR 0.236 in). Sized from ANSYS: FI_Y = 0.01142/N at t=6 -> FI ~ 1/t^2 -> 200 N sideways FI 0.57 (1.75x) before fillet credit
+  fin_tip_thickness_mm: 6.0  # rev 6 linear taper root -> tip (flutter/mass); tip unchanged from owner OR
   fin_edges: NACA 4-digit symmetric (fin_can_md), TE 0.84 mm (2 outer-wall lines)
   fin_body_od_mm: 46.795   # fins sit on the fin_can_md sleeve (interference factor with r = 23.40)
   sleeve_overlap_assumed_mm: 100   # ASSUMED unchanged from rev 3 (root chord 50 occupies the aft 50 mm); fin_can_md owns it
@@ -231,7 +232,8 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   insert_hole_d_mm: {value: 4.0, status: CITED, note: "accu-components chart (motor.md)"}
   insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
   boss_fairing_length_mm: {value: 20, status: PROPOSED}
-  root_fillet_r_mm: {value: 4, status: PROPOSED}
+  root_fillet_r_mm: {value: 6, status: PROPOSED, note: "rev 6: 4 -> 6 mm at the ANSYS failure site (root fillet); larger collides with the sleeve bore geometry"}
+  te_root_thickness_mm: {value: 2.0, status: PROPOSED, note: "rev 6: blunt TE at the root (aft end = ANSYS crack origin), tapering to 2 outer lines (0.84) at the tip"}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
   target_mass_g: {value: 80, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 80 g for rev 5 (was 78.87, earlier 120 g OR override); verify model reads 83.4-85.7 g"}
