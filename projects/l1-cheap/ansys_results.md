@@ -65,6 +65,12 @@ Force on the tip face in Z. The structure behaves linearly: **0.0247 MPa per N**
 
 **Axial failure load ≈ 770 N.**
 
+## Case 3b: sideways failure index
+50 N Y gives failure index max **0.571** (`35_tipY50_failure_index`), which confirms the ~88 N failure load.
+
+## Case 5: combined tip load, 200 N Y + 770 N Z
+Failure index max **3.28** (`50_combined_Y200_Z770_failure_index`). This equals 2.28 (200 N Y, scaled) + 1.00 (770 N Z), so superposition holds; both peak at the root fillet.
+
 ## Landing-load context (main-session ESTIMATE, 2026-11-21)
 - Landing energy: 40 in chute 3.8–4.7 J; 28 in chute 7.8–9.7 J (540–600 g, Cd 0.75).
 - Impact force ≈ energy ÷ stopping distance (2–5 cm ground): 90–220 N average with the 40 in chute, peaks to ~450 N. With the 28 in chute: 180–450 N average, peaks to ~900 N.

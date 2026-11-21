@@ -438,6 +438,10 @@ Force Y = 50 N on the +X fin's tip face.
 
 *Figure 12. Sideways tip strike, 50 N in Y: normal stress Z (across layers), max 10.8 MPa at the root. Scaled to 19 MPa, the fin fails at ~88 N. Source: `report/figures/ansys/31_tipY50_normalZ.webp`, fin can rev 5.*
 
+![Sideways tip strike 50 N failure index](figures/ansys/35_tipY50_failure_index.webp)
+
+*Figure 12b. Sideways tip strike, 50 N in Y: failure index σ_Z/19 MPa (legend 0–1), max **0.571** (= 10.85 MPa). This confirms the ~88 N sideways failure load (50 / 0.571 = 87.6 N). Source: `report/figures/ansys/35_tipY50_failure_index.webp`, owner, 2026-11-21.*
+
 #### 4.3.5 Case 4: landing tip strike, axial (Z)
 
 Force in Z on the tip face. The response is linear: **σ_Z,max = k·F**, with k = 0.0247 MPa per N at the fin root, aft end.
@@ -470,6 +474,24 @@ Failure index: **FI = σ_Z / 19 MPa** (ANSYS expression `SZ/19e6`). FI ≥ 1 mea
 ![Axial tip strike 900 N normal Z](figures/ansys/42_tipZ900_normalZ.webp)
 
 *Figure 16. Axial tip strike, 900 N in Z: normal stress Z, max 22.2 MPa (FI 1.17). Source: `report/figures/ansys/42_tipZ900_normalZ.webp`, fin can rev 5.*
+
+#### 4.3.5b Combined landing load: 200 N sideways (Y) + 770 N axial (Z)
+
+Owner run, 2026-11-21: a tip force of Y = +200 N and Z = +770 N applied together (a tilted landing).
+
+| Case | Failure index max (σ_Z/19 MPa) |
+|---|---|
+| 50 N Y alone | 0.571 |
+| 200 N Y alone (scaled ×4) | 2.28 |
+| 770 N Z alone | 1.00 |
+| **200 N Y + 770 N Z, combined run** | **3.28** (= 2.28 + 1.00, both peak at the root fillet) |
+
+- The combined result equals the sum of the two single loads. The model is linear and both loads peak at the same spot, the **fin-root fillet**, so any landing angle can be checked by adding the scaled single-load results.
+- **The sideways part dominates:** 200 N sideways alone is already 2.3× over the limit.
+
+![Combined 200 N Y + 770 N Z failure index](figures/ansys/50_combined_Y200_Z770_failure_index.webp)
+
+*Figure 17. Combined tip load, 200 N Y + 770 N Z: failure index (legend 0–1), max **3.28**. Red = failed, along the fin-root fillet of the loaded fin. Source: `report/figures/ansys/50_combined_Y200_Z770_failure_index.webp`, owner, 2026-11-21.*
 
 #### 4.3.6 Landing-load context (main-session ESTIMATE, ansys_results.md)
 
