@@ -46,11 +46,11 @@ aero:                      # aerodynamics agent — see aero.md section 0 (2026-
   #   cp 768.3 (old body), cd 0.70-0.83, Vmax 286-369, Mach 0.84-1.09, root bending 1.9 MPa.
   #   With the min-diameter mass table those fins give -0.70 cal (UNSTABLE) — aero.md 0.3.
   fin_count: 3
-  fin_root_chord_mm: 50    # flutter: required G ~ (Cr/t)^3, so a short, thick root wins (aero.md 0.4)
-  fin_tip_chord_mm: 30
-  fin_span_mm: 77          # solved for 2.00 cal (Barrowman M0, ref d 41.275) with the ESTIMATED mass table, aero.md 0.2; 71 -> 1.80 cal
-  fin_sweep_mm: 20         # = root - tip: TE straight and flush with the aft face (no overhang printing aft-face down)
-  fin_thickness_mm: 6      # thickest of 3-6 mm = lowest required G; t 5 / 4 variants in aero.md 0.4 if the owner's G allows
+  fin_root_chord_mm: 50.0  # OWNER OpenRocket 2026-11-21: 1.969 in (aero proposal was 50)
+  fin_tip_chord_mm: 30.0   # OWNER OR: 1.181 in
+  fin_span_mm: 43.18       # OWNER OR: height 1.7 in -> OR 2.08 cal (CG 29.541 in, CP 32.914 in). Aero proposal was 77 mm (its CG 816 mm assumed chute pack on the motor, nose 52.7 g)
+  fin_sweep_mm: 20.32      # OWNER OR: sweep length 0.8 in (= root - tip, TE flush)
+  fin_thickness_mm: 6.0    # OWNER OR: 0.236 in
   fin_edges: NACA 4-digit symmetric (fin_can_md), TE 0.84 mm (2 outer-wall lines)
   fin_body_od_mm: 46.795   # fins sit on the fin_can_md sleeve (interference factor with r = 23.40)
   sleeve_overlap_assumed_mm: 100   # ASSUMED unchanged from rev 3 (root chord 50 occupies the aft 50 mm); fin_can_md owns it
@@ -73,7 +73,7 @@ nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.m
   wall_thickness_mm: 2.2   # cone and shoulder; 2 outer lines + 3 inner lines = 2.19 mm; fully solid (< 2 x 2.67 mm crust)
   aft_bulkhead_thickness_mm: 5  # integral, printed on the bed; Kevlar strap + ballast fill port, hole sizes TBD
   print_height_mm: 205     # tip up; 205 <= 256 Z limit, X/Y 41.3
-  mass_g: 52.7             # ESTIMATE, walls + infill model at 25 % infill in the bulkhead core (51.7 at 0 %, 55.5 at 100 %)
+  mass_g: 80               # OWNER target 2026-11-21 (OpenRocket nose mass). Printed shell estimate was 52.7 g -> ~27 g ballast to reach 80
   cg_from_tip_mm: 119.9    # ESTIMATE, same model, no ballast
   ballast_g: TBD           # stability agent to request; cavity volume and CG table in nosecone.md
   ballast_cavity_cm3_to_100mm: 27.2   # interior from tip to 100 mm aft of tip; uniform-fill CG 74.6 mm from tip
@@ -227,4 +227,4 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   root_fillet_r_mm: {value: 4, status: PROPOSED}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
-  target_mass_g: {value: 108.7, status: FROM_AERO, note: "aero 2026-11-21 solid-model estimate for the 50/30/77/6 fin set; stability to confirm"}
+  target_mass_g: {value: 120, status: OWNER, note: "owner OpenRocket fin-set mass override 0.265 lb = 120 g (2026-11-21)"}
