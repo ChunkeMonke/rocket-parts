@@ -10,7 +10,7 @@ Screenshots are in `report/figures/ansys/`.
   - *Conservative:* Exy 1472, Ez 1087, ν 0.38 (assumed), Gxy 533, Gyz = Gxz 394 MPa. In-plane and across-layer moduli are from the [JuggerBot PETG review](https://juggerbot3d.com/petg-filament-review/).
   - *Nominal:* 1939 / 1711 MPa, from the [Ultimaker PETG TDS](https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf).
   - Both sets were picked off search-result summaries, not read from the documents; confirm before relying on them.
-- **Whether the runs below used the owner's values or the recommended ones has not been confirmed by the owner (TBD).**
+- **The runs below used the CONSERVATIVE recommended set** (owner confirmed 2026-11-21). The material-table screenshot shows the owner's earlier values, from before the update.
 - **Failure limits** used to judge results:
   - Z tensile (across layers) ~19 MPa (Ultimaker TDS, upright);
   - interlayer shear ~15 MPa (shop constant);
