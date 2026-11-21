@@ -1,5 +1,103 @@
 # Project: l1-cheap — Phase 2 Motor (propulsion)
 
+**Status:** 2026-11-21. Motor = **AeroTech H100W-14A DMS (38 mm, single-use)**, owner change. The rocket is now
+**minimum-diameter**: the motor slides into the aft end of the LOC BT-1.52 (ID 38.735 mm measured). A printed sleeve
+fits over the tube's aft end, and the thrust ring bears on the sleeve's aft lip.
+
+## A. H100W-14A data (searched 2026-11-21)
+
+All values were read through WebSearch because direct fetches return 403. No manufacturer cert sheet was readable.
+
+| Item | Value used | Other sources | Source |
+|---|---|---|---|
+| Total impulse | 226.8 N·s | 234 (QA, manufacturer listing); 223.9 (RR) | [ThrustCurve](https://www.thrustcurve.org/motors/AeroTech/H100W_DMS) ("calculated"), [Wildman](https://wildmanrocketry.com/products/h100w) |
+| Average thrust | 97.7 N | 100 (QA); 93.4 (RR) | Wildman labels 97.7 as the average; check: 226.8 / 2.32 = 97.8 |
+| Max thrust | 137.8 N (structural value) | 131 (QA, unit misprinted "N-sec"); 130.2 (RR) | Wildman labels 137.75 as the max |
+| ThrustCurve "116.1 N" | **unresolved** | — | The search snippet has no label for it. It is not avg (97.7) and not max (137.8). Check when the file arrives |
+| Burn time | 2.32 s | 2.3 (TC, QA); 2.40 (RR) | Wildman |
+| Loaded / propellant mass | 261 / 121 g | all agree | TC, [Quest (QA)](https://questaerospace.com/products/product_f89c2d4d-4c3c-9a99-bfd8-b2d0b1dcef8a) |
+| Burnout mass | 140 g | — | derived: 261 − 121. Ignores the delay and ejection mass lost |
+| Length | 155 mm | 153 (TC); 157.5 (RR) | AT/QA product name "38mm x 155mm"; QA 6.12 in |
+| Delay | 14 s max, owner drills it shorter | a search summary attributes "6, 8, 10 s" to TC (unverified) | QA: "set ... using the Universal Delay Drilling Tool (UDDT), Not Included" |
+| HAZMAT | **yes** | — | QA: "Requires HAZMAT shipping via UPS or FEDEX" |
+| Price | **$54.99** | eRockets $54.99, out of stock | [Wildman](https://wildmanrocketry.com/products/h100w), QA, [AT catalog 03.26.25](https://cdn.shopify.com/s/files/1/0615/7592/1878/files/Model_and_HP_03.26.25.pdf), [eRockets](https://www.erockets.biz/aerotech-38mm-composite-model-rocket-motor-dms-h100w-14a-1pk-aer-081014-required-to-pay-for-ups-ground-shipping-requires-level-1-certification/) |
+| MESS failures | 3 reported | — | TC (quoted); details are on motorcato.org and were not seen |
+
+RR = [RocketReviews](https://www.pirate.rocketreviews.com/h100w.html).
+Budget: $54.99 is $12.70 more than the H182R low price ($42.29).
+
+**Thrust curve:** `motor/H100W.eng` is **TBD and not present**. The owner must download the ThrustCurve
+H100W_DMS RSE or ENG file and add it to `projects/l1-cheap/motor/`, as they did for the H182R. Until then the
+sim stops on the missing file. `design.yaml` points at that path on purpose, so no curve gets guessed.
+
+## B. Tripoli L1 check (rules as in feasibility.md)
+
+| Rule | H100W | Result |
+|---|---|---|
+| 160.01–640 N·s | 223.9–234 N·s, depending on source | pass |
+| Single motor | yes | pass |
+| Avg thrust > 80 N (forum claim only) | 93.4–100 N | pass, with only 13–20 N margin. Verify the rule on tripoli.org/Level1 |
+
+## C. Case OD and thrust ring (critical for min-diameter)
+
+- **Case OD: TBD.** No measurement is published. Rocketry Forum threads ask for it with no answer:
+  [OD thread](https://www.rocketryforum.com/threads/can-someone-measure-the-od-of-a-38mm-dms-motor-for-me.145958/),
+  [ring thread](https://www.rocketryforum.com/threads/38mm-aerotech-dms-thrust-ring-dimensions.146365/),
+  [drawings thread](https://www.rocketryforum.com/threads/aerotech-dms-dimensional-drawings.181755/).
+  The only figure found is AeroTech's I500T DMS page, which gives a nominal "1.500 in (38mm)" = 38.10 mm.
+  If that held, the case would have 0.64 mm diametral clearance in the 38.735 tube. Labels and glue can eat that.
+- **Thrust ring:** it is "built-in" ([AT DMS data sheet](https://cdn.shopify.com/s/files/1/0615/7592/1878/files/genericdms_1648304178571.pdf))
+  and factory-glued. Its OD and thickness are **TBD**. One forum post says rings are "usually 3/8 in long", which is informal.
+- **Advisory risk:** AeroTech's DMS thrust-ring advisory (04/2014) says to check the glued ring and to add a CA fillet or a masking-tape ring
+  ([NAR notices](https://nar.org/?p=16459)). The 2017 notice applies to 54 mm only. Apogee reportedly flags the issue on its 38 mm DMS pages.
+  - In this layout the factory glue joint carries all of the thrust (137.8 N).
+  - A tape ring forward of the factory ring won't fit into the tube.
+  - A CA fillet on the forward face would also spoil the flat bearing face.
+  - **Proposal:** add a forward motor stop inside the tube (for example a printed or plywood ring epoxied at motor length). It acts as a backup thrust path. Owner decision.
+
+**Measurement request (motor in hand, calipers):**
+1. Case OD at the label, in 3 places.
+2. Ring OD.
+3. Ring axial thickness.
+4. Ring-to-nozzle-exit offset.
+5. Overall length.
+
+## D. Thrust bearing on the sleeve lip
+
+- **Load path:** the ring sits aft of the lip. The ring's **forward** face bears on the lip's **aft** face.
+- **Lip dimensions:** lip ID ≥ case OD + clearance, so the motor can pass through. Lip ID < ring OD.
+- **Print orientation:** sleeve axis vertical, lip on the bed. Thrust then acts along Z and loads the layers in **compression**. The tube's aft end butts against the lip, so the load goes straight into the tube with no PETG interlayer shear.
+- **Bearing stress:** σ = F / A, with F = 137.8 N and A = π/4 (ring OD² − lip ID²), which is TBD.
+  - Area that would reach the 15 MPa reference: 137.8 / 15 = 9.2 mm².
+  - Example only: ring 41 mm, lip ID 39 mm → 125.7 mm² → 1.1 MPa.
+- **Heat:** the paper tube now touches the case directly. The case and nozzle are hot when the ejection charge fires.
+
+## E. Retention (proposal only)
+
+- **Concept:** 3 × M3 screw and washer over the thrust ring, into heat-set inserts in the sleeve's fin-root bosses. This is rev 2 Option A carried over.
+  - The insert axes sit outside the tube OD (≥ 41.3 mm dia), so the washers must reach inward over the ring.
+  - Overlap rule: washer OD/2 − (insert radius − ring OD/2) ≥ 2 mm.
+- **Ejection kick (estimate):**
+  - 15 psi = 0.1034 MPa.
+  - Face area: the case OD is TBD, so use the tube ID 38.735 as the upper bound → 1178.4 mm². That gives **122 N**.
+  - × 3 margin → **366 N** design load. With the 38 mm class diameter instead: 117 N / 352 N.
+- **Capacity:** 3 × 269 N (rev 2 knocked-down insert pull-out) = 807 N, so **SF 2.2**.
+  - Insert pull-out runs along Z, which loads the interlayer bond in shear and tension (the weak direction).
+- **Alternative:** a commercial 38 mm retainer won't fit, because there is no motor tube to mount it on in this layout.
+- **Washers and screws:** length TBD.
+
+## F. Open questions
+1. Measure the case and ring (list in §C).
+2. Do you approve the forward backup stop?
+3. Thresholds for min thrust-to-weight and rail-exit velocity.
+4. The ThrustCurve H100W file.
+5. Your UDDT (Universal Delay Drilling Tool) step sizes.
+
+---
+
+# SUPERSEDED 2026-11-21: H182R-14A (29 mm) material below, kept for history
+
+
 **Status:** Phase 2 draft, 2026-11-20. **Motor = working assumption** (owner has not formally chosen).
 
 ## 1. Motor data: AeroTech H182R-14A, 29 mm DMS single-use

@@ -11,30 +11,34 @@ owner:                     # set by the owner; agents never change these
   airframe_od_class_mm: 38
   motor_class: 29mm H
 
-motor:                     # motor agent
-  # 2026-11-21 OWNER CHANGE: motor is now AeroTech H100W-14A DMS (38 mm, delay to be drilled by owner).
-  # Values below are still the H182R (29 mm) until the motor agent re-sources them. 38 mm => fin can,
-  # stability, recovery and BOM must be re-done. Owner was asked how to mount it (min-diameter vs bigger tube).
-  # Primary source: AeroTech DMS H182R-14A spec sheet, supplied by owner 2026-11-20.
-  # Cross-check (search, 2026-11-20): https://www.thrustcurve.org/motors/AeroTech/HP-H182R
-  designation: AeroTech H100W-14A DMS (38 mm single-use) - OWNER 2026-11-21 (supersedes H182R-14A); data below NOT yet updated
-  diameter_class_mm: 29    # spec sheet "29 mm x 203 mm (1.13 x 8.00 in)"; class, not measured case OD
-  case_od_mm: TBD          # not published; measure the motor
-  thrust_ring: TBD         # not on spec sheet; presence, OD, thickness TBD; measure
-  loaded_mass_g: 207       # spec sheet
-  propellant_mass_g: 115   # spec sheet
-  burnout_mass_g: 92       # derived 207 - 115 (ignores delay/ejection mass lost)
-  length_mm: 203           # spec sheet
-  total_impulse_ns: 218    # spec sheet (49.0 lb-s)
-  avg_thrust_n: 175          # RSE file (label-derived 182)
-  max_thrust_n: 205          # structural design value: max(plot read 205, RSE 200.8, label 192)
-  burn_time_s: 1.235        # RSE file (label 1.2)
-  delay_s: TBD             # 14 s max, adjustable shorter; set from stability sim
-  retention: M3 heat-set inserts in fin-root bosses, 1 per fin (owner 2026-11-20, fin_can rev 2 Option A); screw + washer over thrust ring
+motor:                     # motor agent — see motor.md (2026-11-21)
+  # 2026-11-21 OWNER CHANGE: AeroTech H100W-14A DMS (38 mm single-use), MINIMUM-DIAMETER in LOC BT-1.52
+  # (ID 38.735 measured); thrust ring bears on the aft lip of a printed sleeve over the tube.
+  # Old motor (superseded): H182R-14A DMS 29 mm, 207/115 g, 203 mm, 218 N-s, motor/H182R.eng.
+  # Sources (all read via WebSearch 2026-11-21; direct fetches blocked):
+  #   TC  = thrustcurve.org/motors/AeroTech/H100W_DMS (values "calculated", not cert document)
+  #   WM  = wildmanrocketry.com/products/h100w   QA = questaerospace.com/products/product_f89c2d4d-4c3c-9a99-bfd8-b2d0b1dcef8a
+  designation: AeroTech H100W-14A DMS (38 mm single-use), AT part 081014   # owner 2026-11-21
+  diameter_class_mm: 38    # class (product name "38mm x 155mm"); NOT a measured case OD
+  case_od_mm: TBD          # not published (forum threads asking, no answer). AT I500T DMS page lists "1.500 in (38mm)" nominal = 38.10 -> 0.64 mm diametral clearance in 38.735 ID IF true. MEASURE
+  thrust_ring: {present: yes, od_mm: TBD, thickness_mm: TBD}   # "built-in", factory-glued (AT DMS data sheet); dims not published; MEASURE. See AT 2014 DMS thrust-ring advisory (motor.md)
+  loaded_mass_g: 261       # TC, QA, WM agree
+  propellant_mass_g: 121   # TC, QA
+  burnout_mass_g: 140      # derived 261 - 121 (ignores delay/ejection mass lost)
+  length_mm: 155           # AT/QA product name "38mm x 155mm" (QA 6.12 in); TC 153, RocketReviews 157.5 — RSE file governs the sim
+  total_impulse_ns: 226.8  # TC (calculated) = WM; manufacturer listing (QA) 234; RocketReviews 223.9
+  avg_thrust_n: 97.7       # WM labels 97.7 avg (= 226.8/2.32); QA 100; TC's unlabelled 116.1 unresolved
+  max_thrust_n: 137.8      # structural design value: max of WM 137.75 (labelled max), QA 131, RocketReviews 130.2
+  burn_time_s: 2.32        # WM (TC 2.3, QA 2.3, RocketReviews 2.40)
+  delay_s: TBD             # 14 s max, owner drills shorter (UDDT per QA); set from stability's re-sim (coast to apogee)
+  hazmat: yes              # QA "Requires HAZMAT shipping via UPS or FEDEX"
+  price_usd: 54.99         # WM, QA, AT catalog 03.26.25 (searched 2026-11-21); eRockets $54.99 out of stock
+  failures_mess: 3         # TC quotes 3 reported failures in MESS (motorcato.org); details not seen
+  retention: PROPOSAL 3 x M3 screw + washer over thrust ring into heat-set inserts in sleeve fin-root bosses (rev 2 Option A carried over); sleeve geometry TBD
   retention_insert: M3 x 5.7 mm brass heat-set (CNC Kitchen standard via Prusa listing); hole 4.0 mm (accu-components chart)  # proposal
-  retention_design_load_n: 205   # ESTIMATE: 15 psi (top of 10-15 psi typical) x 660.5 mm2 (29 mm class face) = 68 N, x3 margin for unknown bay pressure
-  retention_washer: TBD          # OD/position set by thrust ring OD (TBD); screw length TBD
-  thrust_curve_source: projects/l1-cheap/motor/H182R.eng (from owner's ThrustCurve RSE, AT DMS data May 2014; curve Itot 216.1 N-s)
+  retention_design_load_n: 366   # ESTIMATE: 15 psi x 1178.4 mm2 (38.735 tube-ID face, upper bound for case OD) = 122 N, x3 margin
+  retention_washer: TBD          # OD/position set by thrust ring OD and insert radius (TBD); screw length TBD
+  thrust_curve_source: projects/l1-cheap/motor/H100W.eng (TBD - NOT PRESENT, owner to upload ThrustCurve H100W_DMS RSE/ENG)
 
 aero:                      # aerodynamics agent
   # Initial proposal 2026-11-20, see aero.md. Span is the tuning knob for the 1.8 cal margin (aero.md table 2).
