@@ -12,10 +12,12 @@ owner:                     # set by the owner; agents never change these
   motor_class: 29mm H
 
 motor:                     # motor agent
-  # CONFIRMED by owner 2026-11-20.
+  # 2026-11-21 OWNER CHANGE: motor is now AeroTech H100W-14A DMS (38 mm, delay to be drilled by owner).
+  # Values below are still the H182R (29 mm) until the motor agent re-sources them. 38 mm => fin can,
+  # stability, recovery and BOM must be re-done. Owner was asked how to mount it (min-diameter vs bigger tube).
   # Primary source: AeroTech DMS H182R-14A spec sheet, supplied by owner 2026-11-20.
   # Cross-check (search, 2026-11-20): https://www.thrustcurve.org/motors/AeroTech/HP-H182R
-  designation: AeroTech H182R-14A (29 mm DMS single-use) - CONFIRMED by owner 2026-11-20
+  designation: AeroTech H100W-14A DMS (38 mm single-use) - OWNER 2026-11-21 (supersedes H182R-14A); data below NOT yet updated
   diameter_class_mm: 29    # spec sheet "29 mm x 203 mm (1.13 x 8.00 in)"; class, not measured case OD
   case_od_mm: TBD          # not published; measure the motor
   thrust_ring: TBD         # not on spec sheet; presence, OD, thickness TBD; measure
