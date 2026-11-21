@@ -1,0 +1,68 @@
+[
+  {
+    "num": 1,
+    "name": "mesh integrity",
+    "passed": true,
+    "detail": "watertight=True, winding_consistent=True, volume=77396.1 mm3, bodies=1",
+    "data": {
+      "bodies": 1,
+      "volume_mm3": 77396.11480266252
+    }
+  },
+  {
+    "num": 2,
+    "name": "mass",
+    "passed": false,
+    "detail": "no target mass declared",
+    "data": {
+      "solid_mm3": 76842.04514676506,
+      "infill_region_mm3": 543.6475047501692,
+      "mass_0pct_g": 97.58939733639163,
+      "mass_100pct_g": 98.27982966742435,
+      "mesh_volume_mm3": 77396.11480266252,
+      "wall_mm": 2.67,
+      "layer_mm": 0.2,
+      "n_top": 5,
+      "n_bottom": 3
+    }
+  },
+  {
+    "num": 3,
+    "name": "mating interference",
+    "passed": true,
+    "detail": "tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3",
+    "data": {
+      "interference_mm3": {
+        "tube_wall": 0.0,
+        "motor_case": 0.0,
+        "motor_thrust_ring": 0.0
+      }
+    }
+  },
+  {
+    "num": 4,
+    "name": "renders",
+    "passed": true,
+    "detail": "written: fin_can_md_rev3_iso.png, fin_can_md_rev3_front.png, fin_can_md_rev3_section.png \u2014 VISUAL REVIEW REQUIRED",
+    "data": {
+      "paths": [
+        "/home/user/out/fin_can_md/rev3/fin_can_md_rev3_iso.png",
+        "/home/user/out/fin_can_md/rev3/fin_can_md_rev3_front.png",
+        "/home/user/out/fin_can_md/rev3/fin_can_md_rev3_section.png"
+      ]
+    }
+  },
+  {
+    "num": 5,
+    "name": "build volume",
+    "passed": true,
+    "detail": "extents X 97.4 / Y 112.4 / Z 120.0 mm vs limit 256/256/256",
+    "data": {
+      "extents_mm": [
+        97.35954284667969,
+        112.4211196899414,
+        120.0
+      ]
+    }
+  }
+]

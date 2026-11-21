@@ -197,3 +197,24 @@ fin_can:                   # part library (main session) — parts/fin_can.py re
   thrust_ring_od_mm: {value: 33.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
   thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; measure the motor (mating check only)"}
   target_mass_g: {value: 171.1, status: FROM_STABILITY, note: "stability budget 2026-11-20 uses the rev 1 model mass (25 % infill)"}
+
+fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER sleeve for the 38 mm H100W (owner 2026-11-21)
+  # Printed sleeve slides OVER the BT-1.52 aft end; the motor sits inside the tube; the aft lip is the thrust stop.
+  tube_od_mm: {value: 41.275, status: PLACEHOLDER, note: "BT-1.52 OD nominal; MEASURE — sets the sleeve bore"}
+  sleeve_fit: {value: snug_slip, status: PROPOSED, note: "shop snug-slip per side, leaves an epoxy gap (borrowed tube rule)"}
+  sleeve_wall: {value: wall_band, status: PROPOSED, note: "= 6-loop perimeter band (2.67 mm), prints fully solid"}
+  sleeve_overlap_mm: {value: 100, status: FROM_AERO, note: "length of sleeve on the tube = fin root chord (fins TE flush with aft face)"}
+  fairing_length_mm: {value: 20, status: PROPOSED, note: "forward taper from sleeve OD down to the tube OD (no step in the flow)"}
+  lip_thickness: {value: wall_band, status: PROPOSED, note: "aft lip under the tube end; motor thrust ring bears on it (compression across layers)"}
+  motor_case_od_mm: {value: 38.0, status: PLACEHOLDER, note: "38 mm class, NOT measured; lip bore = case OD + 2 x snug slip"}
+  thrust_ring_od_mm: {value: 41.0, status: PLACEHOLDER, note: "not published yet (motor agent researching); must be > lip bore to bear"}
+  thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; mating check only"}
+  motor_length_mm: {value: 153, status: CITED, note: "ThrustCurve H100W_DMS via search (38 x 153 mm); motor agent confirming"}
+  retention: {value: insert_bosses_at_fin_roots, status: OWNER, note: "Option A carried over from fin_can rev 2"}
+  insert_hole_d_mm: {value: 4.0, status: CITED, note: "accu-components chart (motor.md)"}
+  insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
+  boss_fairing_length_mm: {value: 20, status: PROPOSED}
+  root_fillet_r_mm: {value: 4, status: PROPOSED}
+  root_fillet_sections: {value: 6, status: PROPOSED}
+  airfoil_points: {value: 41, status: PROPOSED}
+  target_mass_g: {value: null, status: TBD, note: "stability to set after re-sim with the H100W"}
