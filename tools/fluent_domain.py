@@ -29,18 +29,18 @@ import numpy as np  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from parts import fin_can  # noqa: E402
+from parts import fin_can, fin_can_md  # noqa: E402
 
 
-def section_xy(p: dict, chord: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def section_xy(p: dict, chord: float, t: float, te: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Upper and lower surfaces, LE at (0, 0), TE at x = chord; blunt TE as in the printed fin."""
     x = fin_can.chord_stations(p["airfoil_points"])
-    yt = fin_can.naca_half_thickness(x, p["fin_thickness_mm"], p["te_thickness_mm"])
+    yt = fin_can.naca_half_thickness(x, t, te)
     return x * chord, yt, -yt
 
 
-def build_domain(p: dict, chord: float, ff: float, wake: float):
-    xs, yu, yl = section_xy(p, chord)
+def build_domain(p: dict, chord: float, ff: float, wake: float, t: float, te: float):
+    xs, yu, yl = section_xy(p, chord, t, te)
     up = [cq.Vector(a, b, 0) for a, b in zip(xs, yu)]
     lo = [cq.Vector(a, b, 0) for a, b in zip(xs, yl)]
     e_up = cq.Edge.makeSpline(up)
@@ -75,17 +75,20 @@ def main() -> None:
     ap.add_argument("--section", default="both", choices=["root", "tip", "both"])
     ap.add_argument("--farfield-chords", type=float, default=20)
     ap.add_argument("--wake-chords", type=float, default=20)
+    ap.add_argument("--part", default="fin_can_md", choices=["fin_can_md", "fin_can"])
     a = ap.parse_args()
-    p = fin_can.params(a.project)
+    p = (fin_can_md if a.part == "fin_can_md" else fin_can).params(a.project)
     out = ROOT / "out" / "cfd"
     out.mkdir(parents=True, exist_ok=True)
-    secs = {"root": p["root_chord_mm"], "tip": p["tip_chord_mm"]}
+    t_root, t_tip = p["fin_thickness_mm"], p.get("fin_tip_thickness_mm", p["fin_thickness_mm"])
+    te_root, te_tip = p.get("te_root_thickness_mm", p["te_thickness_mm"]), p["te_thickness_mm"]
+    secs = {"root": (p["root_chord_mm"], t_root, te_root), "tip": (p["tip_chord_mm"], t_tip, te_tip)}
     if a.section != "both":
         secs = {a.section: secs[a.section]}
 
     rows = []
-    for name, c in secs.items():
-        face, xs, yu, yl, (R, xc, xo) = build_domain(p, c, a.farfield_chords, a.wake_chords)
+    for name, (c, tt, te) in secs.items():
+        face, xs, yu, yl, (R, xc, xo) = build_domain(p, c, a.farfield_chords, a.wake_chords, tt, te)
         stem = f"fin_{name}"
         cq.exporters.export(cq.Workplane("XY").add(face), str(out / f"{stem}_domain.step"))
         pts = np.r_[np.c_[xs[::-1], yu[::-1]], np.c_[xs[1:], yl[1:]]]
@@ -100,11 +103,12 @@ def main() -> None:
                 ax[k].plot(v[:, 0], v[:, 1], "k-", lw=0.8)
         ax[0].set_title(f"{stem}: C-domain, R = {a.farfield_chords:g}c, wake {a.wake_chords:g}c")
         ax[1].set_xlim(-0.08 * c, 1.08 * c); ax[1].set_ylim(-0.15 * c, 0.15 * c)
-        ax[1].set_title(f"airfoil close-up (chord {c:g} mm, t {p['fin_thickness_mm']:g} mm, TE {p['te_thickness_mm']:.2f} mm)")
+        ax[1].set_title(f"airfoil close-up (chord {c:g} mm, t {tt:g} mm, TE {te:.2f} mm)")
         for k in (0, 1):
             ax[k].set_aspect("equal"); ax[k].grid(alpha=0.3); ax[k].set_xlabel("x mm"); ax[k].set_ylabel("y mm")
         fig.savefig(out / f"{stem}_domain.png", bbox_inches="tight"); plt.close(fig)
         rows.append((name, c, face.Area()))
+        print(f"  {stem}: t {tt:g} mm, TE {te:.2f} mm")
 
     # flight speeds from the stability sim results in design.yaml
     import yaml
