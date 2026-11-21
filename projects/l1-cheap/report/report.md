@@ -1,9 +1,9 @@
 # l1-cheap — Design & Research Report
-_Last updated: 2026-11-21 · 201e22e_
+_Last updated: 2026-11-21 · 5633ce4_
 
 > Living document, maintained by the `rocket-docs` agent. Every number is copied from a project source and cited inline. Labels ESTIMATE / PLACEHOLDER / PROPOSED / TBD / PREDICTION are carried over from the sources.
 >
-> **Current basis (2026-11-21):** AeroTech H100W-14A, minimum-diameter, **fin can rev 6 (landing-tough)** with the **owner's OpenRocket planform**, **71 g nose ballast**. The flight numbers come from the H100W re-sim (stability.md §0, design.yaml `stability`), which was run on rev 5. The main session re-solved the margin for rev 6 and reports apogee and delay essentially unchanged. Rev 6 structural numbers are a **PREDICTION** until the owner re-runs ANSYS. H182R material is kept only as history. Where sources disagree, both values are shown and the conflict is listed in §11.
+> **Current basis (2026-11-21):** AeroTech H100W-14A, minimum-diameter, **fin can rev 6 (landing-tough)** with the **owner's OpenRocket planform**, **71 g nose ballast**. The flight numbers come from the H100W re-sim (stability.md §0, design.yaml `stability`), which was run on rev 5. The main session re-solved the margin for rev 6 and reports apogee and delay essentially unchanged. Rev 6 structural numbers now come from the **in-house CalculiX FEA** (§4.4, fea_results.md), validated against the owner's rev 5 ANSYS. They supersede the earlier rev 6 PREDICTION (§4.3.7). The owner's ANSYS run on rev 6 is pending as a cross-check. H182R material is kept only as history. Where sources disagree, both values are shown and the conflict is listed in §11.
 
 ---
 
@@ -28,25 +28,28 @@ _Last updated: 2026-11-21 · 201e22e_
 |---|---|---|---|---|
 | **1.82 cal** (71 g, CG 729.8 mm, ref 41.275) | **1233 m** | 250.0 m/s / **0.737** | **21.6 / 24.0 m/s** | 7.9 m/s, falling |
 
-**Fin can structure** (ANSYS on rev 5, ansys_results.md; rev 6 = PREDICTION)
+**Fin can structure** (owner ANSYS on rev 5, ansys_results.md; rev 6: in-house CalculiX, fea_results.md)
 - Flight loads: **PASS, ~11×** (rev 5 gust case, 1.72 MPa across layers vs 19 MPa).
 - Flutter: **PASS, ~5×** (rev 5, Vf ≈ 1330 m/s vs Vmax 250 m/s, at G = 394 MPa).
-- Sideways landing: rev 5 FAIL (~88 N); rev 6 predicted ~350–400 N, ANSYS confirmation pending.
+- Sideways landing: rev 5 FAIL (~88 N); **rev 6 ~250–310 N (in-house FEA; 252 N ANSYS-scaled / 308 N raw)**. A 200 N hit gives FI 0.65–0.80, so it survives. Owner ANSYS confirmation pending.
+- Tilted landing, rev 6: 200 N at 45° gives FI 0.56–0.69 (survives). The extreme 200 N Y + 770 N Z case still fails (FI 1.38–1.69).
+- In-house sim lab (gmsh + CalculiX) validated against the owner's ANSYS: **axial within 3.6 %** (§4.4.2).
 
 **Phase status**
 
 | 0 Goal | 1 Feas. | 2 Design | 3 BOM | 4 Budget | 5 Sched. | 6 Parts | 7 Build | 8 Flight |
 |---|---|---|---|---|---|---|---|---|
-| done | Cond. GO | rev 6 re-solve done; OR CP open (CFD planned) | needs update | not started | — | fin can rev 6 5/5; nose not generated | — | — |
+| done | Cond. GO | rev 6 re-solve done; OR CP open (CFD planned) | needs update | not started | — | fin can rev 6 5/5, in-house FEA survives 200 N; nose not generated | — | — |
 
 **Top risks**
-1. **Rev 6 landing strength is a prediction only** (1/t² scaling of the rev 5 ANSYS result). The 12 mm root now has an infill core (§4.3.7).
-2. **CP disagrees with OpenRocket:** 804.7 vs 836.0 mm. A 3D Fluent run is planned to settle it (§3.6).
+1. **Rev 6 sideways margin is modest:** 1.25–1.5× at the ~200 N landing ESTIMATE (in-house FEA, §4.4). The peak sits at the boss/fillet corner, where the stress is mesh-dependent. The solid FE model ignores the 25 % gyroid root core.
+2. **CP disagrees with OpenRocket:** 804.7 vs 836.0 mm. A 3D CFD run is planned, and headless OpenRocket needs the .ork (§3.3, §3.6).
 3. **Unmeasured fit and masses:** case OD, thrust ring, tube OD; tube 93.6 g ESTIMATE vs OR's 123 g.
 
 **Next steps**
-- Owner: re-run the ANSYS cases on `out/fin_can_md/rev6/fin_can_md_rev6.step` (50 N Y, 200 N Y, 200 N Y + 770 N Z).
-- Owner: run the 3D Fluent case on `out/cfd/rocket_oml.step` (M 0.3, α 0/2/4°). Check the fin count in the .ork.
+- Owner: run ANSYS on `out/fin_can_md/rev6/fin_can_md_rev6.step` (50 N Y, 200 N Y, 200 N Y + 770 N Z), now as a cross-check of §4.4.
+- Owner: decide on the boss-cap and aft-root fillets, a possible rev 7 (§4.4.6).
+- Owner: upload the .ork for headless OpenRocket (fin count); run the 3D CFD case on `out/cfd/rocket_oml.step`.
 - Owner: measure the tube and motor, weigh the parts, drop-test, then do the balance check (CG 730 mm, window 722–739).
 
 ---
@@ -78,7 +81,7 @@ _Last updated: 2026-11-21 · 201e22e_
 | Average thrust > 80 N (forum claim only) | 93.4–100 N: pass, **but with only a 13–20 N margin** |
 | Rocket built by the flyer | plan |
 | Witnesses: 2× L1 or 1× L2/L3; form to the prefect before the flight | arrange at launch |
-| Safe recovery; rocket flyable again | design for it (see the landing-strike results, §4.3) |
+| Safe recovery; rocket flyable again | design for it (see the landing-strike results, §4.3–4.4) |
 
 ### 1.3 Shop and printer constants (skills/SKILL.md)
 
@@ -232,6 +235,7 @@ OR config H100W_DMS-6, Mach 0.300, AoA 0, ref length 1.625 in (41.275 mm). OR to
   - owner overrides for the nose (80 g) and the fin set (120 g).
 - **Rev 5 basis (stability.md §0.3):** 70 g gave 1.81 cal on our CP and about **2.57 cal on OR's CP** (FAIL high on that reference); if OR is right, 1.8 cal needs about 40 g. The OR-CP margin has not been re-stated for rev 6 / 71 g.
 - Our CP is the stable-side choice until the fin count is checked. The planned 3D CFD run (§3.6.2) is meant to settle the gap.
+- **Headless OpenRocket** (sim lab, `.claude/agents/rocket-simlab.md`) can read the fin count, delay and CP directly from the owner's model. It is **pending the .ork upload** to `projects/l1-cheap/openrocket/` (§11.4).
 
 ### 3.4 Drag and Mach
 
@@ -296,6 +300,8 @@ Method for the outputs:
 
 **Purpose: resolve the OR CP gap.** OR: CNα 11.36, CP 836 mm. Ours: CNα ≈ 9.0 and CP ≈ 805 mm (main session). The Barrowman component table in §3.2 sums to a different total CNα (§11).
 
+**In-house alternative:** OpenFOAM is in the sim-lab toolset (rocket-simlab.md). It uses the same geometry (`tools/fluent_domain.py` 2D, `tools/rocket_oml.py` 3D). 2D runs are quick; 3D runs only on a coarse mesh (4 cores, ~15 GB RAM). No CFD has been run yet.
+
 ---
 
 ## 4. Structures & Manufacturing
@@ -347,20 +353,20 @@ Method for the outputs:
 | 4 | Renders | PASS: iso, front and section written; iso and section reviewed for this report |
 | 5 | Build volume | PASS: 102.6 / 118.4 / 120.0 mm vs 256 |
 
-- The mass pass relies on the ±5 % tolerance: the model's **0 % infill value (87.0 g) is already above the slicer's 84.83 g**. The main session puts the model ~6 % high vs the slicer (§4.4).
+- The mass pass relies on the ±5 % tolerance: the model's **0 % infill value (87.0 g) is already above the slicer's 84.83 g**. The main session puts the model ~6 % high vs the slicer (§4.5).
 
-**Loads vs layers (rev 6, printed axis-vertical, lip down).** Sources: rev 6 spec; ansys_results.md.
+**Loads vs layers (rev 6, printed axis-vertical, lip down).** Sources: rev 6 spec; ansys_results.md; fea_results.md.
 
 | Load | Direction vs layers | Bond loading |
 |---|---|---|
 | Motor thrust: ring pushes +Z on the lip underside | across layers | **compression** (good). FEA not yet run (§4.3.8) |
 | Fin aero gust (side load on a fin) | root bending; ANSYS shows normal-Z stress at the root | across-layer tension/compression, low (rev 5: 1.72 MPa) |
-| Sideways tip strike (landing) | root bending; peak normal Z at the root fillet | **across-layer tension: the governing failure** (rev 5 ~88 N; rev 6 PREDICTION ~350–400 N) |
-| Axial tip strike (landing, Z) | pushes the fin along the layer-stacking direction | **across-layer tension at the aft root fillet** (rev 5 ~770 N) |
+| Sideways tip strike (landing) | root bending; rev 6 peak normal Z at the **insert-boss / fillet corner** | **across-layer tension: the governing failure** (rev 5 ~88 N; rev 6 **~252 N ANSYS-scaled / ~308 N raw**, in-house FEA §4.4) |
+| Axial tip strike (landing, Z) | pushes the fin along the layer-stacking direction | **across-layer tension at the aft-face root corner** (rev 5 ~770 N; rev 6 **~913 / ~947 N**, §4.4) |
 | Sleeve-to-tube epoxy joint | shear on vertical cylindrical faces | in-plane shear |
 | Ejection kick (−Z): ring pulls the screws out of the inserts | across layers | **pull-out: shear + tension (weak direction)** |
 
-Note: the rev 5 and rev 6 spec sheets say fin root bending is carried "within the layers". The ANSYS results show the peak stress is normal-Z (across layers) at the root fillet. This report follows ANSYS (§11).
+Note: the rev 5 and rev 6 spec sheets say fin root bending is carried "within the layers". The ANSYS and CalculiX results both show the peak stress is normal-Z (across layers) at the fin root. This report follows the FEA (§11).
 
 ### 4.1b Fin can rev 5: ANSYS basis (superseded by rev 6 for flight)
 
@@ -407,7 +413,7 @@ Note: the rev 5 and rev 6 spec sheets say fin root bending is carried "within th
 **Tool:** Ansys Mechanical Enterprise 2023 R1. Owner's runs, 2026-11-20/21.
 - Geometry: `out/fin_can_md/rev5/fin_can_md_rev5.step`. Units mm; Z = rocket axis = print direction.
 - **Boundary condition (all static cases):** one Fixed Support on the sleeve bore (R 20.727 mm), standing in for the epoxied joint to the tube.
-- **All results in §4.3.1–4.3.6 are for rev 5.** Rev 6 has not been run yet; its predicted values are in §4.3.7.
+- **All results in §4.3.1–4.3.6 are for rev 5.** Rev 6 has not been run in ANSYS yet. The pre-build prediction (§4.3.7) is **superseded** by the in-house CalculiX results in §4.4.
 
 #### 4.3.1 Material: orthotropic `3D_Printed_PETG` (Z = across layers)
 
@@ -544,6 +550,7 @@ Owner run, 2026-11-21: a tip force of Y = +200 N and Z = +770 N applied together
 
 - The combined result equals the sum of the two single loads. The model is linear and both loads peak at the same spot, the **fin-root fillet**, so any landing angle can be checked by adding the scaled single-load results.
 - **The sideways part dominates:** 200 N sideways alone is already 2.3× over the limit.
+- **Rev 6 is different:** its Y and Z peaks sit at different spots, so adding the single-load results overestimates the combined FI. The combined runs in §4.4.4 are the real numbers (fea_results.md §4).
 
 ![Combined 200 N Y + 770 N Z failure index](figures/ansys/50_combined_Y200_Z770_failure_index.webp)
 
@@ -566,14 +573,18 @@ Method:
 - **Realistic design value: ~200 N.**
   - Axial: OK, ~3.8× margin against the ~770 N failure load (rev 5).
   - Sideways: rev 5 **fails** (~90 N capacity).
+  - **Rev 6 (in-house FEA, §4.4):** sideways capacity ~252 N (ANSYS-scaled) / ~308 N (raw), so the 200 N hit survives at FI 0.65–0.80. Axial capacity ~913 / ~947 N.
+  - The ~450 N peak-impact bound for the 40 in chute (table above) is above the rev 6 sideways capacity.
 - **Mitigations** (ansys_results.md):
   1. Fly the 40 in chute unreefed (conflicts with recovery.md's reefing advice; §11).
   2. Drop-test the fit-test print: 0.8 m for the 40 in chute, 1.5 m for the 28 in.
-  3. A landing-tough **rev 6** (~2.3× root bending strength needed). **Chosen by the owner and built 2026-11-21** (§4.3.7).
+  3. A landing-tough **rev 6** (~2.3× root bending strength needed). **Chosen by the owner and built 2026-11-21** (§4.3.7). In-house FEA gives rev 6 **2.87×** the rev 5 sideways strength (§4.4.3).
 
-#### 4.3.7 Rev 6 design rationale: sizing from the owner's ANSYS data (PREDICTION)
+#### 4.3.7 Rev 6 design rationale: sizing from the owner's ANSYS data (PREDICTION, SUPERSEDED)
 
-**All rev 6 strength values below are PREDICTIONS** by the main session (design.yaml `aero.fin_thickness_mm` note; git 2c62fb5). The owner will re-run the ANSYS cases on `out/fin_can_md/rev6/fin_can_md_rev6.step`.
+> **SUPERSEDED 2026-11-21 by the in-house FEA (§4.4, fea_results.md §3).** The prediction below (~350–400 N; FI 0.50–0.57 at 200 N) was **optimistic**. The actual sideways gain is **2.9×**, not the 4× from thickness² scaling, because the peak sits at the boss/fillet corner rather than in plain fin bending. The text is kept as the sizing record.
+
+**All rev 6 strength values below are PREDICTIONS** by the main session (design.yaml `aero.fin_thickness_mm` note; git 2c62fb5). The owner's ANSYS run on `out/fin_can_md/rev6/fin_can_md_rev6.step` is now a cross-check of §4.4.
 
 **Sizing steps:**
 1. Rev 5 sideways FI per unit load: 0.571 / 50 N = **0.01142 per N** (figure 12b).
@@ -584,12 +595,12 @@ Method:
 
 Symbols: FI failure index σ_Z / 19 MPa (–); σ_Z across-layer normal stress (MPa); M root bending moment (N·mm); Z section modulus (mm³); Cr root chord (mm); t root thickness (mm).
 
-| Predicted (rev 6) vs ANSYS (rev 5) | Rev 5 (ANSYS) | Rev 6 (PREDICTION) |
-|---|---|---|
-| 50 N Y, FI | 0.571 | ~0.14 |
-| 200 N Y, FI | 2.28 (scaled) | ~0.5–0.57 |
-| Sideways capacity (FI = 1) | ~88 N | **~350–400 N** |
-| 200 N Y + 770 N Z, FI | 3.28 | ~0.75–0.8 |
+| Predicted (rev 6) vs ANSYS (rev 5) | Rev 5 (ANSYS) | Rev 6 (PREDICTION, **superseded**) | Rev 6 in-house FEA (§4.4) |
+|---|---|---|---|
+| 50 N Y, FI | 0.571 | ~0.14 | 0.162 (raw) |
+| 200 N Y, FI | 2.28 (scaled) | ~0.5–0.57 | **0.65 (raw) – 0.80 (ANSYS-scaled)** |
+| Sideways capacity (FI = 1) | ~88 N | ~350–400 N | **~252 N (scaled) / ~308 N (raw)** |
+| 200 N Y + 770 N Z, FI | 3.28 | ~0.75–0.8 | **1.38 (raw) / ~1.69 (scaled)** |
 
 **Changes rev 5 → rev 6** (design.yaml, rev 6 spec):
 
@@ -604,16 +615,148 @@ Symbols: FI failure index σ_Z / 19 MPa (–); σ_Z across-layer normal stress (
 | Verify | 5/5 at 80 g | **5/5 at 84.83 g** | — |
 
 **Caveats on the prediction:**
-- The 1/t² rule assumes the same solid section. The rev 5 fin (6 mm) was almost all wall; the 12 mm rev 6 root is wider than two 2.67 mm wall bands, so it has a **25 % gyroid core**. The verify model's infill region grew from 1.76 cm³ (rev 5) to 11.76 cm³ (rev 6). ANSYS models the part as solid, so it will not capture this.
+- The 1/t² rule assumes the same solid section. The rev 5 fin (6 mm) was almost all wall; the 12 mm rev 6 root is wider than two 2.67 mm wall bands, so it has a **25 % gyroid core**. The verify model's infill region grew from 1.76 cm³ (rev 5) to 11.76 cm³ (rev 6). ANSYS models the part as solid, so it will not capture this. (The same applies to the CalculiX model, §4.4.7.)
 - The fillet credit (0.57 → ~0.50) is a judgement, not a calculation.
 - The axial part of the combined prediction is not derived in the sources.
+- **Outcome:** the 1/t² rule missed because the sideways peak is at the insert-boss / fillet corner, not in plain fin bending (§4.4.5).
 
-#### 4.3.8 Not yet run
-- **ANSYS re-run on rev 6:** 50 N Y (predicted ~0.14), 200 N Y (~0.5–0.57), 200 N Y + 770 N Z (~0.75–0.8).
-- **Motor thrust:** +138 N on the lip underside.
+#### 4.3.8 Not yet run in ANSYS
+- **ANSYS re-run on rev 6, now a cross-check of the in-house results (§4.4).**
+  - 50 N Y: in-house 0.162 (raw).
+  - 200 N Y: in-house 0.65–0.80.
+  - 200 N Y + 770 N Z: in-house 1.38 (raw) / ~1.69 (scaled).
+- **Motor thrust:** +138 N on the lip underside (not run in-house either).
 - **Mode-shape identification** for modes 4–6 (and a rev 6 modal run).
 
-### 4.4 Mass model (walls + infill): skills/SKILL.md, verify check 2
+### 4.4 In-house FEA (CalculiX): validation and rev 6 results (fea_results.md)
+
+The sim lab is `tools/fea_ccx.py` (gmsh 4.15.2 + CalculiX 2.21), run in the project container by the main session on 2026-11-21. The `rocket-simlab` agent (`.claude/agents/rocket-simlab.md`) now owns these runs.
+- Its rule is **validate before predicting**: reproduce an owner reference first and report the % difference.
+- **These results supersede the rev 6 PREDICTION in §4.3.7.** The owner's ANSYS run on rev 6 is pending as a cross-check.
+
+#### 4.4.1 Method (fea_results.md; `tools/fea_ccx.py` docstring)
+
+The setup mirrors the owner's ANSYS runs (§4.3).
+
+| Item | In-house (CalculiX) | Owner ANSYS (§4.3) |
+|---|---|---|
+| Geometry | `out/fin_can_md/rev<N>/fin_can_md_rev<N>.step`, mm, Z = rocket axis = print direction | same (rev 5) |
+| Support | fixed sleeve bore | Fixed Support on the sleeve bore (R 20.727 mm) |
+| Load | total force spread over the **+X fin's tip face** | force on the +X fin's tip face |
+| Material | **conservative** orthotropic PETG: E 1472 / 1472 / 1087 MPa, ν 0.38, G 533 / 394 / 394 MPa | same set (§4.3.1) |
+| Elements | **C3D10** (quadratic tetrahedra) | tetrahedral |
+| Mesh | **2.5 mm global, 0.7 mm in a box around the +X fin root** | 1 mm, 422,598 nodes |
+| Nodes (run `result.json`) | rev 5 validation 212,241–218,440; rev 6 runs 254,576–255,113 | — |
+| Solver | **direct** (SPOOLES) | — |
+| Read-out | FI in the fin-root zone (8 mm band above the sleeve OD); nodes within 5 mm of the loaded tip face excluded | FI expression `SZ/19e6` |
+
+Run records: `out/fea/rev<N>/<case>/result.json`, with renders `fi_overview.png` and `fi_root_zoom.png`.
+
+**Equations** (linear static):
+- Failure index: **FI = σ_Z / σ_allow**, with σ_allow = 19 MPa (across-layer tensile, Ultimaker TDS, upright).
+- Capacity: **F₁ = F / FI**, the tip load at which FI reaches 1.
+- ANSYS-scaled values: **FI_A = k · FI_C** and **F₁,A = F₁,C / k**. Here **k = σ_Z,ANSYS / σ_Z,CCX** on the matching rev 5 case:
+  - sideways: k = 10.85 / 8.85 (fea_results.md uses ×1.22);
+  - axial: k = 9.88 / 9.52.
+
+Symbols: σ_Z normal stress across the layers (MPa); F applied tip force (N); FI_C raw CalculiX failure index (–); FI_A ANSYS-scaled failure index (–); k calibration ratio (–).
+
+**Loads vs layers.** Z is the print direction, so every FI here checks **across-layer (interlayer) tension**:
+- **Sideways tip load (Y):** root bending puts across-layer tension at the insert-boss / fillet corner.
+- **Axial tip load (Z):** across-layer tension at the aft-face root corner.
+- **Combined loads:** the peak is at the fillet-to-sleeve junction (200 N at 45°) or at the boss/fillet (200 N Y + 770 N Z).
+
+#### 4.4.2 Validation against the owner's ANSYS (rev 5; fea_results.md §1)
+
+| Case | Owner ANSYS | CalculiX (0.7 mm root mesh) | Difference |
+|---|---|---|---|
+| 50 N Y: root σ_Z | 10.85 MPa (FI 0.571) | 8.85 MPa (FI 0.466) | −18 % |
+| 50 N Y: root σ_Z (uniform 2.0 mm mesh) | 10.85 MPa | 10.25 MPa (FI 0.540) | −5.5 % |
+| 50 N Y: tip deflection | 2.51 mm | 2.84 mm | +13 % |
+| 400 N Z: root σ_Z | 9.88 MPa | 9.52 MPa (FI 0.501) | **−3.6 %** |
+
+- **Axial: within 3.6 %.**
+- **Sideways: 5.5–18 % low, and mesh-dependent.** The peak sits on a sharp concave edge at the top of the insert-boss cap, near (29.8, −1.5, 8.3) mm. There it ranged from 7.5 to 10.3 MPa across the meshes tried. This is expected at a sharp corner, in ANSYS too.
+- **Consequence:** rev-to-rev comparisons use **identical settings**, and absolute values are **scaled to the owner's ANSYS calibration** (§4.4.1).
+
+![In-house FEA validation, rev 5, 50 N Y](figures/fea/rev5_val_tipY50_r0.7_direct.png)
+
+*Figure 23. In-house FEA validation, fin can **rev 5**, 50 N Y on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1. Root FI max **0.466** (σ_Z 8.85 MPa) vs the owner's ANSYS 0.571 (figure 12b). Mesh 2.5 mm global / 0.7 mm root, C3D10, direct solver. The bright spot at the fin tip is the load-face spike, excluded from the read. Source: `out/fea/rev5/val_tipY50_r0.7_direct/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21.*
+
+#### 4.4.3 Rev 6 vs rev 5, identical settings (fea_results.md §2–3)
+
+| Case | Rev 5 FI | Rev 6 FI | Ratio | Rev 6 peak location (mm) |
+|---|---|---|---|---|
+| 50 N Y (sideways) | 0.466 | **0.162** | 0.348: **2.87× stronger** | (29.4, −2.5, 6.8): boss/fillet |
+| 400 N Z (axial) | 0.501 | **0.422** | 0.843: **1.19× stronger** | (29.9, 1.1, 0.8): aft face, root corner |
+| Max deflection, 50 N Y | 2.84 mm | 0.90 mm | 3.2× stiffer | tip |
+
+**Rev 6 capacities (FI = 1)**
+
+| Load | Raw CalculiX | Scaled to the owner's ANSYS rev 5 calibration | Rev 5 (owner ANSYS) |
+|---|---|---|---|
+| **Sideways (Y)** | **~308 N** | **~252 N** | ~88 N |
+| **Axial (Z)** | ~947 N | ~913 N | ~770 N |
+
+- **Realistic sideways landing hit, ~200 N (ESTIMATE): FI 0.65 (raw) to 0.80 (ANSYS-scaled). Rev 6 survives, with a 1.25–1.5× margin.**
+- Rev 5 at the same 200 N: FI 1.86–2.28 (fails).
+- ansys_results.md asked for ~2.3× root bending strength; the sideways ratio is 2.87×.
+- **The axial capacity barely changed.** The axial peak is at the aft-face root corner, which the thickness taper does not reinforce.
+
+![Rev 6, 50 N Y, failure index](figures/fea/rev6_tipY50.png)
+
+*Figure 24. In-house FEA, fin can **rev 6**, 50 N Y on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1. Root FI max **0.162** (σ_Z 3.08 MPa), at the boss/fillet (29.4, −2.5, 6.8) mm. That is 2.87× below rev 5 at identical settings (figure 23). The tip spike is the load face, excluded. Source: `out/fea/rev6/tipY50/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21.*
+
+![Rev 6, 400 N Z, failure index](figures/fea/rev6_tipZ400.png)
+
+*Figure 25. In-house FEA, fin can **rev 6**, 400 N Z (axial) on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1. Root FI max **0.422** (σ_Z 8.03 MPa), at the aft-face root corner (29.9, 1.1, 0.8) mm; rev 5 at identical settings: 0.501. The bright spot at the fin tip is the load-face spike, excluded. Source: `out/fea/rev6/tipZ400/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21.*
+
+#### 4.4.4 Combined landing loads (rev 6, actual runs; fea_results.md §4)
+
+| Case | Rev 6 FI (raw) | Rev 6 FI (ANSYS-scaled ×1.22) | Rev 5 reference | Verdict |
+|---|---|---|---|---|
+| **200 N at 45°** (141 N Y + 141 N Z): a realistic tilted landing | **0.56** at (23.1, −4.2, 9.9), where the fillet meets the sleeve | ~0.69 | ~1.4 (superposed estimate) | **survives, 1.45–1.8×** |
+| 200 N Y + 770 N Z (the owner's severe rev 5 ANSYS case) | **1.38** at (29.4, −2.4, 6.4), boss/fillet | ~1.69 | **3.28** (owner ANSYS) | **fails**, but ~1.9–2.4× better (scaled vs raw) than rev 5 |
+
+- **The 200 N Y + 770 N Z case is extreme.** It totals about 800 N: rev 5's axial *failure* load plus a full sideways hit. It is not the realistic landing estimate (~200 N, main-session ESTIMATE).
+- **Superposing single loads overestimates rev 6**, because its Y and Z peaks are at different spots. The combined runs are the real numbers.
+- The "~1.9–2.4× better (scaled vs raw)" is as stated in fea_results.md. It sets the raw CalculiX FI against the owner's ANSYS FI (§11.5 item 19).
+
+![Rev 6, 200 N at 45°, failure index](figures/fea/rev6_combined_200N_at45.png)
+
+*Figure 26. In-house FEA, fin can **rev 6**, 200 N at 45° (141.4 N Y + 141.4 N Z) on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1. Root FI max **0.561** (σ_Z 10.67 MPa), where the fillet meets the sleeve; ~0.69 ANSYS-scaled, so it survives. The bright spot at the fin tip is the load-face spike, excluded. Source: `out/fea/rev6/combined_200N_at45/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21.*
+
+![Rev 6, 200 N Y + 770 N Z, failure index](figures/fea/rev6_combined_Y200_Z770.png)
+
+*Figure 27. In-house FEA, fin can **rev 6**, 200 N Y + 770 N Z (extreme case) on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1 (red = failed). Root FI max **1.380** (σ_Z 26.22 MPa) at the boss/fillet; ~1.69 ANSYS-scaled, so it **fails**. Rev 5 ANSYS for the same case: 3.28 (figure 17). The bright spot at the fin tip is the load-face spike, excluded. Source: `out/fea/rev6/combined_Y200_Z770/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21.*
+
+#### 4.4.5 Correction: the rev 6 pre-build prediction was optimistic
+
+| Quantity | Pre-build PREDICTION (§4.3.7, superseded) | In-house FEA (this section) |
+|---|---|---|
+| Sideways capacity | ~350–400 N | **~252 N (ANSYS-scaled) / ~308 N (raw)** |
+| 200 N Y, FI | 0.50–0.57 | **0.65–0.80** |
+| 200 N Y + 770 N Z, FI | ~0.75–0.8 | **1.38 (raw) / ~1.69 (scaled)** |
+| Sideways gain vs rev 5 | 4× (thickness², 6 → 12 mm) | **2.87×** |
+
+- **Why:** the actual gain is 2.9×, not 4×, because the peak sits at the **boss/fillet corner**, not in plain fin bending (fea_results.md §3).
+- The §4.3.7 PREDICTION text is marked **SUPERSEDED**; it stays as the sizing record.
+- **Verdict:** rev 6 still survives the realistic 200 N sideways and 200 N at 45° landings.
+
+#### 4.4.6 Suggested geometric fixes (fea_results.md §5; for the part library, NOT BUILT, possible rev 7)
+1. **Fillet the top edge of the insert-boss cap.** That sharp concave edge carries the sideways peak.
+2. **Fillet or chamfer the fin root where it meets the aft face.** That corner carries the axial peak.
+
+The sources give no predicted gain for either fix. If adopted, re-run §4.4.3–4.4.4 with identical settings (owner decision, §11.1).
+
+#### 4.4.7 Caveats
+- **Sharp-corner peaks are mesh-dependent** (7.5–10.3 MPa across meshes on rev 5). Ratios at identical settings are more reliable than absolute values.
+- **Solid model.** The STEP solid is meshed with one orthotropic material, as in ANSYS. It does not capture the 25 % gyroid core in the 12 mm root (§4.3.7). The drop test (§9.4) is the check.
+- **Material inputs** are the conservative set from search-result summaries (§4.3.1). The limits come from ansys_results.md; changing them is the owner's call (rocket-simlab.md).
+- **The landing load (~200 N) is an ESTIMATE.** The 40 in chute's peak-impact bound (to ~450 N, §4.3.6) is above the rev 6 sideways capacity.
+- **Not run in-house:** motor thrust on the lip, rev 6 modal.
+
+### 4.5 Mass model (walls + infill): skills/SKILL.md, verify check 2
 
 m = ρ · (V_shell + f · V_interior)
 
@@ -633,7 +776,7 @@ Symbols:
 - The model reads **~6 % high** vs the slicer (main session). For rev 6 even its 0 % value (87.0 g) is above the slicer figure, so the verify's "infill to hit target" is −14.6 %.
 - The stability re-solve uses the slicer's **84.83 g** (design.yaml `stability.fin_can_model_mass_g`).
 
-### 4.5 Fin can revision history
+### 4.6 Fin can revision history
 
 | Rev | Part / layout | Change | Mass (0–100 % infill) | Verify | Status |
 |---|---|---|---|---|---|
@@ -641,8 +784,8 @@ Symbols:
 | rev 2 | `fin_can.py`, 29 mm | Option A insert bosses | 171.0–174.1 g | 5/5 | **SUPERSEDED** (29 mm dropped) |
 | rev 3 | `fin_can_md.py`, sleeve | Sleeve, aft lip, fairing; old 100/40/40/5 fins | 97.6–98.3 g | 4/5 (no target) | superseded (unstable fins, aero.md §0.3) |
 | rev 4 | `fin_can_md.py` | Aero-optimised fins 50/30/77/6 | 105.2–108.7 g | 5/5 (target 108.7 g) | PROPOSED, not adopted |
-| rev 5 | `fin_can_md.py` | Owner's OR fins 50/30/43.18/20.32/6 | 83.4–85.7 g (slicer 80 g) | 5/5 at 80 g (re-run) | superseded for flight; ANSYS basis (§4.3) |
-| **rev 6** | **`fin_can_md.py` + taper in `fin_can.py`** | **Landing-tough: root 12 → tip 6 mm, fillet 6, TE 2.0 → 0.84; same planform** | **87.0–101.9 g (slicer 84.83 g, 25 % gyroid)** | **5/5 at 84.83 g** | **current flight candidate, DRAFT; ANSYS pending** |
+| rev 5 | `fin_can_md.py` | Owner's OR fins 50/30/43.18/20.32/6 | 83.4–85.7 g (slicer 80 g) | 5/5 at 80 g (re-run) | superseded for flight; ANSYS basis (§4.3); CalculiX validation basis (§4.4.2) |
+| **rev 6** | **`fin_can_md.py` + taper in `fin_can.py`** | **Landing-tough: root 12 → tip 6 mm, fillet 6, TE 2.0 → 0.84; same planform** | **87.0–101.9 g (slicer 84.83 g, 25 % gyroid)** | **5/5 at 84.83 g** | **current flight candidate, DRAFT; in-house FEA: sideways ~252–308 N, survives 200 N (§4.4); owner ANSYS cross-check pending** |
 
 ![Fin can rev 3, iso (superseded)](figures/fin_can_md_rev3_iso.png)
 
@@ -660,7 +803,7 @@ Symbols:
 
 *Figure 20. SUPERSEDED. Fin can rev 2, axial section through a fin. Source: `out/fin_can/rev2/fin_can_rev2_section.png`, 2026-11-20.*
 
-### 4.6 Nose cone: PROPOSED, part module not written (nosecone.md)
+### 4.7 Nose cone: PROPOSED, part module not written (nosecone.md)
 
 | Item | Value | Status |
 |---|---|---|
@@ -881,7 +1024,7 @@ The pack-position, 80 g-nose, 120 g-can and wind cases all deploy at 5–11 m/s 
 Phase 5 has not started, and there is no `schedule.md`.
 - Deadline: launch on 2026-12-14 (goal.md).
 - **Ordering constraints:**
-  - ANSYS re-run on rev 6 → confirm or revise the fins;
+  - in-house FEA on rev 6 done (§4.4) → owner ANSYS cross-check and the rev 7 fillet decision (§4.4.6) → confirm or revise the fins;
   - measure the tube OD and the motor → regenerate rev 6 with measured values → print;
   - drop-test the print → final fin can;
   - weigh the parts → re-sim → set the final ballast → balance check;
@@ -906,10 +1049,16 @@ Phase 5 has not started, and there is no `schedule.md`.
 
 A part is not "good" until every check passes and its renders have been reviewed (CLAUDE.md).
 
-### 9.2 FEA (ANSYS, §4.3)
-- Done on rev 5: flight gust, modal, sideways tip strike (50 N), axial tip strike (400 / 770 / 900 / 2000 N), combined 200 N Y + 770 N Z.
-- **To do on rev 6** (predictions in §4.3.7): 50 N Y (~0.14), 200 N Y (~0.5–0.57), combined (~0.75–0.8); modal.
-- **Also to do:** the thrust case (+138 N on the lip underside); identify the mode shapes for modes 4–6; confirm the material source data.
+### 9.2 FEA (owner ANSYS §4.3; in-house CalculiX §4.4)
+- **Owner ANSYS, done on rev 5:** flight gust, modal, sideways tip strike (50 N), axial tip strike (400 / 770 / 900 / 2000 N), combined 200 N Y + 770 N Z.
+- **In-house sim lab (CalculiX, validated against the rev 5 ANSYS):** axial −3.6 %; sideways −5.5 to −18 %, mesh-dependent corner (§4.4.2).
+  - Done on rev 6: 50 N Y, 400 N Z, 200 N at 45°, 200 N Y + 770 N Z.
+  - **Result:** the realistic 200 N sideways and 200 N at 45° landings survive; the extreme combined case fails (§4.4.3–4.4.4).
+- **To do:**
+  - Owner ANSYS on rev 6, as a cross-check: 50 N Y, 200 N Y, combined.
+  - Re-run with identical settings if the rev 7 fillets are adopted (§4.4.6).
+  - The thrust case (+138 N on the lip underside); the rev 6 modal run; identify the mode shapes for modes 4–6.
+  - Confirm the material source data.
 
 ### 9.3 Measurements and fit tests before printing
 - **Tube OD** (calipers): sets the sleeve bore and the nose base OD.
@@ -924,8 +1073,9 @@ A part is not "good" until every check passes and its renders have been reviewed
 
 ### 9.4 Drop test (PROPOSED, ansys_results.md)
 - Drop the rev 6 fit-test print from **0.8 m** (40 in chute equivalent) or **1.5 m** (28 in equivalent).
-- Land it on a fin tip sideways. Inspect the root fillet at the aft end (figure 13).
-- This is the only test that includes the real 25 % gyroid core in the 12 mm root (§4.3.7 caveats).
+- Land it on a fin tip sideways. Inspect the root fillet at the aft end (figure 13) and the insert-boss / fillet corner (rev 6 sideways peak, figure 24).
+- In-house FEA says a ~200 N sideways hit survives at FI 0.65–0.80 (§4.4.3).
+- This is the only test that includes the real 25 % gyroid core in the 12 mm root (§4.3.7 caveats, §4.4.7).
 
 ### 9.5 Weigh-and-balance
 - Weigh the nose, tube, fin can, chute and Kevlar, then re-run the sim with the as-built masses.
@@ -942,6 +1092,10 @@ A part is not "good" until every check passes and its renders have been reviewed
 - `tools/fluent_domain.py`: 2D fin-section CFD domains, rev 6 tapered sections (§3.6.1). No results yet.
 - `tools/rocket_oml.py`: whole-rocket OML STEP for the planned 3D Fluent run (§3.6.2). No results yet.
 - Ansys Mechanical 2023 R1 (owner): FEA (§4.3).
+- **In-house sim lab** (`rocket-simlab` agent, `.claude/agents/rocket-simlab.md`; owner request, 2026-11-21):
+  - **FEA:** `tools/fea_ccx.py` (gmsh 4.15.2 + CalculiX 2.21, C3D10, direct solver). **Validated** against the owner's rev 5 ANSYS: axial within 3.6 % (§4.4).
+  - **OpenRocket headless** (OpenRocket jar via `orhelper`/JPype on the owner's .ork): **pending the .ork upload** to `projects/l1-cheap/openrocket/`.
+  - **CFD:** OpenFOAM is available to the sim lab. 2D fin sections are quick; 3D runs only on a coarse mesh. No runs yet.
 
 ---
 
@@ -978,15 +1132,21 @@ A part is not "good" until every check passes and its renders have been reviewed
 | 2026-11-21 | **Print the fin can at 25 % gyroid; target 84.83 g** (owner slicer; 88.43 g at the other settings tried, briefly used as the target in git f3004e0) | owner | design.yaml `fin_can_md.target_mass_g`; git 201e22e |
 | 2026-11-21 | **Ballast 71 g → 1.82 cal** on rev 6 (70.4 g = 1.80; 2.0 cal = 78.8 g); final value from the balance check | main session (stability re-solve) | design.yaml `stability.ballast_g`; git 201e22e |
 | 2026-11-21 | Plan a 3D Fluent run on the whole-rocket OML (M 0.3, α 0/2/4°) to resolve the OR CP gap | main session (PROPOSED) | git 87fc346 |
+| 2026-11-21 | **Build an in-house sim lab:** gmsh + CalculiX FEA mirroring the owner's ANSYS setup (`tools/fea_ccx.py`), OpenRocket headless and OpenFOAM, run by a new `rocket-simlab` agent. Each tool is validated against an owner reference before it predicts | owner request; main session built it | `.claude/agents/rocket-simlab.md`; fea_results.md; git d0382ec |
 
 ---
 
 ## 11. Open Items & Placeholders
 
 ### 11.1 Structures and FEA
-- **ANSYS re-run on rev 6** (owner): 50 N Y → predicted ~0.14; 200 N Y → ~0.5–0.57; 200 N Y + 770 N Z → ~0.75–0.8 (§4.3.7, PREDICTION).
-- **Rev 6 infill core:** the 12 mm root has a 25 % gyroid core; the 1/t² prediction and the solid ANSYS model assume a solid section. Decide whether to raise infill or walls in the fin region (owner).
-- **Drop test** of the rev 6 fit-test print (0.8 m / 1.5 m).
+- **Owner ANSYS on rev 6, now a cross-check of the in-house results (§4.4).**
+  - 50 N Y: in-house FI 0.162 (raw).
+  - 200 N Y: in-house FI 0.65–0.80.
+  - 200 N Y + 770 N Z: in-house FI 1.38 (raw) / ~1.69 (scaled).
+  - The §4.3.7 prediction is superseded.
+- **Boss-cap and aft-root fillets (possible rev 7, owner decision):** fillet the top edge of the insert-boss cap (sideways peak) and the fin root at the aft face (axial peak) (§4.4.6). If adopted, re-run the in-house FEA with identical settings.
+- **Rev 6 infill core:** the 12 mm root has a 25 % gyroid core. The 1/t² prediction and the solid ANSYS and CalculiX models all assume a solid section. Decide whether to raise infill or walls in the fin region (owner).
+- **Drop test** of the rev 6 fit-test print (0.8 m / 1.5 m). It checks the in-house 200 N survival result with the real core (§9.4).
 - **Thrust FEA case:** +138 N on the lip underside, not yet run.
 - **Mode shapes:** identify modes 4–6 (1530 Hz) as torsion or 2nd bending; no rev 6 modal run.
 - **Flutter** not recomputed for the rev 6 taper (§3.5).
@@ -1003,7 +1163,8 @@ Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (84.
 
 ### 11.4 OR CP discrepancy and CFD
 - Our CP is 804.7 mm; OR's is 836.0 mm. OR's fin CNα is 9.364, against 6.97 / 7.08 for 3 fins and 9.43 for 4 fins. **Check the fin count in the .ork.**
-- **3D Fluent run** on `out/cfd/rocket_oml.step` (M 0.3, α 0/2/4°, ref area 1.338e-3 m², ref length 0.041275 m): not yet run.
+- **.ork upload** to `projects/l1-cheap/openrocket/` for headless OpenRocket in the sim lab. It would read the fin count, delay setting and CP directly (§3.3).
+- **3D CFD:** the owner's Fluent run on `out/cfd/rocket_oml.step` (M 0.3, α 0/2/4°, ref area 1.338e-3 m², ref length 0.041275 m), or an in-house OpenFOAM run (coarse 3D mesh only). Not yet run.
 - OR has a 2 g bulkhead at 19.461 in that holds the pack forward. Is that a planned part? Without it the pack sits on the motor (−0.99 cal).
 - OR has a 6 g inner tube, which does not exist in the min-diameter layout.
 - Needed from OR: its delay setting and the "optimum delay" for the current config.
@@ -1013,7 +1174,7 @@ Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (84.
 2. **Fin can mass:** design.yaml `stability.target_mass_g.fin_can_md` is still 84.0 (rev 5); `fin_can_md.target_mass_g` and `fin_can_model_mass_g` are 84.83. The verify model (87.0–101.9 g) reads ~6 % above the slicer.
 3. **Our total CNα:** the main session gives ≈ 9.0 for the CFD comparison; the Barrowman components in §3.2 sum to 2.000 + 0.184 + 0.386 + 7.117 (stability.md §0.2). Clarify which value and Mach the ≈ 9.0 refers to.
 4. **Rocket length:** OML 1029 mm (main session) vs design.yaml `stability.total_length_mm` 1030.7.
-5. **Loads vs layers:** rev 5/6 spec sheets say fin root bending is "within the layers"; ANSYS shows across-layer normal-Z failure at the root fillet.
+5. **Loads vs layers:** rev 5/6 spec sheets say fin root bending is "within the layers"; ANSYS and CalculiX show across-layer normal-Z failure at the fin root.
 6. **Nose mass:** the owner's `nosecone.mass_g` is 80 g; the plan is 52.7 g shell + 71 g ballast. `stability.target_mass_g.nose_cone_with_ballast` is 122.7 (70 g basis).
 7. **design.yaml `aero`:** `cp_from_nose_tip_mm` 899.0, `cg_liftoff` 816.5, `margin_liftoff_cal` 2.00, `cd_estimate`, `fin_root_bending_mpa` 6.5 and `max_velocity_m_s` 268 are for the 77 mm proposal or the owner's OR, not the current sim.
 8. **Drag inputs:** the sim uses `cd_vs_mach` for the old 100/40/40/5 fins (0.70–0.83); aero's estimate for the 77 mm fins is 0.73–1.13. Neither covers the rev 6 thick root and blunt TE.
@@ -1026,6 +1187,8 @@ Tube (93.6 g ESTIMATE vs OR's 123 g), nose shell (52.7 g ESTIMATE), fin can (84.
 15. **bom.csv:** the motor row is the H182R; inserts and screws are qty 2; fin can 197.3 g; the delay tool row is for the AeroTech tool, not the UDDT.
 16. **fin_can_design.md** describes the 29 mm design. **payload.md** has two contradictory banners. design.yaml `fin_can.fin_thickness_mode` (old 29 mm part) still says "constant".
 17. **Ballast packing density:** ≥ 2.57 g/cm³ (design.yaml, stated for 70 g) vs the H182R-era ≥ 3.27 (stability.md) and ≥ 3.54 g/cm³ (bom.csv).
+18. **Rev 6 sizing note:** design.yaml `aero.fin_thickness_mm` still carries the pre-build prediction ("200 N sideways FI 0.57 (1.75x)"). fea_results.md gives FI 0.65–0.80 (1.25–1.5×).
+19. **Combined-case ratio basis:** fea_results.md's "~1.9–2.4× better (scaled vs raw) than rev 5" compares the raw CalculiX FI (1.38) with the owner's ANSYS FI (3.28). On the ANSYS-scaled value (~1.69) the gain is smaller. Ask the sim lab for a like-for-like figure.
 
 ### 11.6 Owner inputs still TBD
 - Approve or reject the forward backup stop; choose the aft Kevlar anchor.
@@ -1094,6 +1257,12 @@ Accessed 2026-11-20 unless noted (as recorded in the project files).
 - JuggerBot PETG filament review (conservative PETG moduli) — https://juggerbot3d.com/petg-filament-review/
 - Ultimaker PETG TDS v1.00 (nominal moduli; Z tensile ~19 MPa, in-plane ~38.5 MPa) — https://um-support-files.ultimaker.com/materials/2.85mm/tds/PETG/Ultimaker-PETG-TDS-v1.00.pdf
 
+**In-house simulation tools (2026-11-21; fea_results.md, `.claude/agents/rocket-simlab.md`; no URLs recorded)**
+- gmsh 4.15.2 (meshing) and meshio — `tools/fea_ccx.py`
+- CalculiX 2.21 (`calculix-ccx`), C3D10 elements, SPOOLES direct solver — `tools/fea_ccx.py`
+- OpenRocket (headless jar, via `orhelper` / JPype) — rocket-simlab.md
+- OpenFOAM — rocket-simlab.md
+
 **Aerodynamics, CFD & stability**
 - Barrowman CP method; OpenRocket technical documentation (drag buildup) — aero.md
 - NACA TN 4197 flutter, via Apogee *Peak of Flight* #291 — aero.md, ansys_results.md
@@ -1138,6 +1307,14 @@ Accessed 2026-11-20 unless noted (as recorded in the project files).
 
 ## Changelog
 
+- **2026-11-21 (5633ce4)**: in-house sim lab and CalculiX FEA of rev 5 (validation) and rev 6 (rocket-docs).
+  - Briefing: sideways-landing line now reads rev 6 ~250–310 N (in-house FEA), 200 N FI 0.65–0.80, survives, owner ANSYS pending. New tilted-landing and sim-lab validation lines. Risk 1, next steps and phase status updated.
+  - §3.3, §3.6.2: headless OpenRocket (pending the .ork) and OpenFOAM noted.
+  - §4: **new §4.4 In-house FEA (CalculiX)**: method and equations, validation table, rev 6 vs rev 5, capacities, combined runs, correction table, suggested fillets, caveats; figures 23–27.
+  - §4 (cont.): §4.3.7 PREDICTION marked **SUPERSEDED**, with an in-house column added. §4.3 intro, §4.3.5b, §4.3.6, §4.3.8, the §4.1 loads-vs-layers table and §4.6 rev 6 row updated. Old §4.4–4.6 renumbered to §4.5–4.7.
+  - §8, §9.2, §9.4, §9.7: sim lab added; owner ANSYS on rev 6 becomes a cross-check.
+  - §10: in-house sim lab (owner request). §11: ANSYS cross-check, rev 7 fillets, .ork upload, 3D CFD, drop test; conflicts 18–19. §12: simulation tools.
+  - Figures linked: `fea/rev5_val_tipY50_r0.7_direct.png`, `fea/rev6_tipY50.png`, `fea/rev6_tipZ400.png`, `fea/rev6_combined_200N_at45.png`, `fea/rev6_combined_Y200_Z770.png`.
 - **2026-11-21 (201e22e)**: fin can rev 6 (landing-tough), rev 6 stability re-solve, CFD prep (rocket-docs).
   - Briefing: fin can row rev 6, 84.83 g at 25 % gyroid; ballast 71 g → 1.82 cal; sideways-landing line (rev 5 FAIL ~88 N, rev 6 predicted ~350–400 N, ANSYS pending); new risks and next steps.
   - §3: fin table gains rev 6 (12 → 6 mm taper, TE 2.0 → 0.84, fillet 6); flutter not recomputed; §3.6 split into 2D domains (rev 6 sections) and the new whole-rocket OML with the planned 3D Fluent run (figure 22).
@@ -1184,3 +1361,6 @@ Project history (git log):
   - 2c62fb5: fin can rev 6, landing-tough fins sized from the owner's ANSYS.
   - 87fc346: CFD tools, rev 6 2D domains and whole-rocket OML STEP.
   - f3004e0, 201e22e: rev 6 target 88.43 g, then 84.83 g at 25 % gyroid (owner slicer); verify 5/5; ballast 72 g, then 71 g.
+  - 2b00f5c: report figures (rev 6).
+  - d0382ec: sim lab, CalculiX FEA pipeline validated against the owner's ANSYS; `rocket-simlab` agent; report updated for rev 6.
+  - 1ffc217, 5633ce4: FEA write-up (rev 5 validation, rev 6 vs rev 5); rev 6 combined-load runs; FEA figures for the report.

@@ -45,7 +45,7 @@ absolute values are scaled to the owner's ANSYS calibration.
 | Case | Rev 6 FI (raw) | Rev 6 FI (ANSYS-scaled ×1.22) | Rev 5 reference | Verdict |
 |---|---|---|---|---|
 | **200 N at 45°** (141 N Y + 141 N Z): a realistic tilted landing | **0.56** at (23.1, −4.2, 9.9), fillet meets sleeve | ~0.69 | ~1.4 (superposed estimate) | ✅ survives, 1.45–1.8× |
-| 200 N Y + 770 N Z (the owner's severe rev 5 ANSYS case) | **1.38** at (29.4, −2.4, 6.4), boss/fillet | ~1.69 | **3.28** (owner ANSYS) | ❌ still fails, but ~2.4× better than rev 5 |
+| 200 N Y + 770 N Z (the owner's severe rev 5 ANSYS case) | **1.38** at (29.4, −2.4, 6.4), boss/fillet | ~1.69 | **3.28** (owner ANSYS) | ❌ still fails, but ~1.9× (scaled) to 2.4× (raw) better than rev 5 |
 
 - **The 200 N Y + 770 N Z case is extreme:** about 800 N total, which is rev 5's axial *failure* load plus a full sideways hit. It is not the realistic landing estimate (~200 N, main-session ESTIMATE).
 - Superposing the single-load results overestimates rev 6 (Y and Z peak at different spots), as predicted; the combined runs are the real numbers.
