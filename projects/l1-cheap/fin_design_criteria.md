@@ -22,3 +22,24 @@ Then hand off to stability (ballast), docs (report) and the owner (slicer mass, 
 **Outcome (2026-11-21):** the owner stopped the loop at **rev 7** (C1–C4 ALL PASS: C1 0.28, C2 0.25,
 C3 0.084, C4 0.022 scaled FI; `out/fea/rev7/criteria.json`). Rev 8 (root 10 mm) was not analysed: its
 FEA mesh failed in gmsh (ScaledJac) and the owner chose rev 7. C6 mass check still needs the slicer mass.
+
+## Rev 8 (2026-11-22, owner request): boattail tail cone, landing strength kept
+
+Rev 7 fins unchanged; threaded collar (12 mm) behind the aft face; screw-on tail cone (parts/tail_cone.py) traps the
+thrust ring (motor retainer, insert holes removed, bosses solid) and tapers 46.8 -> 43.0 mm over 20 mm (5.4 deg);
+45-deg gussets under each fin root TE onto the collar (the first rev 8 FEA peaked at that 90-deg corner, C1 0.46).
+
+| Criterion | Rev 7 | Rev 8 (no gusset) | **Rev 8 (gusseted)** | Limit |
+|---|---|---|---|---|
+| C1 sideways 200 N | 0.28 | 0.46 | **0.30** | 0.5 |
+| C2 tilted 200 N @45 | 0.25 | 0.39 | **0.33** | 0.5 |
+| C3 axial 200 N | 0.084 | 0.20 | **0.11** | 0.5 |
+| C4 gust 15 N | 0.022 | 0.031 | **0.023** | 0.1 |
+
+C5 flutter: fins unchanged (pass). C6: verify 1/3/4/5 PASS; check 2 needs slicer masses; the fin TEs now overhang
+12 mm (collar on the bed) -> small supports under the three TEs. C7: OR planform kept.
+CFD (100 m/s, alpha 4, same tools): CP 834.4 mm (rev 7 836.3), CN_alpha 13.67 (14.06), pressure CA 0.266 (0.375,
+-29 %), total CA est 0.608 (0.709, -14 %); base+fin pressure drag 0.360 -> 0.236. Fin 1 lift 4.26/rad (4.42).
+Flight sim (OR weights + extras, fin can + cone ESTIMATE 94.6 + 12.6 g, Cd x0.857): CG 758.8 mm, **1.83 cal on the CFD
+CP** (rev 7 2.02), apogee **1341 m** (1224), M 0.781, coast 11.75 s (12 s delay deploys at 2.4 m/s).
+Tail cone: print in ABS/ASA or tape-line the bore (it surrounds the nozzle exit during the burn).

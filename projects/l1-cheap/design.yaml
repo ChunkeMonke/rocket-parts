@@ -142,7 +142,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   target_mass_g: {nose_cone_shell: 52.7, nose_cone_with_ballast: 122.7, fin_can_md: 90.0}   # verify targets. fin_can_md = REV 7 owner slicer 90 g at 25 % gyroid (2026-11-21)
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
   fin_can_model_mass_g: 90.0         # REV 7, OWNER Bambu Studio slicer 2026-11-21, 25 % gyroid (verify model 90.6-113.7 g). Rev 6 was 84.83
-  fin_can_model_cg_from_aft_mm: 38.0 # REV 7 solid-mesh CG forward of the aft face (main session 2026-11-21). Rev 6 40.5, rev 5 43.3
+  fin_can_model_cg_from_aft_mm: 38.0 # REV 7 solid-mesh CG forward of the aft face (main session 2026-11-21). Rev 6 40.5, rev 5 43.3. REV 8 (if adopted): fin can + tail cone ESTIMATE 107.2 g (94.6 scaled from the rev 7 slicer + 12.6 model), CG 29.6 mm fwd of the fin-can aft face
   nose_shell_mass_g: 63.0           # NOSE REV 1, OWNER Bambu slicer 2026-11-22: cone + plug + cap = 63 g at 3 wall loops, 20 % gyroid (model at 6 walls, 25 %: 72.8). CG = model value (nosecone.cg_from_tip_mm)
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:

@@ -79,10 +79,12 @@ def main() -> None:
     figs = case / "figures"; figs.mkdir(exist_ok=True)
     grid = load_volume(case, a.time)
     rpts, rpolys, rd = P.read(case / "VTKL" / "rocket" / f"rocket_{a.time}.vtk")
-    L = c["L"]
+    L = c["L"]                                                   # nose tip to the aft end of the rocket
+    _C = np.array([rpts[f].mean(axis=0) for f in rpolys])
+    X_TE = float(_C[np.hypot(_C[:, 1], _C[:, 2]) > 0.0245, 0].max())   # fin trailing edge (= L unless a tail cone)
 
     # ---------------------------------------------------------------- 1. cross-sections through/behind the fins
-    stations = [(L - 0.025, "through the fins (mid root chord)"), (L + 0.010, "10 mm behind the base"),
+    stations = [(X_TE - 0.025, "through the fins (mid root chord)"), (L + 0.010, "10 mm behind the base"),
                 (L + 0.080, "80 mm behind (near wake)"), (L + 0.250, "250 mm behind (far wake)")]
     fig, axs = plt.subplots(2, 2, figsize=(12, 11))
     for ax, (x, title) in zip(axs.flat, stations):
@@ -113,7 +115,7 @@ def main() -> None:
 
     # ---------------------------------------------------------------- 2. streamlines
     seeds = vtkPoints()
-    xs = L - 0.12
+    xs = X_TE - 0.12
     for r in np.linspace(0.027, 0.085, 7):
         for th in np.radians(np.arange(0, 181, 15)):
             seeds.InsertNextPoint(xs, r * math.sin(th), r * math.cos(th))
@@ -166,7 +168,7 @@ def main() -> None:
     Aref = math.pi * P.D_REF ** 2 / 4
     summary = []
     for row, (name, ang) in enumerate(fins.items()):
-        sel = (r > r_body) & (np.abs(((th - ang + 180) % 360) - 180) < 25) & (Cc[:, 0] > L - 0.06)
+        sel = (r > r_body) & (np.abs(((th - ang + 180) % 360) - 180) < 25) & (Cc[:, 0] > X_TE - 0.06) & (Cc[:, 0] < X_TE + 0.0005)
         et = np.array([0.0, math.cos(math.radians(ang)), -math.sin(math.radians(ang))])   # fin-normal direction
         er = np.array([0.0, math.sin(math.radians(ang)), math.cos(math.radians(ang))])    # spanwise
         side = np.sign(nb[:, :] @ et)
@@ -178,7 +180,7 @@ def main() -> None:
             pc = PolyCollection(polys, array=cp[s], cmap="RdBu_r", edgecolors="face", linewidths=0.2)
             pc.set_clim(-0.6, 0.6)
             ax.add_collection(pc)
-            ax.set_xlim(L * 1000 - 60, L * 1000 + 5); ax.set_ylim(20, 70); ax.set_aspect("equal")
+            ax.set_xlim(X_TE * 1000 - 60, X_TE * 1000 + 5); ax.set_ylim(20, 70); ax.set_aspect("equal")
             face = "face toward +θ" if sgn > 0 else "face toward −θ"
             ax.set_title(f"{name}\n{face}" if ang else f"{name}\n(both faces identical by symmetry)" if col == 0 else "")
             ax.set_xlabel("x from nose tip (mm)"); ax.set_ylabel("radius (mm)")
