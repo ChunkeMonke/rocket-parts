@@ -1,7 +1,8 @@
 """3D RANS CFD of the whole rocket (OpenFOAM simpleFoam, k-omega SST): normal-force slope CN_alpha, CP and drag.
 
   .venv/bin/python tools/cfd_rocket.py setup [--alpha 4] [--speed 100] [--name a4]   # writes out/cfd/of_<name>/
-  bash out/cfd/of_<name>/Allrun                                                       # mesh + solve (4 cores)
+  bash out/cfd/of_<name>/Allrun                                                       # mesh + solve + VTK export
+  (Ubuntu 'openfoam' or OpenFOAM.com 'openfoam2406-default'; Allrun finds either. --np N = CPU cores to use)
   .venv/bin/python tools/cfd_rocket.py post --name a4                                 # CN, CN_alpha, CP, CD
 
 Geometry: out/cfd/rocket_oml.stl from tools/rocket_oml.py (current design.yaml: rev 7 fin can, nose ogive).
@@ -94,12 +95,9 @@ mergeTolerance 1e-6;
 """)
     w(case / "system/controlDict", "dictionary", "controlDict", f"""
 application simpleFoam; startFrom latestTime; startTime 0; stopAt endTime; endTime {a.iters}; deltaT 1;
-writeControl timeStep; writeInterval {a.iters}; purgeWrite 1; writeFormat binary; writePrecision 8;
+writeControl timeStep; writeInterval {max(1, a.iters // 4)}; purgeWrite 0; writeFormat binary; writePrecision 8;
 writeCompression off; timeFormat general; timePrecision 6; runTimeModifiable true;
-functions {{
-  forces {{ type forces; libs ("libforces.so"); writeControl timeStep; writeInterval 1;
-    patches (rocket); rho rhoInf; rhoInf {RHO}; CofR (0 0 0); }}
-}}
+// no `forces` function object: it crashes in the Debian OpenFOAM build; tools/cfd_post.py integrates the surface pressure
 """)
     w(case / "system/decomposeParDict", "dictionary", "decomposeParDict", f"numberOfSubdomains {a.np};\nmethod hierarchical;\nhierarchicalCoeffs {{ n ({a.np} 1 1); order xyz; }}\n")
     w(case / "system/fvSchemes", "dictionary", "fvSchemes", """
@@ -149,11 +147,21 @@ boundaryField {{
   "proc.*" {{ type processor; }}
 }}
 """)
+    t_last, t_prev = a.iters, a.iters - max(1, a.iters // 4)
     (case / "Allrun").write_text(f"""#!/bin/bash
-set -e
+# OpenFOAM environment: Debian/Ubuntu package (/usr/share/openfoam) or OpenFOAM.com package (/usr/lib/openfoam/openfoamXXXX)
 cd "$(dirname "$0")"
-rm -rf log.* processor* done.flag constant/polyMesh
-export WM_PROJECT_DIR=/usr/share/openfoam OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+if [ -d /usr/share/openfoam ] && command -v blockMesh >/dev/null; then
+  export WM_PROJECT_DIR=/usr/share/openfoam
+else
+  rc=$(ls -d /usr/lib/openfoam/openfoam*/etc/bashrc 2>/dev/null | tail -1)
+  [ -n "$rc" ] || {{ echo "OpenFOAM not found (install: Ubuntu 'openfoam' or OpenFOAM.com 'openfoam2406-default')"; exit 1; }}
+  set +u; source "$rc"
+fi
+command -v blockMesh >/dev/null || {{ echo "OpenFOAM tools not on PATH"; exit 1; }}
+set -e
+rm -rf log.* processor* done.flag constant/polyMesh VTKL [1-9]*
+export OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 MPI="mpirun --oversubscribe -np {a.np}"
 blockMesh > log.blockMesh 2>&1
 surfaceFeatureExtract > log.surfaceFeatureExtract 2>&1
@@ -161,9 +169,10 @@ decomposePar -force > log.decomposePar 2>&1
 $MPI snappyHexMesh -overwrite -parallel > log.snappyHexMesh 2>&1
 $MPI checkMesh -parallel > log.checkMesh 2>&1 || true
 for d in processor*; do rm -rf $d/0; cp -r 0.orig $d/0; done
-$MPI potentialFoam -parallel -initialiseUBCs > log.potentialFoam 2>&1 || true
 $MPI simpleFoam -parallel > log.simpleFoam 2>&1
+$MPI foamToVTK -parallel -time '{t_prev},{t_last}' -no-internal -no-point-data -legacy -ascii -name VTKL > log.vtk 2>&1
 echo DONE > done.flag
+echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name}"
 """)
     (case / "Allrun").chmod(0o755)
     json.dump({"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U}, open(case / "case.json", "w"))
