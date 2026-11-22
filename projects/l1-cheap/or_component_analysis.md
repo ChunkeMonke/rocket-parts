@@ -80,3 +80,21 @@ CP and CN_alpha settled within ~1 mm / 0.3 %; drag still falling. NOT YET TRUSTE
 100 m/s result (836 mm), opposite to the expected aft shift with Mach, and the 350 K peak exceeds the ~321 K adiabatic
 wall temperature, so first-order smearing is suspected. Next: finish 2500, continue second-order from it, compare CP.
 Raw data: out/cfd/of_m08/result_interim.json. Re-run: tools/cfd_rocket.py setup --name m08 --mach 0.8; bash Allrun.
+
+### Mach 0.8 final (first-order, 2500 iterations, 2026-11-22): out/cfd/of_m08/result.json
+| Iteration | CP | CN_alpha | CA pressure | Surface T |
+|---|---|---|---|---|
+| 2000 | 817.7 mm | 14.88 | 0.952 | 262-350 K |
+| 2500 | 818.3 mm | 14.89 | 0.958 | 261-350 K |
+Converged for the first-order scheme (CP +0.6 mm over the last 500). CA total ~1.23 (friction flat-plate ESTIMATE 0.273).
+On the OR CG: 1.64 cal. Not yet trusted (first-order smearing; T peak above the adiabatic wall value). Next: second order.
+
+### Owner-PC reproduction of the 100 m/s case (2026-11-22, main session record)
+WSL Ubuntu, OpenFOAM v2406 (OpenFOAM.com), 8 cores, same tools/cfd_rocket.py case: CP 836.2966 mm, CN_alpha 14.0585/rad,
+CA_total_est 0.7089. Cloud run (OpenFOAM v1912, 4 cores): 836.3131 mm, 14.0586, 0.7088. Agreement 0.02 mm.
+
+### In-house flight sim with the OR weights (2026-11-22, sims/l1_cheap_sweep.py case(), main session record)
+Case A (OR weights only, chute pack at 370 mm, extras zeroed): 583 g, CG 749.2 mm, 1.35 cal on the Barrowman CP,
+apogee 1212 m, Vmax 266.1 m/s, M 0.785, rail exit 25.5 m/s on the 1.83 m rail (24.1 m/s for case B).
+Case B (+ motor stop, epoxy, buttons, retention): 619 g, CG 753.0, apogee 1224 m, M 0.761. Case C (pack slid onto the
+motor): CG 788.3, 0.40 cal on Barrowman (1.17 cal on the CFD CP).
