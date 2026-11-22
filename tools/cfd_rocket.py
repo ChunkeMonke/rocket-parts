@@ -87,7 +87,9 @@ addLayersControls {{ relativeSizes true; layers {{ }} expansionRatio 1.2; finalL
   nGrow 0; featureAngle 60; nRelaxIter 3; nSmoothSurfaceNormals 1; nSmoothNormals 3; nSmoothThickness 10;
   maxFaceThicknessRatio 0.5; maxThicknessToMedialRatio 0.3; minMedialAxisAngle 90; nBufferCellsNoExtrude 0;
   nLayerIter 50; }}
-meshQualityControls {{ #includeEtc "caseDicts/mesh/generation/meshQualityDict" }}
+meshQualityControls {{ maxNonOrtho 65; maxBoundarySkewness 20; maxInternalSkewness 4; maxConcave 80;
+  minVol 1e-13; minTetQuality 1e-15; minArea -1; minTwist 0.02; minDeterminant 0.001; minFaceWeight 0.05;
+  minVolRatio 0.01; minTriangleTwist -1; nSmoothScale 4; errorReduction 0.75; relaxed {{ maxNonOrtho 75; }} }}
 mergeTolerance 1e-6;
 """)
     w(case / "system/controlDict", "dictionary", "controlDict", f"""
@@ -149,6 +151,7 @@ boundaryField {{
     (case / "Allrun").write_text(f"""#!/bin/bash
 set -e
 cd "$(dirname "$0")"
+rm -rf log.* processor* done.flag constant/polyMesh
 export WM_PROJECT_DIR=/usr/share/openfoam OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 MPI="mpirun --oversubscribe -np {a.np}"
 blockMesh > log.blockMesh 2>&1
