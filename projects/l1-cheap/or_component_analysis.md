@@ -42,3 +42,26 @@ In-house (sims/l1_cheap.py, same 65 g nose, 28 in chute, ref 41.275 mm):
 
 The gap is (1) pack position: ~45 mm of CG, and (2) CP: OR 836 vs Barrowman/RocketPy 805 mm (~0.75 cal), the same
 unresolved difference as section 0.3 of stability.md. Design value kept at 63 g ballast pending the owner's decision and the balance check.
+
+## 3D CFD settles the CP (2026-11-22, tools/cfd_rocket.py + tools/cfd_post.py, case out/cfd/of_a4)
+
+OpenFOAM v1912 simpleFoam, k-omega SST, half model (symmetry plane through fin 0), 590k cells (snappyHexMesh,
+1.6 mm on fins), 100 m/s (M 0.29), alpha 4 deg, rev 7 fin can OML. Converged (residuals 1e-7 to 1e-8; CP moved
+< 0.001 mm from iteration 600 to 800). Forces from surface pressure (the forces function object crashes in this build).
+
+| Item | CFD | Barrowman / RocketPy | OpenRocket |
+|---|---|---|---|
+| CP from tip | **836.3 mm** | 804.7 mm | 836.0 mm |
+| CN_alpha total (/rad, ref 41.275) | 14.06 | 9.69 | n/a |
+| nose CN_alpha (check) | 2.01 at 78.0 mm | 2.00 at 76.9 mm | |
+| fins only | 7.70 | 7.12 (incl. interference) | |
+| body around the fins (sleeve, carry-over) | 3.01 | (in the 7.12 factor) | |
+| tube + fairing step | 1.34 | 0.57 (step + fairing only) | |
+| CA (pressure + flat-plate friction est.) | 0.375 + 0.33 = 0.71 | Cd 0.73 (aero.cd_estimate) | |
+
+**Result:** the CFD agrees with OpenRocket (836 mm). Barrowman misses the body lift around the fin can and along the
+tube, which puts its CP 31 mm too far forward (conservative). With the owner's 65 g nose:
+OR CG 750.4 -> **2.08 cal**; with the real extras (CG 753) -> 2.01 cal; if the chute pack slides onto the motor
+(CG 788) -> 1.17 cal (still stable). Caveats: one angle (4 deg), one speed (incompressible; CP moves aft with Mach,
+which adds margin), one mesh (no grid study), wall functions, friction from a flat-plate estimate.
+Figures: projects/l1-cheap/report/figures/cfd/.
