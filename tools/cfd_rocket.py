@@ -47,29 +47,32 @@ thermoType {{ type hePsiThermo; mixture pureMixture; transport const; thermo hCo
   specie specie; energy sensibleInternalEnergy; }}
 mixture {{ specie {{ molWeight 28.96; }} thermodynamics {{ Cp 1005; Hf 0; }} transport {{ mu {MU}; Pr 0.71; }} }}
 """)
+    # pseudo-transient (local time stepping), first-order upwind: the steady rhoSimpleFoam start at M 0.8 diverged
+    # (negative temperature) on this wall-function mesh; a temperature limiter guards single bad cells
     w(case / "system/fvSchemes", "dictionary", "fvSchemes", """
-ddtSchemes { default steadyState; }
-gradSchemes { default Gauss linear; grad(U) cellLimited Gauss linear 1; }
+ddtSchemes { default localEuler; }
+gradSchemes { default Gauss linear; }
 divSchemes { default none;
-  div(phi,U) bounded Gauss linearUpwind grad(U); div(phi,e) bounded Gauss linearUpwind default;
-  div(phi,K) bounded Gauss linearUpwind default; div(phi,Ekp) bounded Gauss linearUpwind default;
-  div(phiv,p) bounded Gauss linearUpwind default; div(phid,p) bounded Gauss linearUpwind default;
-  div(phi,k) bounded Gauss upwind; div(phi,omega) bounded Gauss upwind;
+  div(phi,U) Gauss upwind; div(phi,e) Gauss upwind; div(phi,K) Gauss upwind; div(phi,Ekp) Gauss upwind;
+  div(phiv,p) Gauss upwind; div(phid,p) Gauss upwind; div(phi,k) Gauss upwind; div(phi,omega) Gauss upwind;
   div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear; }
 laplacianSchemes { default Gauss linear limited corrected 0.5; }
 interpolationSchemes { default linear; }
 snGradSchemes { default limited corrected 0.5; }
 wallDist { method meshWave; }
 """)
-    w(case / "system/fvSolution", "dictionary", "fvSolution", f"""
-solvers {{
-  p {{ solver GAMG; smoother GaussSeidel; tolerance 1e-8; relTol 0.05; maxIter 50; }}
-  "(U|e|k|omega)" {{ solver smoothSolver; smoother symGaussSeidel; tolerance 1e-9; relTol 0.1; }}
-}}
-// transonic/consistent off and heavy p relaxation: the impulsive M 0.8 start diverges otherwise (negative T)
-SIMPLE {{ nNonOrthogonalCorrectors 1; transonic no; consistent no; pMinFactor 0.5; pMaxFactor 1.5; }}
-relaxationFactors {{ equations {{ U 0.5; e 0.5; k 0.5; omega 0.5; }} fields {{ p 0.2; rho 1; }} }}
+    w(case / "system/fvSolution", "dictionary", "fvSolution", """
+solvers {
+  "(p|pFinal)" { solver GAMG; smoother GaussSeidel; tolerance 1e-8; relTol 0.05; maxIter 50; }
+  "(rho|rhoFinal)" { solver diagonal; }
+  "(U|e|k|omega)(|Final)" { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-9; relTol 0.1; }
+}
+PIMPLE { nOuterCorrectors 1; nCorrectors 2; nNonOrthogonalCorrectors 1; transonic no;
+  maxCo 0.5; rDeltaTSmoothingCoeff 0.02; rDeltaTDampingCoeff 1.0; maxDeltaT 1; }
+relaxationFactors { equations { ".*" 1; } }
 """)
+    w(case / "system/fvOptions", "dictionary", "fvOptions",
+      "limitT { type limitTemperature; active yes; selectionMode all; min 150; max 600; }\n")
     Us = f"({U[0]:.6f} {U[1]:.6f} {U[2]:.6f})"
     sym = 'symmetry { type symmetryPlane; }\n  "proc.*" { type processor; }'
     fld = {
@@ -102,6 +105,8 @@ def setup(a) -> Path:
     (case / "constant" / "triSurface").mkdir(parents=True, exist_ok=True)
     m.export(case / "constant" / "triSurface" / "rocket.stl")
     comp = a.mach > 0
+    if comp and a.iters == 800:
+        a.iters = 2500                     # local time stepping needs more iterations than the incompressible run
     if comp:
         a.speed = a.mach * math.sqrt(GAMMA * R_AIR * T_INF)
     al = math.radians(a.alpha)
@@ -152,7 +157,7 @@ meshQualityControls {{ maxNonOrtho 65; maxBoundarySkewness 20; maxInternalSkewne
 mergeTolerance 1e-6;
 """)
     w(case / "system/controlDict", "dictionary", "controlDict", f"""
-application {"rhoSimpleFoam" if comp else "simpleFoam"}; startFrom latestTime; startTime 0; stopAt endTime; endTime {a.iters}; deltaT 1;
+application {"rhoPimpleFoam" if comp else "simpleFoam"}; startFrom latestTime; startTime 0; stopAt endTime; endTime {a.iters}; deltaT 1;
 writeControl timeStep; writeInterval {max(1, a.iters // 4)}; purgeWrite 0; writeFormat binary; writePrecision 8;
 writeCompression off; timeFormat general; timePrecision 6; runTimeModifiable true;
 // no `forces` function object: it crashes in the Debian OpenFOAM build; tools/cfd_post.py integrates the surface pressure
@@ -229,7 +234,7 @@ decomposePar -force > log.decomposePar 2>&1
 $MPI snappyHexMesh -overwrite -parallel > log.snappyHexMesh 2>&1
 $MPI checkMesh -parallel > log.checkMesh 2>&1 || true
 for d in processor*; do rm -rf $d/0; cp -r 0.orig $d/0; done
-$MPI {"rhoSimpleFoam" if comp else "simpleFoam"} -parallel > log.simpleFoam 2>&1
+$MPI {"rhoPimpleFoam" if comp else "simpleFoam"} -parallel > log.simpleFoam 2>&1
 $MPI foamToVTK -parallel -time '{t_prev},{t_last}' -no-internal -no-point-data -legacy -ascii -name VTKL > log.vtk 2>&1
 $MPI foamToVTK -parallel -time '{t_last}' -no-boundary -legacy -name VTKI > log.vtki 2>&1
 echo DONE > done.flag
@@ -237,7 +242,7 @@ echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name} && .venv/b
 """)
     (case / "Allrun").chmod(0o755)
     meta = {"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U, "t_prev": t_prev, "t_last": t_last,
-            "compressible": comp, "mach": a.mach if comp else a.speed / math.sqrt(GAMMA * R_AIR * T_INF)}
+            "compressible": comp, "solver": "rhoPimpleFoam LTS, first-order upwind" if comp else "simpleFoam", "mach": a.mach if comp else a.speed / math.sqrt(GAMMA * R_AIR * T_INF)}
     if comp:
         meta.update({"p_inf": P_INF, "T_inf": T_INF, "rho_inf": P_INF / (R_AIR * T_INF)})
     json.dump(meta, open(case / "case.json", "w"))
@@ -283,7 +288,7 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["setup", "post"])
     ap.add_argument("--alpha", type=float, default=4.0)
     ap.add_argument("--speed", type=float, default=100.0)
-    ap.add_argument("--mach", type=float, default=0.0, help="> 0: compressible rhoSimpleFoam at this Mach (sets speed)")
+    ap.add_argument("--mach", type=float, default=0.0, help="> 0: compressible rhoPimpleFoam (local time stepping) at this Mach; sets speed, default 2500 iterations")
     ap.add_argument("--iters", type=int, default=800)
     ap.add_argument("--np", type=int, default=4)
     ap.add_argument("--name", default="a4")
