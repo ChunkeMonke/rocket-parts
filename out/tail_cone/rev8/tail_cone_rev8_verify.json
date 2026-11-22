@@ -1,0 +1,69 @@
+[
+  {
+    "num": 1,
+    "name": "mesh integrity",
+    "passed": true,
+    "detail": "watertight=True, winding_consistent=True, volume=9914.6 mm3, bodies=1",
+    "data": {
+      "bodies": 1,
+      "volume_mm3": 9914.556793308077
+    }
+  },
+  {
+    "num": 2,
+    "name": "mass",
+    "passed": false,
+    "detail": "no target mass declared",
+    "data": {
+      "solid_mm3": 9914.55924743406,
+      "infill_region_mm3": 0.0,
+      "mass_0pct_g": 12.591490244241257,
+      "mass_100pct_g": 12.591490244241257,
+      "mesh_volume_mm3": 9914.556793308077,
+      "wall_mm": 2.67,
+      "layer_mm": 0.2,
+      "n_top": 5,
+      "n_bottom": 3
+    }
+  },
+  {
+    "num": 3,
+    "name": "mating interference",
+    "passed": true,
+    "detail": "tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3, fin_can: 0.000 mm3",
+    "data": {
+      "interference_mm3": {
+        "tube_wall": 0.0,
+        "motor_case": 0.0,
+        "motor_thrust_ring": 0.0,
+        "fin_can": 0.0
+      }
+    }
+  },
+  {
+    "num": 4,
+    "name": "renders",
+    "passed": true,
+    "detail": "written: tail_cone_rev8_iso.png, tail_cone_rev8_front.png, tail_cone_rev8_section.png \u2014 VISUAL REVIEW REQUIRED",
+    "data": {
+      "paths": [
+        "/home/user/out/tail_cone/rev8/tail_cone_rev8_iso.png",
+        "/home/user/out/tail_cone/rev8/tail_cone_rev8_front.png",
+        "/home/user/out/tail_cone/rev8/tail_cone_rev8_section.png"
+      ]
+    }
+  },
+  {
+    "num": 5,
+    "name": "build volume",
+    "passed": true,
+    "detail": "extents X 46.8 / Y 46.8 / Z 29.0 mm vs limit 256/256/256",
+    "data": {
+      "extents_mm": [
+        46.79499816894531,
+        46.78045654296875,
+        29.0
+      ]
+    }
+  }
+]

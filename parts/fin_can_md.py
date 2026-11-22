@@ -19,6 +19,10 @@ Parameters (projects/<project>/design.yaml `fin_can_md:` + `aero:` + skills/SKIL
   fin_tip_thickness_mm  mm  optional spanwise taper (aero.fin_tip_thickness_mm; default = root thickness)
   te_root_thickness_mm  mm  blunt TE thickness at the root, tapering to te_thickness at the tip
   boss_extra_wall_mm    mm  extra plastic around the insert boss beyond the perimeter band (rev 7)
+  tail_cone             bool rev 8: no insert holes; threaded collar behind the aft face for parts/tail_cone.py
+  collar_length_mm, collar_bore_d_mm   mm  collar below the aft face (z < 0), bore = thread minor dia
+  boattail_length_mm, boattail_end_od_mm, tail_cone_bore_d_mm   mm  tail cone (used by parts/tail_cone.py)
+  thread_pitch_mm, thread_depth_mm, thread_clearance_mm   mm  printed 45-deg thread (parts/nose_cone.py helpers)
   target_mass_g       g    verify check 2 target
 """
 from __future__ import annotations
@@ -90,7 +94,12 @@ def params(project: str = "l1-cheap") -> dict:
         "insert_radius_mm": sleeve_bore / 2 + wall + v["insert_hole_d_mm"] / 2,
         "boss_fairing_length_mm": v["boss_fairing_length_mm"],
         "target_mass_g": v["target_mass_g"],
+        "tail_cone": bool(v.get("tail_cone", False)),
     }
+    if p["tail_cone"]:
+        for k in ("collar_length_mm", "collar_bore_d_mm", "boattail_length_mm", "boattail_end_od_mm",
+                  "tail_cone_bore_d_mm", "thread_pitch_mm", "thread_depth_mm", "thread_clearance_mm"):
+            p[k] = v[k]
     p["washer_min_od_mm"] = 2 * (2.0 + p["insert_radius_mm"] - p["thrust_ring_od_mm"] / 2)
     p["_status"] = {k: x.get("status", "") for k, x in fc.items() if isinstance(x, dict)}
     p["_source"] = {k: x.get("note", "") for k, x in fc.items() if isinstance(x, dict)}
@@ -113,7 +122,38 @@ def build(p: dict) -> cq.Workplane:
     t = p["lip_thickness_mm"]
     body = body.cut(cq.Workplane("XY").circle(p["lip_bore_d_mm"] / 2).extrude(t))
     body = body.cut(cq.Workplane("XY").circle(r_sb).extrude(L + Lf).translate((0, 0, t)))
-    return body.cut(fin_can.insert_holes(p))
+    if not p["tail_cone"]:
+        return body.cut(fin_can.insert_holes(p))
+    return body.union(collar(p))
+
+
+def collar(p: dict) -> cq.Workplane:
+    """Rev 8: threaded collar below the aft face (z from -collar_length to 0), OD = sleeve OD, female thread.
+    The groove opens on the collar's aft face and ends inside the wall above the thread run-out."""
+    from parts import nose_cone
+    Lc, r_b = p["collar_length_mm"], p["collar_bore_d_mm"] / 2
+    c = (cq.Workplane("XY").circle(p["body_od_mm"] / 2).circle(r_b).extrude(Lc).translate((0, 0, -Lc)))
+    h = Lc - p["thrust_ring_thk_mm"] - p["thread_pitch_mm"]
+    return c.cut(nose_cone.groove(p, r_b, -Lc, h))
+
+
+def tail_cone_installed(p: dict) -> cq.Workplane:
+    """Rev 8 tail cone in fin-can coordinates: threaded shank inside the collar (its forward face bears on the
+    thrust ring at z = -ring thickness) and a boattail frustum aft of the collar."""
+    from parts import nose_cone
+    Lc, Lb, pitch, c = p["collar_length_mm"], p["boattail_length_mm"], p["thread_pitch_mm"], p["thread_clearance_mm"]
+    r_b, r_i = p["collar_bore_d_mm"] / 2, p["tail_cone_bore_d_mm"] / 2
+    z_ring = -p["thrust_ring_thk_mm"]
+    shank = cq.Workplane("XY").circle(r_b - c).circle(r_i).extrude(z_ring + Lc).translate((0, 0, -Lc))
+    h_groove = Lc - p["thrust_ring_thk_mm"] - pitch
+    z0 = -Lc + pitch                                     # same helix phase as the collar groove (starts at -Lc)
+    ridge = nose_cone.ridge(p, r_b, z0, h_groove - pitch).intersect(
+        cq.Workplane("XY").circle(r_b + 2).circle(r_i + 0.3).extrude(z_ring + Lc).translate((0, 0, -Lc)))
+    body = cq.Workplane("XY").add(cq.Solid.makeLoft([
+        cq.Wire.makeCircle(p["boattail_end_od_mm"] / 2, cq.Vector(0, 0, -Lc - Lb), cq.Vector(0, 0, 1)),
+        cq.Wire.makeCircle(p["body_od_mm"] / 2, cq.Vector(0, 0, -Lc), cq.Vector(0, 0, 1))], ruled=True))
+    body = body.cut(cq.Workplane("XY").circle(r_i).extrude(Lb + 1).translate((0, 0, -Lc - Lb - 0.5)))
+    return body.union(shank).union(ridge)
 
 
 def mating(p: dict) -> dict[str, cq.Workplane]:
@@ -124,7 +164,10 @@ def mating(p: dict) -> dict[str, cq.Workplane]:
     motor = cq.Workplane("XY").circle(p["motor_case_od_mm"] / 2).extrude(p["motor_length_mm"])
     ring = (cq.Workplane("XY").circle(p["thrust_ring_od_mm"] / 2).extrude(p["thrust_ring_thk_mm"])
             .translate((0, 0, -p["thrust_ring_thk_mm"])))
-    return {"tube_wall": tube, "motor_case": motor, "motor_thrust_ring": ring}
+    m = {"tube_wall": tube, "motor_case": motor, "motor_thrust_ring": ring}
+    if p.get("tail_cone"):
+        m["tail_cone"] = tail_cone_installed(p)
+    return m
 
 
 def extras(p: dict, out_dir: Path, stem: str) -> list[Path]:

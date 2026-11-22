@@ -54,7 +54,16 @@ def main() -> None:
     nose = (cq.Workplane("XZ").polyline([(0, pts[0][1])] + pts + [(0, z_nose)])
             .close().revolve(360, (0, 0, 0), (0, 1, 0)))
     can = fin_can_md.build(p)
-    rocket = body.union(nose).union(can).union(fin_can.insert_holes(p))  # fill M3 insert holes (not aero)
+    if p.get("tail_cone"):
+        # rev 8: collar + boattail tail cone; the cone bore/nozzle cavity is filled (flat base at the cone end)
+        Lc, Lb = p["collar_length_mm"], p["boattail_length_mm"]
+        tail = cq.Workplane("XY").add(cq.Solid.makeLoft([
+            cq.Wire.makeCircle(p["boattail_end_od_mm"] / 2, cq.Vector(0, 0, -Lc - Lb), cq.Vector(0, 0, 1)),
+            cq.Wire.makeCircle(p["body_od_mm"] / 2, cq.Vector(0, 0, -Lc), cq.Vector(0, 0, 1))], ruled=True))
+        tail = tail.union(cq.Workplane("XY").circle(p["body_od_mm"] / 2).extrude(Lc + 0.5).translate((0, 0, -Lc)))
+        rocket = body.union(nose).union(can).union(tail)
+    else:
+        rocket = body.union(nose).union(can).union(fin_can.insert_holes(p))  # fill M3 insert holes (not aero)
     out = ROOT / "out" / "cfd"
     out.mkdir(parents=True, exist_ok=True)
     cq.exporters.export(rocket, str(out / "rocket_oml.step"))
