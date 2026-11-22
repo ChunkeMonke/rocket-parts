@@ -111,7 +111,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
   fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
-  ballast_g: 65                  # 2026-11-22: NOSE REV 1 OWNER slicer 63 g (cone+plug+cap, 3 walls, 20 % gyroid; CG 137.8 from tip, model) + fin can rev 7 90 g -> solved 64.9 g for 1.80 cal; 1.6 cal 56.5, 2.0 cal 73.4. Nose total 128 g. Set final value from the BALANCE CHECK (730 mm)
+  ballast_g: 63                  # 2026-11-22: 28 in chute 38 g + nose rev 1 63 g -> solved 62.7 g for 1.80 cal (pack on motor). OWNER asked for a 65 g TOTAL nose (2 g ballast): our sim gives 0.16 cal (UNSTABLE) with the pack on the motor, 1.20 cal with the pack held at 300 mm (OR-like); OR shows 2.07 because its CP is 836 mm vs ours 805 (unresolved). Owner to decide; BALANCE CHECK decides
   ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
   aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
   balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
@@ -191,9 +191,9 @@ recovery:                  # recovery agent — see projects/l1-cheap/recovery.m
   descent_rate_target_m_s: TBD   # owner to set; recovery.md tabulates 4.5 / 5.5 / 6.5 m/s
   descent_mass_range_g: [450, 700]  # PLACEHOLDER range given by main session; replace with stability's burnout mass
   chute_cd_assumed: 0.75     # flat sheet, Van Milligan / NASA GRC; 1.5 (Nakka) shown as optimistic bound
-  chute: owned 40 in, brand/type TBD (owner 2026-11-20)  # 3.44-4.29 m/s at Cd 0.75 over 450-700 g; reefing proposed to cut drift
-  chute_diameter_in: 40      # owner
-  chute_mass_g: TBD          # ESTIMATE <=57 g (42" hex nylon 2.01 oz, the-rocketman.com/?p=3121); weigh it
+  chute: 28 in ripstop nylon (OWNER 2026-11-22, OpenRocket file); was owned 40 in   # 5.0 m/s at Cd 0.75, 469 g descent (OR 11.8 mph = 5.3 m/s)
+  chute_diameter_in: 28      # OWNER 2026-11-22 (OR file). Was 40
+  chute_mass_g: 38           # OWNER OR file 0.084 lb (ripstop 67 g/m2); weigh it
   shock_cord: 9KM DWLIFE hollow-braid Kevlar, 750 lb (3336 N) rated, 2.3 mm dia, 16 strand, 2.91 g/m (88.7 g/100 ft); owner has 16 m  # owner 2026-11-20
   shock_cord_length_rule: 3x rocket length (forum/4-H rule of thumb; 3-5x range)  # cut length = 3 x stability.total_length_mm + loop allowance (TBD)
   shock_cord_min_rating_n: 2860  # ESTIMATE, 40 in chute: 953 N opening at 40 m/s (Cd .75, Cx 1.6) x proposed SF 3. Was 1030 (24 in). At <=20 m/s deploy: 714 N
