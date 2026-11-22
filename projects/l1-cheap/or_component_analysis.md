@@ -65,3 +65,18 @@ OR CG 750.4 -> **2.08 cal**; with the real extras (CG 753) -> 2.01 cal; if the c
 (CG 788) -> 1.17 cal (still stable). Caveats: one angle (4 deg), one speed (incompressible; CP moves aft with Mach,
 which adds margin), one mesh (no grid study), wall functions, friction from a flat-plate estimate.
 Figures: projects/l1-cheap/report/figures/cfd/.
+
+## Mach 0.8 CFD: INTERIM (2026-11-22, stopped at ~1500 of 2500 iterations for owner shutdown)
+
+rhoPimpleFoam (local time stepping, first-order upwind, temperature limiter), M 0.8 = 272 m/s, alpha 4 deg, ISA sea level,
+same mesh as the 100 m/s run. The steady rhoSimpleFoam start diverged (negative temperature) twice; LTS was stable.
+
+| Iteration | CP from tip | CN_alpha (/rad) | CA pressure | Surface T |
+|---|---|---|---|---|
+| 500 | 822.0 mm | 15.21 | 1.138 | 260-352 K |
+| 1000 | 821.1 mm | 15.17 | 0.957 | 260-350 K |
+
+CP and CN_alpha settled within ~1 mm / 0.3 %; drag still falling. NOT YET TRUSTED: CP is ~15 mm forward of the
+100 m/s result (836 mm), opposite to the expected aft shift with Mach, and the 350 K peak exceeds the ~321 K adiabatic
+wall temperature, so first-order smearing is suspected. Next: finish 2500, continue second-order from it, compare CP.
+Raw data: out/cfd/of_m08/result_interim.json. Re-run: tools/cfd_rocket.py setup --name m08 --mach 0.8; bash Allrun.

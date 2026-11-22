@@ -1,0 +1,39 @@
+{
+  "status": "INTERIM, run stopped at ~1500/2500 iterations by owner shutdown; first-order upwind",
+  "case": {
+    "alpha_deg": 4.0,
+    "speed": 272.2338294922217,
+    "L": 1.02902001953125,
+    "U": [
+      271.57068156600303,
+      0.0,
+      18.990071979236845
+    ],
+    "t_prev": 2000,
+    "t_last": 2500,
+    "compressible": true,
+    "mach": 0.8,
+    "p_inf": 101325.0,
+    "T_inf": 288.15,
+    "rho_inf": 1.2250122659906946,
+    "solver": "rhoPimpleFoam LTS, first-order upwind"
+  },
+  "iter500": {
+    "CP_from_tip_mm": 822.0345753285094,
+    "CN_alpha_per_rad": 15.211797027432272,
+    "CA_pressure": 1.1379608516252882,
+    "T_surface_K": [
+      259.7919921875,
+      352.0509948730469
+    ]
+  },
+  "iter1000": {
+    "CP_from_tip_mm": 821.1360460137166,
+    "CN_alpha_per_rad": 15.17376650447053,
+    "CA_pressure": 0.9573373285122625,
+    "T_surface_K": [
+      259.8760070800781,
+      350.0459899902344
+    ]
+  }
+}
