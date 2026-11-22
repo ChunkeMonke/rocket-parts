@@ -72,7 +72,6 @@ def sheet_section(pdf, p, rev):
     ax.add_patch(plt.Rectangle((rc, -Lc), p["thread_depth_mm"], Lc - p["thrust_ring_thk_mm"] - p["thread_pitch_mm"] + 1.1,
                                fc="none", ec="#2c7a2c", hatch="////", lw=0.6))
     # dimensions
-    dim(ax, (0, L + Lf + 8), (rb, L + Lf + 8), "")
     dim(ax, (-rb, L + 10), (rb, L + 10), f"Ø{2 * rb:.3f} sleeve OD", fs=8)
     dim(ax, (-ri, L * 0.6), (ri, L * 0.6), f"Ø{2 * ri:.3f} sleeve bore (tube OD {p['tube_od_mm']} + 2×0.09)")
     dim(ax, (-rl, t / 2 + 6), (rl, t / 2 + 6), f"Ø{2 * rl:.2f} lip bore (case {p['motor_case_od_mm']} + 0.18)")
@@ -97,6 +96,26 @@ def sheet_section(pdf, p, rev):
     ax.set_xlabel("radius (mm)")
     ax.set_ylabel("z (mm), 0 = aft face, + forward")
     ax.grid(alpha=0.2)
+    ax.set_position([0.04, 0.06, 0.5, 0.86])
+    # detail: aft end (lip + collar), 5x
+    az = fig.add_axes([0.6, 0.08, 0.38, 0.8])
+    az.fill(*zip(*poly), fc=FILL, ec=INK, lw=1)
+    az.add_patch(plt.Rectangle((rc, -Lc), p["thread_depth_mm"], Lc - p["thrust_ring_thk_mm"] - p["thread_pitch_mm"] + 1.1,
+                               fc="none", ec="#2c7a2c", hatch="////", lw=0.6))
+    dim(az, (rl, t + 1.2), (rb, t + 1.2), f"{rb - rl:.2f}", fs=7)
+    dim(az, (rb + 0.4, 0), (rb + 0.4, t), f"lip {t}", off=(1.2, 0), fs=7)
+    dim(az, (ri, 6), (rb, 6), f"wall {rb - ri:.2f}", fs=7)
+    dim(az, (rc, -Lc - 1.2), (rb, -Lc - 1.2), f"collar wall {rb - rc:.2f}", fs=7)
+    dim(az, (rb + 0.4, -Lc), (rb + 0.4, 0), f"{Lc}", off=(1.2, 0), fs=7)
+    dim(az, (rc - 0.3, -p["thrust_ring_thk_mm"]), (rc - 0.3, 0), f"ring zone {p['thrust_ring_thk_mm']:.2f}", off=(-0.8, 0), fs=7)
+    az.text(rl, -2, f"r {rl:.2f}\n(lip bore)", fontsize=7, ha="right")
+    az.text(rc - 0.15, -Lc + 2, f"r {rc:.2f}", fontsize=7, ha="right")
+    az.text(rb + 0.2, 8.5, f"r {rb:.3f}", fontsize=7)
+    az.text(ri - 0.15, 9, f"r {ri:.3f}", fontsize=7, ha="right")
+    az.set_aspect("equal"); az.grid(alpha=0.25)
+    az.set_xlim(rl - 3, rb + 4.5); az.set_ylim(-Lc - 3, 11)
+    az.set_title("DETAIL: aft end (lip, collar, thread band), right half", fontsize=9)
+    az.set_xlabel("radius (mm)")
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -228,9 +247,9 @@ def sheet_steps(pdf, p, rev):
     placed in planes normal to the radius at r = {rb - 1:.1f} (inside the sleeve, so it fuses) and r = {rb + p['span_mm']:.3f}.
     Easiest: import fin_can_md_rev{rev}_airfoil_root.dat / _tip.dat as curves (Insert > Curve > Curve Through XYZ Points).
  3. Fillet the fin-to-sleeve edges R{p['root_fillet_r_mm']} (both sides; SolidWorks Fillet, constant radius, tangent propagation).
- 4. TE skirt: sketch on the fin's mid-plane, under the TE root: quarter-circle R{p['te_fillet_r_mm']:.0f} tangent to the collar at
-    z = −{p['te_fillet_r_mm']:.0f}, meeting the aft face at r = {rb + p['te_fillet_r_mm']:.3f}; Extrude mid-plane
-    {p['te_root_thickness_mm'] + 2 * p['root_fillet_r_mm']:.1f} wide.
+ 4. TE skirt: Fillet (face fillet / "Face Fillet" type) between each fin's AFT FACE (TE strip + root fillets, at z = 0)
+    and the collar's outer cylinder, radius R{p['te_fillet_r_mm']:.0f}. It follows the fin footprint automatically
+    (tangent to the collar at z = −{p['te_fillet_r_mm']:.0f}, meets the aft face at r = {rb + p['te_fillet_r_mm']:.3f}).
  5. Circular pattern: fin + fillets + skirt, 3 instances, 360°.
  6. Collar thread: Helix (pitch {p['thread_pitch_mm']}, start at z = −{p['collar_length_mm']}, length
     {p['collar_length_mm'] - p['thrust_ring_thk_mm'] - p['thread_pitch_mm']:.2f}) + Swept Cut of the groove profile (sheet 4).
