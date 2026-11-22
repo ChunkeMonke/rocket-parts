@@ -83,7 +83,7 @@ lut.ApplyPreset("Cool to Warm", True)
 q = 0.5 * V * V
 lut.RescaleTransferFunction(-0.5 * q, 0.5 * q)
 d.SetScalarBarVisibility(view, True)
-shoot("paraview_surface_pressure_below.png", [0.6, -0.9, -1.4], [0.75, 0, 0], [0, 0, 1])
+shoot("paraview_surface_pressure_below.png", [0.52, -0.55, -0.62], [0.55, 0, 0], [0, 0, 1])
 shoot("paraview_fins_pressure.png", [1.25, -0.25, -0.2], [1.0, 0, 0], [0, 0, 1])
 
 # 2. side slice coloured by speed
@@ -98,7 +98,7 @@ lu.ApplyPreset("Viridis (matplotlib)", True)
 lu.RescaleTransferFunction(0, 1.15 * V)
 sd.SetScalarBarVisibility(view, True)
 Hide(bodyF, view)
-shoot("paraview_side_speed.png", [L * 0.9, -2.0, 0], [L * 0.9, 0, 0], [0, 0, 1], scale=0.12)
+shoot("paraview_side_speed.png", [L * 0.62, -2.0, 0], [L * 0.62, 0, 0], [0, 0, 1], scale=0.36)
 shoot("paraview_side_speed_fins.png", [1.03, -2.0, 0], [1.03, 0, 0], [0, 0, 1], scale=0.07)
 
 # 3. cross-section behind the base
