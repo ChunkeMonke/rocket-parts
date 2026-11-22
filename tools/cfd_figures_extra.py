@@ -53,7 +53,7 @@ def cut_x(grid, x: float):
     off, con = vtk_to_numpy(cells.GetOffsetsArray()), vtk_to_numpy(cells.GetConnectivityArray())
     tris = np.array([con[off[k]:off[k + 1]] for k in range(len(off) - 1) if off[k + 1] - off[k] == 3])
     pdat = pd.GetPointData()
-    return pts, tris, vtk_to_numpy(pdat.GetArray("U")), vtk_to_numpy(pdat.GetArray("p"))
+    return pts, tris, vtk_to_numpy(pdat.GetArray("U")), (vtk_to_numpy(pdat.GetArray("p")) - P.PCONV["p_inf"]) / P.PCONV["rho"]
 
 
 def body_outline(rpts, rpolys, x, tol=0.004):
@@ -67,10 +67,13 @@ def body_outline(rpts, rpolys, x, tol=0.004):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--name", default="a4")
-    ap.add_argument("--time", type=int, default=800)
+    ap.add_argument("--time", type=int, default=0, help="0 = last write time from case.json")
     a = ap.parse_args()
     case = ROOT / "out" / "cfd" / f"of_{a.name}"
     c = json.load(open(case / "case.json"))
+    P.configure(c)
+    if not a.time:
+        a.time = c.get("t_last", 800)
     V, al = c["speed"], math.radians(c["alpha_deg"])
     Uinf = np.array(c["U"])
     figs = case / "figures"; figs.mkdir(exist_ok=True)

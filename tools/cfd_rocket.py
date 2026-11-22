@@ -26,6 +26,7 @@ import trimesh
 ROOT = Path(__file__).resolve().parent.parent
 D_REF_M = 0.041275            # reference diameter (OR / stability gate reference)
 RHO, NU = 1.225, 1.5e-5        # sea-level air
+P_INF, T_INF, GAMMA, R_AIR, MU = 101325.0, 288.15, 1.4, 287.05, 1.789e-5   # ISA sea level (compressible runs)
 I_TURB, L_TURB = 0.005, 0.01   # freestream turbulence intensity, length scale (m)
 
 HDR = """FoamFile {{ version 2.0; format ascii; class {cls}; object {obj}; }}
@@ -37,6 +38,59 @@ def w(path: Path, cls: str, obj: str, body: str) -> None:
     path.write_text(HDR.format(cls=cls, obj=obj) + body)
 
 
+def write_compressible(case: Path, a, U, k, om) -> None:
+    """Overwrite the incompressible files with a steady compressible (rhoSimpleFoam, transonic) set-up:
+    perfect-gas air, ISA sea level, absolute pressure. Freestream far field as for the incompressible run."""
+    (case / "constant/transportProperties").unlink(missing_ok=True)
+    w(case / "constant/thermophysicalProperties", "dictionary", "thermophysicalProperties", f"""
+thermoType {{ type hePsiThermo; mixture pureMixture; transport const; thermo hConst; equationOfState perfectGas;
+  specie specie; energy sensibleInternalEnergy; }}
+mixture {{ specie {{ molWeight 28.96; }} thermodynamics {{ Cp 1005; Hf 0; }} transport {{ mu {MU}; Pr 0.71; }} }}
+""")
+    w(case / "system/fvSchemes", "dictionary", "fvSchemes", """
+ddtSchemes { default steadyState; }
+gradSchemes { default Gauss linear; grad(U) cellLimited Gauss linear 1; }
+divSchemes { default none;
+  div(phi,U) bounded Gauss linearUpwind grad(U); div(phi,e) bounded Gauss linearUpwind default;
+  div(phi,K) bounded Gauss linearUpwind default; div(phi,Ekp) bounded Gauss linearUpwind default;
+  div(phiv,p) bounded Gauss linearUpwind default;
+  div(phi,k) bounded Gauss upwind; div(phi,omega) bounded Gauss upwind;
+  div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear; }
+laplacianSchemes { default Gauss linear limited corrected 0.5; }
+interpolationSchemes { default linear; }
+snGradSchemes { default limited corrected 0.5; }
+wallDist { method meshWave; }
+""")
+    w(case / "system/fvSolution", "dictionary", "fvSolution", f"""
+solvers {{
+  p {{ solver GAMG; smoother GaussSeidel; tolerance 1e-8; relTol 0.05; }}
+  "(U|e|k|omega)" {{ solver smoothSolver; smoother symGaussSeidel; tolerance 1e-9; relTol 0.1; }}
+}}
+SIMPLE {{ nNonOrthogonalCorrectors 1; transonic yes; consistent yes; pMinFactor 0.3; pMaxFactor 2.0; }}
+relaxationFactors {{ equations {{ U 0.7; e 0.7; k 0.6; omega 0.6; p 0.7; }} fields {{ p 0.7; rho 0.5; }} }}
+""")
+    Us = f"({U[0]:.6f} {U[1]:.6f} {U[2]:.6f})"
+    sym = 'symmetry { type symmetryPlane; }\n  "proc.*" { type processor; }'
+    fld = {
+        "U": ("volVectorField", "[0 1 -1 0 0 0 0]", f"uniform {Us}",
+              f"farfield {{ type freestreamVelocity; freestreamValue uniform {Us}; }}\n  rocket {{ type noSlip; }}"),
+        "p": ("volScalarField", "[1 -1 -2 0 0 0 0]", f"uniform {P_INF}",
+              f"farfield {{ type freestreamPressure; freestreamValue uniform {P_INF}; supersonic false; }}\n  rocket {{ type zeroGradient; }}"),
+        "T": ("volScalarField", "[0 0 0 1 0 0 0]", f"uniform {T_INF}",
+              f"farfield {{ type inletOutlet; inletValue uniform {T_INF}; }}\n  rocket {{ type zeroGradient; }}"),
+        "k": ("volScalarField", "[0 2 -2 0 0 0 0]", f"uniform {k:.6g}",
+              f"farfield {{ type inletOutlet; inletValue uniform {k:.6g}; }}\n  rocket {{ type kqRWallFunction; value uniform {k:.6g}; }}"),
+        "omega": ("volScalarField", "[0 0 -1 0 0 0 0]", f"uniform {om:.6g}",
+                  f"farfield {{ type inletOutlet; inletValue uniform {om:.6g}; }}\n  rocket {{ type omegaWallFunction; value uniform {om:.6g}; }}"),
+        "nut": ("volScalarField", "[0 2 -1 0 0 0 0]", "uniform 0",
+                "farfield { type calculated; value uniform 0; }\n  rocket { type nutkWallFunction; value uniform 0; }"),
+        "alphat": ("volScalarField", "[1 -1 -1 0 0 0 0]", "uniform 0",
+                   "farfield { type calculated; value uniform 0; }\n  rocket { type compressible::alphatWallFunction; Prt 0.85; value uniform 0; }"),
+    }
+    for f, (cls, dim, internal, bcs) in fld.items():
+        w(case / "0.orig" / f, cls, f, f"\ndimensions {dim};\ninternalField {internal};\nboundaryField {{\n  {bcs}\n  {sym}\n}}\n")
+
+
 def setup(a) -> Path:
     case = ROOT / "out" / "cfd" / f"of_{a.name}"
     m = trimesh.load(ROOT / "out" / "cfd" / "rocket_oml.stl", force="mesh")
@@ -46,6 +100,9 @@ def setup(a) -> Path:
     L = float(m.bounds[1][0])
     (case / "constant" / "triSurface").mkdir(parents=True, exist_ok=True)
     m.export(case / "constant" / "triSurface" / "rocket.stl")
+    comp = a.mach > 0
+    if comp:
+        a.speed = a.mach * math.sqrt(GAMMA * R_AIR * T_INF)
     al = math.radians(a.alpha)
     U = (a.speed * math.cos(al), 0.0, a.speed * math.sin(al))
     k = 1.5 * (a.speed * I_TURB) ** 2
@@ -94,7 +151,7 @@ meshQualityControls {{ maxNonOrtho 65; maxBoundarySkewness 20; maxInternalSkewne
 mergeTolerance 1e-6;
 """)
     w(case / "system/controlDict", "dictionary", "controlDict", f"""
-application simpleFoam; startFrom latestTime; startTime 0; stopAt endTime; endTime {a.iters}; deltaT 1;
+application {"rhoSimpleFoam" if comp else "simpleFoam"}; startFrom latestTime; startTime 0; stopAt endTime; endTime {a.iters}; deltaT 1;
 writeControl timeStep; writeInterval {max(1, a.iters // 4)}; purgeWrite 0; writeFormat binary; writePrecision 8;
 writeCompression off; timeFormat general; timePrecision 6; runTimeModifiable true;
 // no `forces` function object: it crashes in the Debian OpenFOAM build; tools/cfd_post.py integrates the surface pressure
@@ -147,6 +204,8 @@ boundaryField {{
   "proc.*" {{ type processor; }}
 }}
 """)
+    if comp:
+        write_compressible(case, a, U, k, om)
     t_last, t_prev = a.iters, a.iters - max(1, a.iters // 4)
     (case / "Allrun").write_text(f"""#!/bin/bash
 # OpenFOAM environment: Debian/Ubuntu package (/usr/share/openfoam) or OpenFOAM.com package (/usr/lib/openfoam/openfoamXXXX)
@@ -169,14 +228,18 @@ decomposePar -force > log.decomposePar 2>&1
 $MPI snappyHexMesh -overwrite -parallel > log.snappyHexMesh 2>&1
 $MPI checkMesh -parallel > log.checkMesh 2>&1 || true
 for d in processor*; do rm -rf $d/0; cp -r 0.orig $d/0; done
-$MPI simpleFoam -parallel > log.simpleFoam 2>&1
+$MPI {"rhoSimpleFoam" if comp else "simpleFoam"} -parallel > log.simpleFoam 2>&1
 $MPI foamToVTK -parallel -time '{t_prev},{t_last}' -no-internal -no-point-data -legacy -ascii -name VTKL > log.vtk 2>&1
 $MPI foamToVTK -parallel -time '{t_last}' -no-boundary -legacy -name VTKI > log.vtki 2>&1
 echo DONE > done.flag
 echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name} && .venv/bin/python tools/cfd_figures_extra.py --name {a.name}"
 """)
     (case / "Allrun").chmod(0o755)
-    json.dump({"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U}, open(case / "case.json", "w"))
+    meta = {"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U, "t_prev": t_prev, "t_last": t_last,
+            "compressible": comp, "mach": a.mach if comp else a.speed / math.sqrt(GAMMA * R_AIR * T_INF)}
+    if comp:
+        meta.update({"p_inf": P_INF, "T_inf": T_INF, "rho_inf": P_INF / (R_AIR * T_INF)})
+    json.dump(meta, open(case / "case.json", "w"))
     print(f"case {case}  L {L:.3f} m  blocks {n}  U {Us}  k {k:.4g}  omega {om:.4g}")
     return case
 
@@ -219,6 +282,7 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["setup", "post"])
     ap.add_argument("--alpha", type=float, default=4.0)
     ap.add_argument("--speed", type=float, default=100.0)
+    ap.add_argument("--mach", type=float, default=0.0, help="> 0: compressible rhoSimpleFoam at this Mach (sets speed)")
     ap.add_argument("--iters", type=int, default=800)
     ap.add_argument("--np", type=int, default=4)
     ap.add_argument("--name", default="a4")

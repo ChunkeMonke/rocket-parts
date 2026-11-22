@@ -34,6 +34,16 @@ RHO, NU = 1.225, 1.5e-5
 D_REF = 0.041275
 
 
+PCONV = {"p_inf": 0.0, "rho": 1.0}       # compressible runs: p is absolute (Pa) -> (p - p_inf) / rho_inf
+
+
+def configure(c: dict) -> None:
+    global RHO
+    if c.get("compressible"):
+        PCONV.update(p_inf=c["p_inf"], rho=c["rho_inf"])
+        RHO = c["rho_inf"]
+
+
 def read(path: Path):
     r = vtkPolyDataReader()
     r.SetFileName(str(path))
@@ -46,6 +56,8 @@ def read(path: Path):
     polys = [con[off[k]:off[k + 1]] for k in range(len(off) - 1)]
     cd = pd.GetCellData()
     data = {cd.GetArrayName(k): vtk_to_numpy(cd.GetArray(k)).astype(float) for k in range(cd.GetNumberOfArrays())}
+    if "p" in data:
+        data["p"] = (data["p"] - PCONV["p_inf"]) / PCONV["rho"]      # kinematic gauge pressure, as incompressible
     return pts, polys, data
 
 
@@ -96,21 +108,23 @@ def main() -> None:
     a = ap.parse_args()
     case = ROOT / "out" / "cfd" / f"of_{a.name}"
     c = json.load(open(case / "case.json"))
+    configure(c)
+    t0, t1 = c.get("t_prev", 600), c.get("t_last", 800)
     figs = case / "figures"; figs.mkdir(exist_ok=True)
-    r6, r8 = forces(case, 600, c), forces(case, 800, c)
-    res = {"case": c, "t600": r6, "t800": r8,
-           "CP_change_600_800_mm": r8["CP_from_tip_mm"] - r6["CP_from_tip_mm"]}
+    r6, r8 = forces(case, t0, c), forces(case, t1, c)
+    res = {"case": c, f"t{t0}": r6, f"t{t1}": r8, "final": r8,
+           "CP_change_last_quarter_mm": r8["CP_from_tip_mm"] - r6["CP_from_tip_mm"]}
     (case / "result.json").write_text(json.dumps(res, indent=2, default=float))
     print(json.dumps(res, indent=2, default=float))
     V = c["speed"]; q = 0.5 * V * V                      # kinematic
 
     # ---------------------------------------------------------------- rocket surface data (full = mirror)
-    pts, polys, d = read(case / "VTKL" / "rocket" / "rocket_800.vtk")
+    pts, polys, d = read(case / "VTKL" / "rocket" / f"rocket_{t1}.vtk")
     Av, C = face_geom(pts, polys)
     cp_s = d["p"] / q
 
     # 1. symmetry plane: |U| and Cp
-    sp, spol, sd = read(case / "VTKL" / "symmetry" / "symmetry_800.vtk")
+    sp, spol, sd = read(case / "VTKL" / "symmetry" / f"symmetry_{t1}.vtk")
     verts = [sp[f][:, [0, 2]] * 1000 for f in spol]
     Umag = np.linalg.norm(sd["U"], axis=1)
     cps = sd["p"] / q
@@ -128,7 +142,7 @@ def main() -> None:
             ax.set_facecolor("0.25"); ax.set_title(f"{title}: symmetry plane through fin 0 (grey = rocket)")
             ax.set_xlabel("x from nose tip (mm)"); ax.set_ylabel("z (mm)")
             fig.colorbar(pc, ax=ax, label=lab, shrink=0.9)
-        fig.suptitle(f"CFD {field}: {V:.0f} m/s, angle of attack {c['alpha_deg']}° (flow left to right, tilted up)")
+        fig.suptitle(f"CFD {field}: {V:.0f} m/s (M {c.get('mach', V / 340.3):.2f}), angle of attack {c['alpha_deg']}° (flow left to right, tilted up)")
         fig.tight_layout(); fig.savefig(figs / f"cfd_{field}_plane.png", dpi=110); plt.close(fig)
 
     # 2. surface Cp seen from below (windward) and above (leeward), full rocket (mirror of the half model)
@@ -207,7 +221,7 @@ def main() -> None:
     for fld in ("Ux", "Uz", "p", "k", "omega"):
         ax.semilogy(ts, [R[t].get(fld, np.nan) for t in ts], label=fld)
     ax.set_xlabel("iteration"); ax.set_ylabel("initial residual"); ax.grid(alpha=0.3); ax.legend()
-    ax.set_title(f"Convergence (CP moved {res['CP_change_600_800_mm']:+.1f} mm from iteration 600 to 800)")
+    ax.set_title(f"Convergence (CP moved {res['CP_change_last_quarter_mm']:+.2f} mm from iteration {t0} to {t1})")
     fig.tight_layout(); fig.savefig(figs / "cfd_convergence.png", dpi=110); plt.close(fig)
     print("figures:", sorted(p.name for p in figs.glob("*.png")))
 
