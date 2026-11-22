@@ -142,7 +142,7 @@ castellatedMeshControls {{
   refinementSurfaces {{ rocket {{ level (4 5); patchInfo {{ type wall; }} }} }}
   resolveFeatureAngle 30;
   refinementRegions {{ near {{ mode inside; levels ((1E15 3)); }} wake {{ mode inside; levels ((1E15 2)); }} }}
-  locationInMesh ({L + 2.0} 0.5 0.5);
+  locationInMesh ({L + 2.0137} 0.5131 0.4873);   // odd offsets: never on a cell face or processor boundary
   allowFreeStandingZoneFaces true;
 }}
 snapControls {{ nSmoothPatch 3; tolerance 2.0; nSolveIter 50; nRelaxIter 5; nFeatureSnapIter 10;
