@@ -1,0 +1,70 @@
+[
+  {
+    "num": 1,
+    "name": "mesh integrity",
+    "passed": true,
+    "detail": "watertight=True, winding_consistent=True, volume=49139.3 mm3, bodies=1",
+    "data": {
+      "bodies": 1,
+      "volume_mm3": 49139.252215073204
+    }
+  },
+  {
+    "num": 2,
+    "name": "mass",
+    "passed": false,
+    "detail": "target 52.7 g (\u00b15 %); reachable 61.2 g (0 %) \u2013 62.4 g (100 %); infill to hit target = -716.6 %",
+    "data": {
+      "solid_mm3": 48203.32222764379,
+      "infill_region_mm3": 935.937545647295,
+      "mass_0pct_g": 61.21821922910762,
+      "mass_100pct_g": 62.406859912079675,
+      "mesh_volume_mm3": 49139.252215073204,
+      "wall_mm": 2.67,
+      "layer_mm": 0.2,
+      "n_top": 5,
+      "n_bottom": 3,
+      "infill_needed_pct": -716.6353424660468,
+      "target_g": 52.7
+    }
+  },
+  {
+    "num": 3,
+    "name": "mating interference",
+    "passed": true,
+    "detail": "tube_wall: 0.000 mm3, bottom_cap: 0.000 mm3, ballast_plug: 0.000 mm3",
+    "data": {
+      "interference_mm3": {
+        "tube_wall": 0.0,
+        "bottom_cap": 0.0,
+        "ballast_plug": 0.0
+      }
+    }
+  },
+  {
+    "num": 4,
+    "name": "renders",
+    "passed": true,
+    "detail": "written: nose_cone_rev1_iso.png, nose_cone_rev1_front.png, nose_cone_rev1_section.png \u2014 VISUAL REVIEW REQUIRED",
+    "data": {
+      "paths": [
+        "/home/user/out/nose_cone/rev1/nose_cone_rev1_iso.png",
+        "/home/user/out/nose_cone/rev1/nose_cone_rev1_front.png",
+        "/home/user/out/nose_cone/rev1/nose_cone_rev1_section.png"
+      ]
+    }
+  },
+  {
+    "num": 5,
+    "name": "build volume",
+    "passed": true,
+    "detail": "extents X 41.3 / Y 41.3 / Z 203.3 mm vs limit 256/256/256",
+    "data": {
+      "extents_mm": [
+        41.275001525878906,
+        41.26217269897461,
+        203.33837890625
+      ]
+    }
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "num": 1,
+    "name": "mesh integrity",
+    "passed": true,
+    "detail": "watertight=True, winding_consistent=True, volume=2894.9 mm3, bodies=1",
+    "data": {
+      "bodies": 1,
+      "volume_mm3": 2894.873249931025
+    }
+  },
+  {
+    "num": 2,
+    "name": "mass",
+    "passed": true,
+    "detail": "target 3.0 g (\u00b15 %); reachable 2.1 g (0 %) \u2013 3.6 g (100 %); infill to hit target = 58.0 %",
+    "data": {
+      "solid_mm3": 1662.2809436424377,
+      "infill_region_mm3": 1207.053744216975,
+      "mass_0pct_g": 2.111096798425896,
+      "mass_100pct_g": 3.6440550535814547,
+      "mesh_volume_mm3": 2894.873249931025,
+      "wall_mm": 2.67,
+      "layer_mm": 0.2,
+      "n_top": 5,
+      "n_bottom": 3,
+      "infill_needed_pct": 57.98613227624401,
+      "target_g": 3.0
+    }
+  },
+  {
+    "num": 3,
+    "name": "mating interference",
+    "passed": true,
+    "detail": "nose_cone: 0.000 mm3",
+    "data": {
+      "interference_mm3": {
+        "nose_cone": 0.0
+      }
+    }
+  },
+  {
+    "num": 4,
+    "name": "renders",
+    "passed": true,
+    "detail": "written: nose_plug_rev1_iso.png, nose_plug_rev1_front.png, nose_plug_rev1_section.png \u2014 VISUAL REVIEW REQUIRED",
+    "data": {
+      "paths": [
+        "/home/user/out/nose_plug/rev1/nose_plug_rev1_iso.png",
+        "/home/user/out/nose_plug/rev1/nose_plug_rev1_front.png",
+        "/home/user/out/nose_plug/rev1/nose_plug_rev1_section.png"
+      ]
+    }
+  },
+  {
+    "num": 5,
+    "name": "build volume",
+    "passed": true,
+    "detail": "extents X 23.0 / Y 23.0 / Z 8.5 mm vs limit 256/256/256",
+    "data": {
+      "extents_mm": [
+        23.0,
+        23.0,
+        8.5
+      ]
+    }
+  }
+]
