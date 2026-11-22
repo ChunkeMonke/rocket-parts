@@ -41,11 +41,9 @@ def read(path: Path):
     r.Update()
     pd = r.GetOutput()
     pts = vtk_to_numpy(pd.GetPoints().GetData()).astype(float)
-    polys = []
-    ids = vtk_to_numpy(pd.GetPolys().GetData())
-    i = 0
-    while i < len(ids):
-        n = ids[i]; polys.append(ids[i + 1:i + 1 + n]); i += n + 1
+    cells = pd.GetPolys()
+    off, con = vtk_to_numpy(cells.GetOffsetsArray()), vtk_to_numpy(cells.GetConnectivityArray())
+    polys = [con[off[k]:off[k + 1]] for k in range(len(off) - 1)]
     cd = pd.GetCellData()
     data = {cd.GetArrayName(k): vtk_to_numpy(cd.GetArray(k)).astype(float) for k in range(cd.GetNumberOfArrays())}
     return pts, polys, data
