@@ -98,7 +98,7 @@ nosecone:                  # nosecone agent — see projects/l1-cheap/nosecone.m
     thread_pitch_mm: 2.5                # printed trapezoid thread, 45 deg flanks (prints without supports in any orientation used)
     thread_depth_mm: 1.0
     thread_clearance_mm: 0.2            # radial and flank clearance, male vs female
-    target_mass_g: {nose_cone: 52.7, nose_cap: 10.0, nose_plug: 3.0}   # ESTIMATES (nose shell budget 52.7 from stability); replace with slicer masses
+    target_mass_g: {nose_cone: 52.7, nose_cap: 10.0, nose_plug: 3.0}   # per-part split not given; OWNER total 63 g (3 walls, 20 % gyroid) — verify check 2 runs at the shop 6-wall profile, so it cannot match this print setting
 
 payload:                   # payload agent
   contents: none           # owner 2026-11-20: Quasar-LR NOT flown in this rocket (cheap L1 build)
@@ -111,7 +111,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
   fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
-  ballast_g: 56                  # 2026-11-22: NOSE REV 1 (pocket + plug + screw cap, 72.8 g model at 25 %, CG 137.8 from tip) + fin can rev 7 90 g -> solved 56.0 g for 1.80 cal; 1.6 cal 47.7, 2.0 cal 64.6. Was 73 (old shell estimate 52.7 g). Set final value from the BALANCE CHECK
+  ballast_g: 65                  # 2026-11-22: NOSE REV 1 OWNER slicer 63 g (cone+plug+cap, 3 walls, 20 % gyroid; CG 137.8 from tip, model) + fin can rev 7 90 g -> solved 64.9 g for 1.80 cal; 1.6 cal 56.5, 2.0 cal 73.4. Nose total 128 g. Set final value from the BALANCE CHECK (730 mm)
   ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
   aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
   balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
@@ -143,7 +143,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- printed-part model data (used by the sim INSTEAD of the fin_can estimate below when numeric) ----
   fin_can_model_mass_g: 90.0         # REV 7, OWNER Bambu Studio slicer 2026-11-21, 25 % gyroid (verify model 90.6-113.7 g). Rev 6 was 84.83
   fin_can_model_cg_from_aft_mm: 38.0 # REV 7 solid-mesh CG forward of the aft face (main session 2026-11-21). Rev 6 40.5, rev 5 43.3
-  nose_shell_mass_g: 72.8           # NOSE REV 1 model at 25 % infill: cone 61.5 + cap 8.8 (5 mm floor) + plug 2.5 (out/nose_*/rev1). Replace with slicer masses. Was 52.7 (plain-shell estimate)
+  nose_shell_mass_g: 63.0           # NOSE REV 1, OWNER Bambu slicer 2026-11-22: cone + plug + cap = 63 g at 3 wall loops, 20 % gyroid (model at 6 walls, 25 %: 72.8). CG = model value (nosecone.cg_from_tip_mm)
   # ---- assumptions: used ONLY where the owning section is TBD. Each has its basis. ----
   assumptions:
     tube_linear_density_g_per_mm: 0.1085   # ESTIMATE: wall area from shop OD/ID (159.6 mm2) x 0.68 g/cm3 OpenRocket "cardboard" density (rocketryforum.com/goto/post?id=2317962, 2026-11-20). No published LOC tube mass found. WEIGH THE TUBE.
