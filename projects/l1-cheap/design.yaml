@@ -247,11 +247,11 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   lip_thickness: {value: wall_band, status: PROPOSED, note: "aft lip under the tube end; motor thrust ring bears on it (compression across layers)"}
   motor_case_od_mm: {value: 38.10, status: PLACEHOLDER, note: "1.500 in nominal from AeroTech I500T (different 38 mm DMS) page, via motor agent; MEASURE the H100W"}
   thrust_ring_od_mm: {value: 41.0, status: PLACEHOLDER, note: "not published yet (motor agent researching); must be > lip bore to bear"}
-  thrust_ring_thk_mm: {value: 3.0, status: PLACEHOLDER, note: "not published; mating check only"}
+  thrust_ring_thk_mm: {value: 9.525, status: PLACEHOLDER, note: "3/8 in: Rocketry Forum estimate for 38 mm DMS thrust rings (no official AeroTech drawing found, 2026-11-22); owner photo agrees (long black aft band). Nozzle reported flush with the ring bottom. MEASURE"}
   motor_length_mm: {value: 155, status: CITED, note: "motor agent 2026-11-21 (38 x 155 mm; ThrustCurve snippet said 153) — measure"}
   retention: {value: tail_cone, status: OWNER, note: "REV 8 (owner 2026-11-22): screw-on tail cone traps the thrust ring and forms the boattail; bosses kept solid (no insert holes). Rev 2-7: insert_bosses_at_fin_roots (Option A)"}
   tail_cone: {value: true, status: OWNER, note: "rev 8: threaded collar behind the aft face + separate tail cone (parts/tail_cone.py)"}
-  collar_length_mm: {value: 12.0, status: PROPOSED, note: "rev 8: threaded collar below the aft face; holds the 3 mm thrust ring + ~6.5 mm of thread"}
+  collar_length_mm: {value: 18.5, status: PROPOSED, note: "rev 8 (updated 2026-11-22): 9.5 mm thrust ring + 6.5 mm thread + 2.5 mm run-out. Was 12 (3 mm ring assumption) -> no thread left with a 9.5 mm ring"}
   collar_bore_d_mm: {value: 41.6, status: PROPOSED, note: "rev 8: clears the 41.0 mm thrust ring (PLACEHOLDER) by 0.3/side; thread minor dia; wall behind the groove 1.6 mm"}
   te_gusset_mm: {value: 4.0, status: PROPOSED, note: "rev 8: 45-deg wedge under each fin root TE onto the collar; removes the 90-deg corner where rev 8 FEA peaked (FI 0.46 at r 22.8, z 0)"}
   boattail_length_mm: {value: 20.0, status: OWNER, note: "owner 2026-11-22: 20 mm taper aft of the collar"}

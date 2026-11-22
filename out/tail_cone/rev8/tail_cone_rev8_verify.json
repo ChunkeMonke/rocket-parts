@@ -3,10 +3,10 @@
     "num": 1,
     "name": "mesh integrity",
     "passed": true,
-    "detail": "watertight=True, winding_consistent=True, volume=9914.6 mm3, bodies=1",
+    "detail": "watertight=True, winding_consistent=True, volume=9909.2 mm3, bodies=1",
     "data": {
       "bodies": 1,
-      "volume_mm3": 9914.556793308077
+      "volume_mm3": 9909.231404106475
     }
   },
   {
@@ -15,11 +15,11 @@
     "passed": false,
     "detail": "no target mass declared",
     "data": {
-      "solid_mm3": 9914.55924743406,
+      "solid_mm3": 9913.278048838529,
       "infill_region_mm3": 0.0,
-      "mass_0pct_g": 12.591490244241257,
-      "mass_100pct_g": 12.591490244241257,
-      "mesh_volume_mm3": 9914.556793308077,
+      "mass_0pct_g": 12.589863122024932,
+      "mass_100pct_g": 12.589863122024932,
+      "mesh_volume_mm3": 9909.231404106475,
       "wall_mm": 2.67,
       "layer_mm": 0.2,
       "n_top": 5,
@@ -62,7 +62,7 @@
       "extents_mm": [
         46.79499816894531,
         46.78045654296875,
-        29.0
+        28.975000381469727
       ]
     }
   }
