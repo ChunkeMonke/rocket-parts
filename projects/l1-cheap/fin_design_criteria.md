@@ -43,3 +43,23 @@ CFD (100 m/s, alpha 4, same tools): CP 834.4 mm (rev 7 836.3), CN_alpha 13.67 (1
 Flight sim (OR weights + extras, fin can + cone ESTIMATE 94.6 + 12.6 g, Cd x0.857): CG 758.8 mm, **1.83 cal on the CFD
 CP** (rev 7 2.02), apogee **1341 m** (1224), M 0.781, coast 11.75 s (12 s delay deploys at 2.4 m/s).
 Tail cone: print in ABS/ASA or tape-line the bore (it surrounds the nozzle exit during the burn).
+
+## Rev 9 (2026-11-22, owner request): no bosses, thin TE, smooth TE skirt, 30 mm boattail, 40 mm fairing
+
+Changes vs rev 8: M3 insert bosses removed (tail cone retains the motor); TE root 8 -> 2.5 mm; the 45-deg gusset
+replaced by a smooth concave R6 skirt that follows the fin footprint into the collar; boattail 30 mm to 41.6 mm
+(5.0 deg); forward fairing 20 -> 40 mm; collar 18.5 mm for a 9.5 mm thrust ring (forum estimate).
+
+| Criterion | Rev 7 | Rev 8 | **Rev 9** | Limit |
+|---|---|---|---|---|
+| C1 sideways 200 N | 0.28 | 0.30 | **0.34** | 0.5 |
+| C2 tilted 200 N @45 | 0.25 | 0.33 | **0.27** | 0.5 |
+| C3 axial 200 N | 0.084 | 0.11 | **0.15** | 0.5 |
+| C4 gust 15 N | 0.022 | 0.023 | **0.026** | 0.1 |
+
+CFD 100 m/s alpha 4: CP 827.4 mm (rev 8 834.4, rev 7 836.3); CN_alpha 13.12; pressure CA 0.232; total CA est 0.578
+(rev 7 0.709: -18 %). Fin 1 lift 4.00/rad.
+Sim (OR weights + extras, fin can 97.9 g est + tail cone 16.0 g model, CG 31.5 mm fwd of the fin-can aft face):
+CG 761.0 mm -> **1.61 cal** with the 65 g nose; **+7.4 g nose ballast (nose 72 g) for 1.8 cal**; apogee 1383 m
+(rev 7 1224, rev 8 1341); coast 12.09 s -> 12 s delay deploys at 0.9 m/s.
+Printing: TE overhangs still need light tree supports outboard of the skirt.
