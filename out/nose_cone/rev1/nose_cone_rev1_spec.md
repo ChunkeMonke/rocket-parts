@@ -41,11 +41,11 @@ TIP UP, shoulder's aft face on the bed. No supports: the ballast bulkhead's unde
 | `plug_slot_depth_mm` | 1.5 | derived/shop |  |
 | `cap_bore_d_mm` | 30 | derived/shop |  |
 | `cap_ring_height_mm` | 15 | derived/shop |  |
-| `cap_flange_thickness_mm` | 3 | derived/shop |  |
+| `cap_flange_thickness_mm` | 5 | derived/shop |  |
 | `cap_shank_length_mm` | 12 | derived/shop |  |
 | `cap_wall_mm` | 3 | derived/shop |  |
 | `kevlar_hole_d_mm` | 5 | derived/shop |  |
-| `kevlar_hole_spacing_mm` | 12 | derived/shop |  |
+| `kevlar_hole_spacing_mm` | 14 | derived/shop |  |
 | `thread_pitch_mm` | 2.5 | derived/shop |  |
 | `thread_depth_mm` | 1 | derived/shop |  |
 | `thread_clearance_mm` | 0.2 | derived/shop |  |

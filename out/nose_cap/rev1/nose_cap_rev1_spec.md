@@ -1,21 +1,21 @@
 # nose_cap_rev1 — spec sheet
 
 **Generated:** 2026-11-22 · `python make.py nose_cap --rev 1`
-**Status:** FAILED VERIFY
+**Status:** AUTO CHECKS PASS — pending visual review
 
 ## Verify checks
 | # | Check | Result | Detail |
 |---|---|---|---|
-| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=6663.7 mm3, bodies=1 |
-| 2 | mass | FAIL | target 10.0 g (±5 %); reachable 6.9 g (0 %) – 8.5 g (100 %); infill to hit target = 198.6 % |
+| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=8919.2 mm3, bodies=1 |
+| 2 | mass | PASS | target 10.0 g (±5 %); reachable 8.0 g (0 %) – 11.3 g (100 %); infill to hit target = 60.1 % |
 | 3 | mating interference | PASS | nose_cone: 0.000 mm3 |
 | 4 | renders | PASS | written: nose_cap_rev1_iso.png, nose_cap_rev1_front.png, nose_cap_rev1_section.png — VISUAL REVIEW REQUIRED |
-| 5 | build volume | PASS | extents X 38.6 / Y 38.5 / Z 15.0 mm vs limit 256/256/256 |
+| 5 | build volume | PASS | extents X 38.6 / Y 38.5 / Z 17.0 mm vs limit 256/256/256 |
 
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
-- Solid (walls/skins) 5.44 cm³ · infill region 1.23 cm³ · mesh volume 6.66 cm³
-- Mass at 0 % / 100 % infill: 6.9 g / 8.5 g · target 10.0 g · infill needed: 198.6 %
+- Solid (walls/skins) 6.30 cm³ · infill region 2.62 cm³ · mesh volume 8.92 cm³
+- Mass at 0 % / 100 % infill: 8.0 g / 11.3 g · target 10.0 g · infill needed: 60.1 %
 
 ## Print orientation
 Flange on the bed, threaded shank up. No supports (45° thread flanks).
@@ -40,11 +40,11 @@ Flange on the bed, threaded shank up. No supports (45° thread flanks).
 | `plug_slot_depth_mm` | 1.5 | derived/shop |  |
 | `cap_bore_d_mm` | 30 | derived/shop |  |
 | `cap_ring_height_mm` | 15 | derived/shop |  |
-| `cap_flange_thickness_mm` | 3 | derived/shop |  |
+| `cap_flange_thickness_mm` | 5 | derived/shop |  |
 | `cap_shank_length_mm` | 12 | derived/shop |  |
 | `cap_wall_mm` | 3 | derived/shop |  |
 | `kevlar_hole_d_mm` | 5 | derived/shop |  |
-| `kevlar_hole_spacing_mm` | 12 | derived/shop |  |
+| `kevlar_hole_spacing_mm` | 14 | derived/shop |  |
 | `thread_pitch_mm` | 2.5 | derived/shop |  |
 | `thread_depth_mm` | 1 | derived/shop |  |
 | `thread_clearance_mm` | 0.2 | derived/shop |  |
