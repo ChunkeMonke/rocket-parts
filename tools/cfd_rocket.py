@@ -171,8 +171,9 @@ $MPI checkMesh -parallel > log.checkMesh 2>&1 || true
 for d in processor*; do rm -rf $d/0; cp -r 0.orig $d/0; done
 $MPI simpleFoam -parallel > log.simpleFoam 2>&1
 $MPI foamToVTK -parallel -time '{t_prev},{t_last}' -no-internal -no-point-data -legacy -ascii -name VTKL > log.vtk 2>&1
+$MPI foamToVTK -parallel -time '{t_last}' -no-boundary -legacy -name VTKI > log.vtki 2>&1
 echo DONE > done.flag
-echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name}"
+echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name} && .venv/bin/python tools/cfd_figures_extra.py --name {a.name}"
 """)
     (case / "Allrun").chmod(0o755)
     json.dump({"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U}, open(case / "case.json", "w"))
