@@ -13,3 +13,6 @@ out/fea/**/*.sta
 out/fea/**/*.cvg
 out/fea/**/*.12d
 out/fea/**/spooles.out
+out/cfd/of_*/*
+!out/cfd/of_*/result.json
+!out/cfd/of_*/case.json
