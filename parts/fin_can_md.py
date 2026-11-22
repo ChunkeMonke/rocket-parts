@@ -23,7 +23,9 @@ Parameters (projects/<project>/design.yaml `fin_can_md:` + `aero:` + skills/SKIL
   collar_length_mm, collar_bore_d_mm   mm  collar below the aft face (z < 0), bore = thread minor dia
   boattail_length_mm, boattail_end_od_mm, tail_cone_bore_d_mm   mm  tail cone (used by parts/tail_cone.py)
   thread_pitch_mm, thread_depth_mm, thread_clearance_mm   mm  printed 45-deg thread (parts/nose_cone.py helpers)
-  te_gusset_mm          mm  rev 8: 45-deg wedge under each fin root TE onto the collar (stress-corner fix)
+  te_gusset_mm          mm  rev 8: 45-deg wedge under each fin root TE onto the collar (stress-corner fix; 0 = off)
+  te_fillet_r_mm        mm  rev 9: smooth concave skirt (radius) under each fin root TE onto the collar
+  insert_bosses         bool rev 9: False = no M3 insert bosses (tail cone retains the motor)
   target_mass_g       g    verify check 2 target
 """
 from __future__ import annotations
@@ -103,6 +105,8 @@ def params(project: str = "l1-cheap") -> dict:
         for k in ("collar_length_mm", "collar_bore_d_mm", "boattail_length_mm", "boattail_end_od_mm",
                   "tail_cone_bore_d_mm", "thread_pitch_mm", "thread_depth_mm", "thread_clearance_mm", "te_gusset_mm"):
             p[k] = v[k]
+        p["te_fillet_r_mm"] = v.get("te_fillet_r_mm", 0.0)
+        p["insert_bosses"] = bool(v.get("insert_bosses", True))
     p["washer_min_od_mm"] = 2 * (2.0 + p["insert_radius_mm"] - p["thrust_ring_od_mm"] / 2)
     p["_status"] = {k: x.get("status", "") for k, x in fc.items() if isinstance(x, dict)}
     p["_source"] = {k: x.get("note", "") for k, x in fc.items() if isinstance(x, dict)}
@@ -121,13 +125,39 @@ def build(p: dict) -> cq.Workplane:
     for i in range(p["fin_count"]):
         body = body.union(cq.Workplane("XY").add(
             fin.rotate(cq.Vector(0, 0, 0), cq.Vector(0, 0, 1), i * 360.0 / p["fin_count"])))
-    body = body.union(fin_can.retention_bosses(p))
+    if p.get("insert_bosses", True):
+        body = body.union(fin_can.retention_bosses(p))
     t = p["lip_thickness_mm"]
     body = body.cut(cq.Workplane("XY").circle(p["lip_bore_d_mm"] / 2).extrude(t))
     body = body.cut(cq.Workplane("XY").circle(r_sb).extrude(L + Lf).translate((0, 0, t)))
     if not p["tail_cone"]:
         return body.cut(fin_can.insert_holes(p))
-    return body.union(collar(p)).union(te_gussets(p))
+    body = body.union(collar(p))
+    if p.get("te_gusset_mm", 0) > 0:
+        body = body.union(te_gussets(p))
+    if p.get("te_fillet_r_mm", 0) > 0:
+        body = body.union(te_fillets(p))
+    return body
+
+
+def te_fillets(p: dict) -> cq.Workplane:
+    """Rev 9: smooth concave skirt under each fin root TE: a quarter-circle of radius R that is tangent to the collar
+    (vertical) at z = -R and meets the fin's aft face at r = r_body + R. Width = TE root + 2 x root fillet, so the
+    fin's filleted root footprint is carried down into the collar without a sharp corner."""
+    import math
+    R, r0 = p["te_fillet_r_mm"], p["body_od_mm"] / 2
+    w = p["te_root_thickness_mm"] + 2 * p["root_fillet_r_mm"]
+    arc = [(r0 + R - R * math.cos(t), -R + R * math.sin(t)) for t in [k * (math.pi / 2) / 16 for k in range(17)]]
+    pts = [(r0 - 0.5, -R - 0.5), (r0 - 0.5, 0.0)] + list(reversed(arc))[:-1] + [(r0, -R)]
+    pts = [(r0 - 0.5, 0.0), (r0 + R, 0.0)] + [(r0 + R - R * math.cos(t), -R + R * math.sin(t))
+                                               for t in [k * (math.pi / 2) / 16 for k in range(16, -1, -1)]][1:] \
+          + [(r0 - 0.5, -R)]
+    prof = cq.Workplane("XZ").polyline(pts).close().extrude(w / 2, both=True)
+    out = None
+    for i in range(p["fin_count"]):
+        pi = prof.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
+        out = pi if out is None else out.union(pi)
+    return out
 
 
 def te_gussets(p: dict) -> cq.Workplane:

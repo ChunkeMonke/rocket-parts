@@ -243,7 +243,7 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   sleeve_fit: {value: snug_slip, status: PROPOSED, note: "shop snug-slip per side, leaves an epoxy gap (borrowed tube rule)"}
   sleeve_wall: {value: wall_band, status: PROPOSED, note: "= 6-loop perimeter band (2.67 mm), prints fully solid"}
   sleeve_overlap_mm: {value: 100, status: FROM_AERO, note: "length of sleeve on the tube = fin root chord (fins TE flush with aft face)"}
-  fairing_length_mm: {value: 20, status: PROPOSED, note: "forward taper from sleeve OD down to the tube OD (no step in the flow)"}
+  fairing_length_mm: {value: 40, status: OWNER, note: "REV 9 (owner 2026-11-22): 20 -> 40 mm gentler forward taper (the sleeve step was 2-4 % of pressure drag in CFD)"}
   lip_thickness: {value: wall_band, status: PROPOSED, note: "aft lip under the tube end; motor thrust ring bears on it (compression across layers)"}
   motor_case_od_mm: {value: 38.10, status: PLACEHOLDER, note: "1.500 in nominal from AeroTech I500T (different 38 mm DMS) page, via motor agent; MEASURE the H100W"}
   thrust_ring_od_mm: {value: 41.0, status: PLACEHOLDER, note: "not published yet (motor agent researching); must be > lip bore to bear"}
@@ -253,9 +253,11 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   tail_cone: {value: true, status: OWNER, note: "rev 8: threaded collar behind the aft face + separate tail cone (parts/tail_cone.py)"}
   collar_length_mm: {value: 18.5, status: PROPOSED, note: "rev 8 (updated 2026-11-22): 9.5 mm thrust ring + 6.5 mm thread + 2.5 mm run-out. Was 12 (3 mm ring assumption) -> no thread left with a 9.5 mm ring"}
   collar_bore_d_mm: {value: 41.6, status: PROPOSED, note: "rev 8: clears the 41.0 mm thrust ring (PLACEHOLDER) by 0.3/side; thread minor dia; wall behind the groove 1.6 mm"}
-  te_gusset_mm: {value: 4.0, status: PROPOSED, note: "rev 8: 45-deg wedge under each fin root TE onto the collar; removes the 90-deg corner where rev 8 FEA peaked (FI 0.46 at r 22.8, z 0)"}
-  boattail_length_mm: {value: 20.0, status: OWNER, note: "owner 2026-11-22: 20 mm taper aft of the collar"}
-  boattail_end_od_mm: {value: 43.0, status: PROPOSED, note: "46.8 -> 43.0 over 20 mm = 5.4 deg half-angle (attached-flow boattail range 5-10 deg)"}
+  te_gusset_mm: {value: 0, status: OWNER, note: "rev 8 45-deg wedge; REV 9 replaces it with the smooth te_fillet_r_mm skirt"}
+  te_fillet_r_mm: {value: 6.0, status: PROPOSED, note: "REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; width = TE root + 2 x root fillet"}
+  insert_bosses: {value: false, status: OWNER, note: "REV 9: removed (tail cone retains the motor); rev 2-8 had faired M3 insert bosses at the fin roots"}
+  boattail_length_mm: {value: 30.0, status: OWNER, note: "REV 9 (owner 2026-11-22): 30 mm (rev 8: 20)"}
+  boattail_end_od_mm: {value: 41.6, status: PROPOSED, note: "REV 9: 46.8 -> 41.6 over 30 mm = 5.0 deg half-angle; 1.5 mm wall over the 38.6 cone bore at the aft end (rev 8: 43.0 over 20)"}
   tail_cone_bore_d_mm: {value: 38.6, status: PROPOSED, note: "clears the 38.10 case/nozzle; shank face bears on the thrust ring annulus 38.6-41.0"}
   thread_pitch_mm: {value: 2.5, status: PROPOSED, note: "printed 45-deg trapezoid thread, same as the nose cone cap"}
   thread_depth_mm: {value: 1.0, status: PROPOSED}
@@ -264,7 +266,7 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
   boss_fairing_length_mm: {value: 20, status: PROPOSED}
   root_fillet_r_mm: {value: 6, status: PROPOSED, note: "rev 6: 4 -> 6 mm at the ANSYS failure site (root fillet); larger collides with the sleeve bore geometry"}
-  te_root_thickness_mm: {value: 8.0, status: PROPOSED, note: "rev 7: blunt TE 8 mm at the root (was 2.0 in rev 6) so the aft root envelops the insert boss; both FEA peaks sat in the boss outer wall near the TE (fea_results.md). Tapers to 0.84 at the tip"}
+  te_root_thickness_mm: {value: 2.5, status: OWNER, note: "REV 9 (owner 2026-11-22): 8 -> 2.5 mm; the 8 mm blunt TE only existed to bury the insert bosses (rev 7), which rev 9 removes (tail cone retention). Tapers to 0.84 at the tip"}
   boss_extra_wall_mm: {value: 1.0, status: PROPOSED, note: "rev 7: +1 mm around the insert boss (wall 2.67 -> 3.67 mm) where the in-house FEA peaks sit"}
   root_fillet_sections: {value: 6, status: PROPOSED}
   airfoil_points: {value: 41, status: PROPOSED}
