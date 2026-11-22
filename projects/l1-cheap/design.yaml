@@ -111,7 +111,7 @@ stability:                 # stability agent — see projects/l1-cheap/stability
   # ---- design choices owned by stability (PROPOSED, owner review pending) ----
   body_tube_length_mm: 863       # full LOC BT-1.52 stock, uncut
   fin_span_request_mm: null      # null = use aero.fin_span_mm (owner OR 43.18)
-  ballast_g: 63                  # 2026-11-22: 28 in chute 38 g + nose rev 1 63 g -> solved 62.7 g for 1.80 cal (pack on motor). OWNER asked for a 65 g TOTAL nose (2 g ballast): our sim gives 0.16 cal (UNSTABLE) with the pack on the motor, 1.20 cal with the pack held at 300 mm (OR-like); OR shows 2.07 because its CP is 836 mm vs ours 805 (unresolved). Owner to decide; BALANCE CHECK decides
+  ballast_g: 2                   # OWNER DECISION 2026-11-22: nose 65 g TOTAL (63 g printed + 2 g) per OpenRocket (2.07 cal, CG 29.545 in, CP 32.914 in). In-house sim DISAGREES: 0.16 cal with the pack on the motor, 1.20 cal with the pack held at 300 mm; 62.7 g needed for 1.8 cal (or_component_analysis.md). Owner accepts OR. Balance check per OR: CG <= 29.5 in (750 mm) from the tip, motor in, chute packed
   ballast_cg_from_nose_mm: 74.6  # nosecone.md table: uniform fill tip to 100 mm (27.2 cm3) -> 70 g needs >= 2.57 g/cm3 packed; material TBD (owner)
   aim_liftoff_margin_cal: 1.8    # owner target, on ref 41.275 (the owner's OR uses 1.625 in). = 1.59 cal on the 46.795 sleeve ref (FAIL low on that ref); 78.1 g passes both refs (2.00 / 1.76)
   balance_check_cg_from_nose_mm: 730   # ready-to-fly (motor in, chute packed, ballast in) = CP 804.7 - 1.8 x 41.275. Window 722-739 (+/-0.2 cal). Aft of 739 -> add ballast, ~1.1 g per mm (solve: 69.7 g -> CG 730.1, 78.1 g -> 722.2)
