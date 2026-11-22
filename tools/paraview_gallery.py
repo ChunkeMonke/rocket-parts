@@ -30,13 +30,15 @@ if not os.path.exists(FOAM):
     open(FOAM, "w").close()
 info = json.load(open(os.path.join(CASE, "case.json")))
 L, V = info["L"], info["speed"]
-Q = 0.5 * V * V                      # kinematic dynamic pressure (p is p/rho)
+COMP = bool(info.get("compressible"))
+Q = 0.5 * V * V                      # kinematic dynamic pressure (p is p/rho) for incompressible runs
+CP_EXPR = (f"(p-{info['p_inf']})/{0.5 * info['rho_inf'] * V * V}" if COMP else f"p/{Q}")
 RES = [1600, 900]
 
 src = OpenFOAMReader(registrationName="rocket CFD (case.foam)", FileName=FOAM)
 src.CaseType = "Decomposed Case"
 src.MeshRegions = ["internalMesh", "patch/rocket"]
-src.CellArrays = ["p", "U", "k", "omega", "nut"]
+src.CellArrays = ["p", "U", "k", "omega", "nut"] + (["T"] if COMP else [])
 src.UpdatePipelineInformation()
 T = max(src.TimestepValues) if src.TimestepValues else 0
 
@@ -61,7 +63,7 @@ def reflect(proxy, label):
 
 
 def bars_off():
-    for arr in ("p", "Cp", "U", "u_over_Uinf", "dUz", "k"):
+    for arr in ("p", "Cp", "U", "u_over_Uinf", "dUz", "k", "Mach"):
         try:
             pvs.GetScalarBar(GetColorTransferFunction(arr), view).Visibility = 0
         except Exception:
@@ -151,16 +153,20 @@ except AttributeError:
     fluid.BlockIndices = [1]
 cp = Calculator(registrationName="Cp field", Input=fluid)
 cp.ResultArrayName = "Cp"
-cp.Function = f"p/{Q}"
+cp.Function = CP_EXPR
 spd = Calculator(registrationName="speed ratio", Input=cp)
 spd.ResultArrayName = "u_over_Uinf"
 spd.Function = f"mag(U)/{V}"
+if COMP:
+    spd = Calculator(registrationName="local Mach", Input=spd)
+    spd.ResultArrayName = "Mach"
+    spd.Function = "mag(U)/sqrt(1.4*287.05*T)"
 upw = Calculator(registrationName="upwash (Uz - freestream)", Input=spd)
 upw.ResultArrayName = "dUz"
 upw.Function = f"U_Z-{info['U'][2]}"
 bcp = Calculator(registrationName="rocket Cp", Input=bodyF)
 bcp.ResultArrayName = "Cp"
-bcp.Function = f"p/{Q}"
+bcp.Function = CP_EXPR
 
 
 def surface_views():
@@ -198,14 +204,15 @@ def side_slices():
     for arr, comp, lo, hi, preset, tag in (("u_over_Uinf", None, 0, 1.15, "Viridis (matplotlib)", "speed"),
                                            ("Cp", None, -0.6, 0.6, "Cool to Warm", "Cp"),
                                            ("U", "Z", info["U"][2] - 12, info["U"][2] + 12, "Cool to Warm", "upwash_Uz"),
-                                           ("k", None, 0, 150, "Inferno (matplotlib)", "turbulence_k")):
+                                           ("k", None, 0, 150, "Inferno (matplotlib)", "turbulence_k")) + ((("Mach", None, 0, 1.2, "Jet", "Mach"),) if COMP else ()):
         color(d, arr, comp, lo, hi, preset)
         for fname, pos, foc, par in framings:
             if tag in ("upwash_Uz", "turbulence_k") and fname == "nose":
                 continue
             cam(pos, foc, (0, 0, 1), par)
             what = {"speed": "speed / U∞", "Cp": "pressure Cp", "upwash_Uz": "vertical velocity Uz (m/s; white = freestream)",
-                    "turbulence_k": "turbulence energy k (m²/s²)"}[tag]
+                    "turbulence_k": "turbulence energy k (m²/s²)",
+                    "Mach": "local Mach number (red > 1 = supersonic pocket)"}[tag]
             shot(f"side_{tag}_{fname}", f"Side slice through fin 0: {what}, {fname}")
 
 
@@ -328,7 +335,24 @@ def isosurfaces():
     cam((0.9, -0.25, -0.15), (1.0, 0, 0)); shot("pressure_isosurface_fin_leading_edges", "Red surface: high pressure Cp = +0.3 at the leading edges")
 
 
-for title, fn in (("surface", surface_views), ("side slices", side_slices), ("top slice", top_slice),
+def sonic():
+    if not COMP:
+        return
+    c = Contour(registrationName="sonic surface (Mach = 1)", Input=spd)
+    c.ContourBy = ["POINTS", "Mach"]
+    c.Isosurfaces = [1.0]
+    cF = reflect(c, "sonic surface (full)")
+    d, bd = only(cF, bcp)
+    d.DiffuseColor = [1.0, 0.55, 0.0]
+    ColorBy(d, None)
+    color(bd, "Cp", None, -0.6, 0.6)
+    for nm, pos, foc in (("sonic_surface_fins", (0.88, -0.25, 0.15), (1.0, 0, 0)),
+                         ("sonic_surface_nose", (0.0, -0.3, 0.12), (0.15, 0, 0))):
+        cam(pos, foc)
+        shot(nm, "Orange: where the air reaches Mach 1 (supersonic inside); nothing orange = subsonic everywhere")
+
+
+for title, fn in (("sonic", sonic), ("surface", surface_views), ("side slices", side_slices), ("top slice", top_slice),
                   ("cross-sections", cross_sections), ("streamlines", streamlines), ("arrows", arrows),
                   ("isosurfaces", isosurfaces)):
     section(title, fn)

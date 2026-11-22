@@ -53,7 +53,7 @@ gradSchemes { default Gauss linear; grad(U) cellLimited Gauss linear 1; }
 divSchemes { default none;
   div(phi,U) bounded Gauss linearUpwind grad(U); div(phi,e) bounded Gauss linearUpwind default;
   div(phi,K) bounded Gauss linearUpwind default; div(phi,Ekp) bounded Gauss linearUpwind default;
-  div(phiv,p) bounded Gauss linearUpwind default;
+  div(phiv,p) bounded Gauss linearUpwind default; div(phid,p) bounded Gauss linearUpwind default;
   div(phi,k) bounded Gauss upwind; div(phi,omega) bounded Gauss upwind;
   div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear; }
 laplacianSchemes { default Gauss linear limited corrected 0.5; }
@@ -63,11 +63,12 @@ wallDist { method meshWave; }
 """)
     w(case / "system/fvSolution", "dictionary", "fvSolution", f"""
 solvers {{
-  p {{ solver GAMG; smoother GaussSeidel; tolerance 1e-8; relTol 0.05; }}
+  p {{ solver GAMG; smoother GaussSeidel; tolerance 1e-8; relTol 0.05; maxIter 50; }}
   "(U|e|k|omega)" {{ solver smoothSolver; smoother symGaussSeidel; tolerance 1e-9; relTol 0.1; }}
 }}
-SIMPLE {{ nNonOrthogonalCorrectors 1; transonic yes; consistent yes; pMinFactor 0.3; pMaxFactor 2.0; }}
-relaxationFactors {{ equations {{ U 0.7; e 0.7; k 0.6; omega 0.6; p 0.7; }} fields {{ p 0.7; rho 0.5; }} }}
+// transonic/consistent off and heavy p relaxation: the impulsive M 0.8 start diverges otherwise (negative T)
+SIMPLE {{ nNonOrthogonalCorrectors 1; transonic no; consistent no; pMinFactor 0.5; pMaxFactor 1.5; }}
+relaxationFactors {{ equations {{ U 0.5; e 0.5; k 0.5; omega 0.5; }} fields {{ p 0.2; rho 1; }} }}
 """)
     Us = f"({U[0]:.6f} {U[1]:.6f} {U[2]:.6f})"
     sym = 'symmetry { type symmetryPlane; }\n  "proc.*" { type processor; }'
