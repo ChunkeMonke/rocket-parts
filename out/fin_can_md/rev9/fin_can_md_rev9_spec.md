@@ -6,16 +6,16 @@
 ## Verify checks
 | # | Check | Result | Detail |
 |---|---|---|---|
-| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=91878.5 mm3, bodies=1 |
-| 2 | mass | FAIL | target 90.0 g (±5 %); reachable 101.4 g (0 %) – 116.7 g (100 %); infill to hit target = -74.5 % |
+| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=91534.8 mm3, bodies=1 |
+| 2 | mass | FAIL | target 90.0 g (±5 %); reachable 101.0 g (0 %) – 116.3 g (100 %); infill to hit target = -71.8 % |
 | 3 | mating interference | PASS | tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3, tail_cone: 0.000 mm3 |
 | 4 | renders | PASS | written: fin_can_md_rev9_iso.png, fin_can_md_rev9_front.png, fin_can_md_rev9_section.png — VISUAL REVIEW REQUIRED |
 | 5 | build volume | PASS | extents X 102.6 / Y 118.4 / Z 158.5 mm vs limit 256/256/256 |
 
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
-- Solid (walls/skins) 79.84 cm³ · infill region 12.05 cm³ · mesh volume 91.88 cm³
-- Mass at 0 % / 100 % infill: 101.4 g / 116.7 g · target 90.0 g · infill needed: -74.5 %
+- Solid (walls/skins) 79.52 cm³ · infill region 12.05 cm³ · mesh volume 91.53 cm³
+- Mass at 0 % / 100 % infill: 101.0 g / 116.3 g · target 90.0 g · infill needed: -71.8 %
 
 ## Print orientation
 Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are vertical walls, fins shrink going up, the forward fairing narrows going up. REV 8 (tail_cone): the collar is on the bed and the fins' blunt trailing edges (1-8 mm wide) hang 12 mm above it: add small supports under the three fin TEs only (paint-on / tree, build plate only).
@@ -72,7 +72,7 @@ Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are v
 | `thread_depth_mm` | 1 | PROPOSED |  |
 | `thread_clearance_mm` | 0.2 | PROPOSED | same as the nose cap (owner to test-fit) |
 | `te_gusset_mm` | 0 | OWNER | rev 8 45-deg wedge; REV 9 replaces it with the smooth te_fillet_r_mm skirt |
-| `te_fillet_r_mm` | 6 | PROPOSED | REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; width = TE root + 2 x root fillet |
+| `te_fillet_r_mm` | 6 | PROPOSED | REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; follows the fin footprint (fin + root fillets) at the aft face |
 | `insert_bosses` | False | OWNER | REV 9: removed (tail cone retains the motor); rev 2-8 had faired M3 insert bosses at the fin roots |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 

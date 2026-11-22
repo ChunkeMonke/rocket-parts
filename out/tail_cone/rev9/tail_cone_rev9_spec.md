@@ -71,7 +71,7 @@ Narrow aft end on the bed, shank up. No supports: the outer taper leans 5.4 deg 
 | `thread_depth_mm` | 1 | PROPOSED |  |
 | `thread_clearance_mm` | 0.2 | PROPOSED | same as the nose cap (owner to test-fit) |
 | `te_gusset_mm` | 0 | OWNER | rev 8 45-deg wedge; REV 9 replaces it with the smooth te_fillet_r_mm skirt |
-| `te_fillet_r_mm` | 6 | PROPOSED | REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; width = TE root + 2 x root fillet |
+| `te_fillet_r_mm` | 6 | PROPOSED | REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; follows the fin footprint (fin + root fillets) at the aft face |
 | `insert_bosses` | False | OWNER | REV 9: removed (tail cone retains the motor); rev 2-8 had faired M3 insert bosses at the fin roots |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 

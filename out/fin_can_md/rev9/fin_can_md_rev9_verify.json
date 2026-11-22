@@ -3,28 +3,28 @@
     "num": 1,
     "name": "mesh integrity",
     "passed": true,
-    "detail": "watertight=True, winding_consistent=True, volume=91878.5 mm3, bodies=1",
+    "detail": "watertight=True, winding_consistent=True, volume=91534.8 mm3, bodies=1",
     "data": {
       "bodies": 1,
-      "volume_mm3": 91878.53096272789
+      "volume_mm3": 91534.77540564211
     }
   },
   {
     "num": 2,
     "name": "mass",
     "passed": false,
-    "detail": "target 90.0 g (\u00b15 %); reachable 101.4 g (0 %) \u2013 116.7 g (100 %); infill to hit target = -74.5 %",
+    "detail": "target 90.0 g (\u00b15 %); reachable 101.0 g (0 %) \u2013 116.3 g (100 %); infill to hit target = -71.8 %",
     "data": {
-      "solid_mm3": 79841.79446354185,
+      "solid_mm3": 79517.22355491608,
       "infill_region_mm3": 12050.583682982222,
-      "mass_0pct_g": 101.39907896869816,
-      "mass_100pct_g": 116.70332024608558,
-      "mesh_volume_mm3": 91878.53096272789,
+      "mass_0pct_g": 100.98687391474343,
+      "mass_100pct_g": 116.29111519213086,
+      "mesh_volume_mm3": 91534.77540564211,
       "wall_mm": 2.67,
       "layer_mm": 0.2,
       "n_top": 5,
       "n_bottom": 3,
-      "infill_needed_pct": -74.483136812151,
+      "infill_needed_pct": -71.78973276497503,
       "target_g": 90.0
     }
   },

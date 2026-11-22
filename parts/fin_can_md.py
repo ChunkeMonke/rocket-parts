@@ -141,36 +141,28 @@ def build(p: dict) -> cq.Workplane:
 
 
 def te_fillets(p: dict) -> cq.Workplane:
-    """Rev 9: smooth concave skirt under each fin root TE: a quarter-circle of radius R that is tangent to the collar
-    (vertical) at z = -R and meets the fin's aft face at r = r_body + R. Width = TE root + 2 x root fillet, so the
-    fin's filleted root footprint is carried down into the collar without a sharp corner."""
+    """Rev 9: smooth skirt under each fin root TE that conforms to the fin. The fin's own footprint at the aft face
+    (fin + root fillets, sliced just above z = 0) is extruded down and trimmed by a concave quarter-circle of radius R
+    that is tangent to the collar (vertical) at z = -R and meets the aft face at r = r_body + R. So the skirt has
+    exactly the fin's cross-section where it leaves the fin and curves smoothly into the collar: no flat block."""
     import math
     R, r0 = p["te_fillet_r_mm"], p["body_od_mm"] / 2
-    w = p["te_root_thickness_mm"] + 2 * p["root_fillet_r_mm"]
-    arc = [(r0 + R - R * math.cos(t), -R + R * math.sin(t)) for t in [k * (math.pi / 2) / 16 for k in range(17)]]
-    pts = [(r0 - 0.5, -R - 0.5), (r0 - 0.5, 0.0)] + list(reversed(arc))[:-1] + [(r0, -R)]
-    pts = [(r0 - 0.5, 0.0), (r0 + R, 0.0)] + [(r0 + R - R * math.cos(t), -R + R * math.sin(t))
-                                               for t in [k * (math.pi / 2) / 16 for k in range(16, -1, -1)]][1:] \
-          + [(r0 - 0.5, -R)]
-    prof = cq.Workplane("XZ").polyline(pts).close().extrude(w / 2, both=True)
+    n = 24
+    arc = [(r0 + R - R * math.cos(k * (math.pi / 2) / n), -R + R * math.sin(k * (math.pi / 2) / n)) for k in range(n + 1)]
+    prof = [(r0 - 0.5, 0.0)] + list(reversed(arc)) + [(r0 - 0.5, -R)]          # (r0+R,0) ... (r0,-R)
+    trim = cq.Workplane("XZ").polyline(prof).close().extrude(40, both=True)
+    fin = cq.Workplane("XY").add(fin_can.fin_solid(p))
+    foot = fin.section(0.02)                                                    # fin footprint at the aft face
+    faces = foot.faces().vals()
+    skirt = None
+    for f in faces:
+        e = cq.Workplane("XY").add(cq.Solid.extrudeLinear(f, cq.Vector(0, 0, -(R + 1.0))))
+        skirt = e if skirt is None else skirt.union(e)
+    one = skirt.intersect(trim)
     out = None
     for i in range(p["fin_count"]):
-        pi = prof.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
-        out = pi if out is None else out.union(pi)
-    return out
-
-
-def te_gussets(p: dict) -> cq.Workplane:
-    """Rev 8: 45-deg wedge under each fin's root trailing edge, from the fin's aft face (z = 0) down onto the collar.
-    Width = blunt TE root thickness; it removes the 90-deg re-entrant corner at the fin root TE."""
-    g, r0 = p["te_gusset_mm"], p["body_od_mm"] / 2
-    w = p["te_root_thickness_mm"]
-    wedge = (cq.Workplane("XZ").polyline([(r0 - 0.5, 0.0), (r0 + g, 0.0), (r0 - 0.5, -g - 0.5)]).close()
-             .extrude(w / 2, both=True))
-    out = None
-    for i in range(p["fin_count"]):
-        wi = wedge.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
-        out = wi if out is None else out.union(wi)
+        oi = one.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
+        out = oi if out is None else out.union(oi)
     return out
 
 

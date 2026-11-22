@@ -254,7 +254,7 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   collar_length_mm: {value: 18.5, status: PROPOSED, note: "rev 8 (updated 2026-11-22): 9.5 mm thrust ring + 6.5 mm thread + 2.5 mm run-out. Was 12 (3 mm ring assumption) -> no thread left with a 9.5 mm ring"}
   collar_bore_d_mm: {value: 41.6, status: PROPOSED, note: "rev 8: clears the 41.0 mm thrust ring (PLACEHOLDER) by 0.3/side; thread minor dia; wall behind the groove 1.6 mm"}
   te_gusset_mm: {value: 0, status: OWNER, note: "rev 8 45-deg wedge; REV 9 replaces it with the smooth te_fillet_r_mm skirt"}
-  te_fillet_r_mm: {value: 6.0, status: PROPOSED, note: "REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; width = TE root + 2 x root fillet"}
+  te_fillet_r_mm: {value: 6.0, status: PROPOSED, note: "REV 9 (owner: conform smoothly, no harsh triangle): concave R6 skirt under each fin root TE blending into the collar; follows the fin footprint (fin + root fillets) at the aft face"}
   insert_bosses: {value: false, status: OWNER, note: "REV 9: removed (tail cone retains the motor); rev 2-8 had faired M3 insert bosses at the fin roots"}
   boattail_length_mm: {value: 30.0, status: OWNER, note: "REV 9 (owner 2026-11-22): 30 mm (rev 8: 20)"}
   boattail_end_od_mm: {value: 41.6, status: PROPOSED, note: "REV 9: 46.8 -> 41.6 over 30 mm = 5.0 deg half-angle; 1.5 mm wall over the 38.6 cone bore at the aft end (rev 8: 43.0 over 20)"}
