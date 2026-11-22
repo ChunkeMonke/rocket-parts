@@ -146,6 +146,7 @@ internalField {internal};
 boundaryField {{
   {bcs}
   symmetry {{ type symmetryPlane; }}
+  "proc.*" {{ type processor; }}
 }}
 """)
     (case / "Allrun").write_text(f"""#!/bin/bash
