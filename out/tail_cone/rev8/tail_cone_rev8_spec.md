@@ -70,6 +70,7 @@ Narrow aft end on the bed, shank up. No supports: the outer taper leans 5.4 deg 
 | `thread_pitch_mm` | 2.5 | PROPOSED | printed 45-deg trapezoid thread, same as the nose cone cap |
 | `thread_depth_mm` | 1 | PROPOSED |  |
 | `thread_clearance_mm` | 0.2 | PROPOSED | same as the nose cap (owner to test-fit) |
+| `te_gusset_mm` | 4 | PROPOSED | rev 8: 45-deg wedge under each fin root TE onto the collar; removes the 90-deg corner where rev 8 FEA peaked (FI 0.46 at r 22.8, z 0) |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 
 ## Not print-ready until resolved

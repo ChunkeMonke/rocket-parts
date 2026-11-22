@@ -253,6 +253,7 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   tail_cone: {value: true, status: OWNER, note: "rev 8: threaded collar behind the aft face + separate tail cone (parts/tail_cone.py)"}
   collar_length_mm: {value: 12.0, status: PROPOSED, note: "rev 8: threaded collar below the aft face; holds the 3 mm thrust ring + ~6.5 mm of thread"}
   collar_bore_d_mm: {value: 41.6, status: PROPOSED, note: "rev 8: clears the 41.0 mm thrust ring (PLACEHOLDER) by 0.3/side; thread minor dia; wall behind the groove 1.6 mm"}
+  te_gusset_mm: {value: 4.0, status: PROPOSED, note: "rev 8: 45-deg wedge under each fin root TE onto the collar; removes the 90-deg corner where rev 8 FEA peaked (FI 0.46 at r 22.8, z 0)"}
   boattail_length_mm: {value: 20.0, status: OWNER, note: "owner 2026-11-22: 20 mm taper aft of the collar"}
   boattail_end_od_mm: {value: 43.0, status: PROPOSED, note: "46.8 -> 43.0 over 20 mm = 5.4 deg half-angle (attached-flow boattail range 5-10 deg)"}
   tail_cone_bore_d_mm: {value: 38.6, status: PROPOSED, note: "clears the 38.10 case/nozzle; shank face bears on the thrust ring annulus 38.6-41.0"}

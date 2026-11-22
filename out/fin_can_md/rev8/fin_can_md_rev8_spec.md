@@ -6,16 +6,16 @@
 ## Verify checks
 | # | Check | Result | Detail |
 |---|---|---|---|
-| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=93666.0 mm3, bodies=1 |
-| 2 | mass | FAIL | target 90.0 g (±5 %); reachable 95.2 g (0 %) – 118.9 g (100 %); infill to hit target = -21.7 % |
+| 1 | mesh integrity | PASS | watertight=True, winding_consistent=True, volume=93870.0 mm3, bodies=1 |
+| 2 | mass | FAIL | target 90.0 g (±5 %); reachable 95.4 g (0 %) – 119.2 g (100 %); infill to hit target = -22.5 % |
 | 3 | mating interference | PASS | tube_wall: 0.000 mm3, motor_case: 0.000 mm3, motor_thrust_ring: 0.000 mm3, tail_cone: 0.000 mm3 |
 | 4 | renders | PASS | written: fin_can_md_rev8_iso.png, fin_can_md_rev8_front.png, fin_can_md_rev8_section.png — VISUAL REVIEW REQUIRED |
 | 5 | build volume | PASS | extents X 102.6 / Y 118.4 / Z 132.0 mm vs limit 256/256/256 |
 
 ## Mass (walls + infill model)
 - Wall band 2.67 mm · top 5 / bottom 3 layers of 0.2 mm
-- Solid (walls/skins) 74.93 cm³ · infill region 18.73 cm³ · mesh volume 93.67 cm³
-- Mass at 0 % / 100 % infill: 95.2 g / 118.9 g · target 90.0 g · infill needed: -21.7 %
+- Solid (walls/skins) 75.09 cm³ · infill region 18.77 cm³ · mesh volume 93.87 cm³
+- Mass at 0 % / 100 % infill: 95.4 g / 119.2 g · target 90.0 g · infill needed: -22.5 %
 
 ## Print orientation
 Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are vertical walls, fins shrink going up, the forward fairing narrows going up.
@@ -71,6 +71,7 @@ Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are v
 | `thread_pitch_mm` | 2.5 | PROPOSED | printed 45-deg trapezoid thread, same as the nose cone cap |
 | `thread_depth_mm` | 1 | PROPOSED |  |
 | `thread_clearance_mm` | 0.2 | PROPOSED | same as the nose cap (owner to test-fit) |
+| `te_gusset_mm` | 4 | PROPOSED | rev 8: 45-deg wedge under each fin root TE onto the collar; removes the 90-deg corner where rev 8 FEA peaked (FI 0.46 at r 22.8, z 0) |
 | `washer_min_od_mm` | 13.795 | derived/shop |  |
 
 ## Not print-ready until resolved

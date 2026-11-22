@@ -23,6 +23,7 @@ Parameters (projects/<project>/design.yaml `fin_can_md:` + `aero:` + skills/SKIL
   collar_length_mm, collar_bore_d_mm   mm  collar below the aft face (z < 0), bore = thread minor dia
   boattail_length_mm, boattail_end_od_mm, tail_cone_bore_d_mm   mm  tail cone (used by parts/tail_cone.py)
   thread_pitch_mm, thread_depth_mm, thread_clearance_mm   mm  printed 45-deg thread (parts/nose_cone.py helpers)
+  te_gusset_mm          mm  rev 8: 45-deg wedge under each fin root TE onto the collar (stress-corner fix)
   target_mass_g       g    verify check 2 target
 """
 from __future__ import annotations
@@ -39,7 +40,9 @@ ROOT = Path(__file__).resolve().parent.parent
 
 INFO = {
     "print_orientation": "Aft face (lip) DOWN on the bed, axis vertical. No supports: lip and sleeve are vertical walls, "
-                         "fins shrink going up, the forward fairing narrows going up.",
+                         "fins shrink going up, the forward fairing narrows going up. REV 8 (tail_cone): the collar is on the bed and "
+                         "the fins' blunt trailing edges (1-8 mm wide) hang 12 mm above it: add small supports under the "
+                         "three fin TEs only (paint-on / tree, build plate only).",
     "loads": [
         "Motor thrust: the thrust ring pushes UP (+Z) on the lip's underside, and the lip pushes the tube end forward. "
         "The layers are pressed together (compression across layers). Good direction.",
@@ -98,7 +101,7 @@ def params(project: str = "l1-cheap") -> dict:
     }
     if p["tail_cone"]:
         for k in ("collar_length_mm", "collar_bore_d_mm", "boattail_length_mm", "boattail_end_od_mm",
-                  "tail_cone_bore_d_mm", "thread_pitch_mm", "thread_depth_mm", "thread_clearance_mm"):
+                  "tail_cone_bore_d_mm", "thread_pitch_mm", "thread_depth_mm", "thread_clearance_mm", "te_gusset_mm"):
             p[k] = v[k]
     p["washer_min_od_mm"] = 2 * (2.0 + p["insert_radius_mm"] - p["thrust_ring_od_mm"] / 2)
     p["_status"] = {k: x.get("status", "") for k, x in fc.items() if isinstance(x, dict)}
@@ -124,7 +127,21 @@ def build(p: dict) -> cq.Workplane:
     body = body.cut(cq.Workplane("XY").circle(r_sb).extrude(L + Lf).translate((0, 0, t)))
     if not p["tail_cone"]:
         return body.cut(fin_can.insert_holes(p))
-    return body.union(collar(p))
+    return body.union(collar(p)).union(te_gussets(p))
+
+
+def te_gussets(p: dict) -> cq.Workplane:
+    """Rev 8: 45-deg wedge under each fin's root trailing edge, from the fin's aft face (z = 0) down onto the collar.
+    Width = blunt TE root thickness; it removes the 90-deg re-entrant corner at the fin root TE."""
+    g, r0 = p["te_gusset_mm"], p["body_od_mm"] / 2
+    w = p["te_root_thickness_mm"]
+    wedge = (cq.Workplane("XZ").polyline([(r0 - 0.5, 0.0), (r0 + g, 0.0), (r0 - 0.5, -g - 0.5)]).close()
+             .extrude(w / 2, both=True))
+    out = None
+    for i in range(p["fin_count"]):
+        wi = wedge.rotate((0, 0, 0), (0, 0, 1), i * 360.0 / p["fin_count"])
+        out = wi if out is None else out.union(wi)
+    return out
 
 
 def collar(p: dict) -> cq.Workplane:
