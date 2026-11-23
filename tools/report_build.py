@@ -29,22 +29,77 @@ def pandoc(md: Path, out: Path, resdir: Path):
 
 
 def prep(html: str):
-    """Add page markers to h1/h2 in the body; restructure TOC links; return html and the id order."""
+    """Number figures/tables per section ("Figure 3-2"), make H1 numbers "3.0", add page markers to headings and
+    captions, build the List of Figures / Tables, restructure the TOC links. Returns html and the marker id order."""
     ids = []
     head, sep, body = html.partition('<main class="body">')
+    lof, lot = [], []
+    state = {"sec": "0", "f": 0, "t": 0}
 
-    def mark(m):
-        ids.append(m.group(2))
-        return f'{m.group(1)}<span class="mk">QZ{len(ids) - 1:03d}ZQ</span>'
-    body = re.sub(r'(<h[12][^>]*\bid="([^"]+)"[^>]*>)', mark, body)
+    def mk(key):
+        ids.append(key)
+        return f'<span class="mk">QZ{len(ids) - 1:03d}ZQ</span>'
+
+    def text_of(frag):
+        return re.sub(r"<[^>]+>", "", frag).strip()
+
+    def tok(full, open_tag, inner, close_tag):
+        class M:
+            def group(self, i=0):
+                return [full, open_tag, inner, close_tag][i]
+        m = M()
+        t = full
+        if t.startswith("<h1"):
+            num = re.search(r'<span class="header-section-number">([^<]+)</span>', m.group(0) + m.group(2))
+            title = text_of(m.group(2))
+            app = re.match(r"Appendix\s+([A-Z])", title)
+            if app:
+                state["sec"] = app.group(1)
+            elif num:
+                state["sec"] = num.group(1).strip()
+            else:
+                state["sec"] = "ES" if "summary" in title.lower() else "0"
+            state["f"] = state["t"] = 0
+            inner = re.sub(r'(<span class="header-section-number">)(\d+)(</span>)', r"\g<1>\g<2>.0\g<3>", m.group(2))
+            hid = re.search(r'\bid="([^"]+)"', m.group(1))
+            return m.group(1) + (mk(hid.group(1)) if hid else "") + inner + m.group(3)
+        if t.startswith("<h2"):
+            hid = re.search(r'\bid="([^"]+)"', m.group(1))
+            return m.group(1) + (mk(hid.group(1)) if hid else "") + m.group(2) + m.group(3)
+        if t.startswith("<figcaption"):
+            state["f"] += 1
+            lbl = f'Figure {state["sec"]}-{state["f"]}'
+            key = f"fig{len(lof)}"
+            lof.append((lbl, text_of(m.group(2)), key))
+            return f'{m.group(1)}{mk(key)}<span class="fnum">{lbl}.</span> {m.group(2)}{m.group(3)}'
+        if t.startswith("<caption"):
+            state["t"] += 1
+            lbl = f'Table {state["sec"]}-{state["t"]}'
+            key = f"tab{len(lot)}"
+            lot.append((lbl, text_of(m.group(2)), key))
+            return f'{m.group(1)}{mk(key)}<span class="fnum">{lbl}.</span> {m.group(2)}{m.group(3)}'
+        return t
+    body = re.sub(r"(<(h1|h2|figcaption|caption)\b[^>]*>)(.*?)(</\2>)",
+                  lambda m: tok(m.group(0), m.group(1), m.group(3), m.group(4)),
+                  body, flags=re.S)
+
+    def lst(items):
+        return "<ul>" + "".join(f'<li><a><span class="tt"><span class="lbl">{l}</span>{H.escape(c[:110] + ("…" if len(c) > 110 else ""))}</span>'
+                                f'<span class="pg" data-id="{k}"></span></a></li>' for l, c, k in items) + "</ul>"
+    head = head.replace("<!--LOF-->", lst(lof) if lof else "<p>None.</p>").replace("<!--LOT-->", lst(lot) if lot else "<p>None.</p>")
 
     def toc(m):
         inner = m.group(3)
-        num = re.search(r'<span class="toc-section-number">.*?</span>', inner)
-        num_s = num.group(0) if num else ""
-        txt = inner.replace(num_s, "").strip()
-        return f'<a href="#{m.group(1)}"{m.group(2)}><span class="tt">{num_s}{txt}</span><span class="pg" data-id="{m.group(1)}"></span></a>'
-    head = re.sub(r'<a href="#([^"]+)"([^>]*)>(.*?)</a>', toc, head, flags=re.S)
+        num = re.search(r'<span class="toc-section-number">(.*?)</span>', inner)
+        num_s = ""
+        if num:
+            n = num.group(1).strip()
+            num_s = f'<span class="toc-section-number">{n + ".0" if "." not in n else n}</span>'
+            inner = inner.replace(num.group(0), "")
+        return f'<a href="#{m.group(1)}"{m.group(2)}><span class="tt">{num_s}{inner.strip()}</span><span class="pg" data-id="{m.group(1)}"></span></a>'
+    nav_s, nav_e = head.find('<nav id="TOC">'), head.find("</nav>")
+    if nav_s >= 0:
+        head = head[:nav_s] + re.sub(r'<a href="#([^"]+)"([^>]*)>(.*?)</a>', toc, head[nav_s:nav_e], flags=re.S) + head[nav_e:]
     return head + sep + body, ids
 
 

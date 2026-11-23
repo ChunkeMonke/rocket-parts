@@ -11,9 +11,10 @@ $endfor$
 
 <section class="cover">
   <div class="cover-band">
-    <div class="cover-kicker">ENGINEERING DESIGN REPORT · $docnumber$</div>
+    <div class="cover-kicker">ENGINEERING DESIGN REPORT</div>
     <div class="cover-title">$title$</div>
     <div class="cover-subtitle">$subtitle$</div>
+    <div class="cover-rule"></div>
     <div class="cover-art"><img src="figures/cover_rocket.png" alt=""></div>
   </div>
   <div class="cover-lower">
@@ -21,13 +22,17 @@ $endfor$
     <div><span>Document No.</span>$docnumber$</div>
     <div><span>Revision</span>$revision$</div>
     <div><span>Date</span>$date$</div>
-    <div><span>Status</span>$status$</div>
-    <div class="wide"><span>Prepared for</span>$prepared_for$</div>
+    <div class="wide"><span>Status</span>$status$</div>
+$if(prepared_for)$
+    <div class="wide"><span>Purpose</span>$prepared_for$</div>
+$endif$
+$if(prepared_by)$
     <div class="wide"><span>Prepared by</span>$prepared_by$</div>
+$endif$
   </div>
   <div class="cover-foot">
-    <div class="cover-foot-l">Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe components</div>
-    <div class="cover-foot-r">$docnumber$ Rev $revision$</div>
+    <div>Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe components</div>
+    <div>$docnumber$ Rev $revision$</div>
   </div>
   </div>
 </section>
@@ -39,8 +44,9 @@ $endfor$
     <tr><th>Document number</th><td>$docnumber$</td></tr>
     <tr><th>Revision / date</th><td>$revision$ / $date$</td></tr>
     <tr><th>Status</th><td>$status$</td></tr>
-    <tr><th>Prepared for</th><td>$prepared_for$</td></tr>
-    <tr><th>Prepared by</th><td>$prepared_by$</td></tr>
+$if(prepared_for)$
+    <tr><th>Purpose</th><td>$prepared_for$</td></tr>
+$endif$
   </table>
   <h2 class="fm">Revision History</h2>
   <table class="dc-rev">
@@ -53,32 +59,39 @@ $endfor$
   </table>
   <h2 class="fm">Approval</h2>
   <table class="dc-sign">
-    <thead><tr><th>Role</th><th>Name</th><th>Signature</th><th>Date</th></tr></thead>
+    <thead><tr><th>Function</th><th>Name</th><th>Signature</th><th>Date</th></tr></thead>
     <tbody>
-      <tr><td>Prepared</td><td>Design team</td><td></td><td></td></tr>
+      <tr><td>Prepared</td><td></td><td></td><td></td></tr>
       <tr><td>Checked</td><td></td><td></td><td></td></tr>
-      <tr><td>Approved (project owner)</td><td></td><td></td><td></td></tr>
+      <tr><td>Approved</td><td></td><td></td><td></td></tr>
     </tbody>
   </table>
   <div class="dc-note">
-    <b>Status conventions.</b> Values are tagged by maturity:
+    <b>Status conventions.</b> Values carry a maturity tag:
     <span class="tag ok">VALIDATED</span> confirmed by test;
     <span class="tag">NOMINAL</span> published value, not measured;
     <span class="tag">ESTIMATE</span> calculated or assumed;
     <span class="tag">PROVISIONAL</span> interim basis pending a check;
     <span class="tag">UNCONFIRMED</span> result inside its own uncertainty band.
-    Positions are measured from the nose tip; static margin is in calibers of the 41.275 mm body tube unless stated.
+    Stations are measured from the nose tip. Static margin is in calibers of the 41.275 mm body tube unless stated.
   </div>
 </section>
 
 $if(toc)$
 <section class="toc-page">
-  <h1 class="fm">Contents</h1>
+  <h1 class="fm">Table of Contents</h1>
   <nav id="TOC">
   $table-of-contents$
   </nav>
 </section>
 $endif$
+
+<section class="lof-page">
+  <h1 class="fm">List of Figures</h1>
+  <div class="lof"><!--LOF--></div>
+  <h1 class="fm">List of Tables</h1>
+  <div class="lof"><!--LOT--></div>
+</section>
 
 <main class="body">
 $body$

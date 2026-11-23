@@ -95,7 +95,7 @@ def s1(pdf, p, rev):
                f"2. Wall {w} = 2 outer + 3 inner lines: fully solid.\n"
                "3. Ballast: lead shot / steel BBs in epoxy through the\n   Ø20 fill hole; close with the plug (sheet 3).\n"
                "4. Shoulder is a snug slip in the Ø38.735 tube ID.\n"
-               "5. Total nose mass per owner: 65 g (63 printed + 2\n   ballast); rev 9 fin can needs ≈ 72 g for 1.8 cal.",
+               "5. Flight nose mass 65 g (63 printed + 2 ballast); +25 g ballast\n   recommended for 1.8 cal (EDR L1C-EDR-001 §7).",
                fontsize=6.3, va="top", linespacing=1.45)
     pdf.savefig(fig); plt.close(fig)
 
