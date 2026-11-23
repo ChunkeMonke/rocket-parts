@@ -208,7 +208,7 @@ recovery:                  # recovery agent — see projects/l1-cheap/recovery.m
 fin_can:                   # part library (main session) — parts/fin_can.py rev 1 DRAFT, 2026-11-20
   # One-piece PETG: fin can + motor mount + liner seat + centering + airframe shoulder.
   # PLACEHOLDER = not measured/confirmed; the part is NOT print-ready while any remain.
-  body_od_mm: {value: 41.275, status: PLACEHOLDER, note: "tube OD nominal; measure the BT-1.52 with calipers"}
+  body_od_mm: {value: 41.275, status: NOMINAL, note: "LOC BT-1.52 published OD 1.625 in; owner 2026-11-23 accepts published values"}
   shoulder_fit: {value: snug_slip, status: PROPOSED, note: "slip leaves an epoxy gap (owner recommended choice pending)"}
   exposed_length_mm: {value: 100, status: FROM_AERO, note: "= fin root chord, TE flush with aft face"}
   shoulder_length_mm: {value: 103, status: FROM_STABILITY, note: "motor 203 - exposed 100: bore supports full motor"}
@@ -239,15 +239,15 @@ fin_can:                   # part library (main session) — parts/fin_can.py re
 
 fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER sleeve for the 38 mm H100W (owner 2026-11-21)
   # Printed sleeve slides OVER the BT-1.52 aft end; the motor sits inside the tube; the aft lip is the thrust stop.
-  tube_od_mm: {value: 41.275, status: PLACEHOLDER, note: "BT-1.52 OD nominal; MEASURE — sets the sleeve bore"}
+  tube_od_mm: {value: 41.275, status: NOMINAL, note: "OWNER 2026-11-23: use standard published values (no caliper check). LOC BT-1.52 OD 1.625 in (OpenRocket LOC database) — sets the sleeve bore"}
   sleeve_fit: {value: snug_slip, status: PROPOSED, note: "shop snug-slip per side, leaves an epoxy gap (borrowed tube rule)"}
   sleeve_wall: {value: wall_band, status: PROPOSED, note: "= 6-loop perimeter band (2.67 mm), prints fully solid"}
   sleeve_overlap_mm: {value: 100, status: FROM_AERO, note: "length of sleeve on the tube = fin root chord (fins TE flush with aft face)"}
   fairing_length_mm: {value: 40, status: OWNER, note: "REV 9 (owner 2026-11-22): 20 -> 40 mm gentler forward taper (the sleeve step was 2-4 % of pressure drag in CFD)"}
   lip_thickness: {value: wall_band, status: PROPOSED, note: "aft lip under the tube end; motor thrust ring bears on it (compression across layers)"}
-  motor_case_od_mm: {value: 38.10, status: PLACEHOLDER, note: "1.500 in nominal from AeroTech I500T (different 38 mm DMS) page, via motor agent; MEASURE the H100W"}
-  thrust_ring_od_mm: {value: 41.0, status: PLACEHOLDER, note: "not published yet (motor agent researching); must be > lip bore to bear"}
-  thrust_ring_thk_mm: {value: 9.525, status: PLACEHOLDER, note: "3/8 in: Rocketry Forum estimate for 38 mm DMS thrust rings (no official AeroTech drawing found, 2026-11-22); owner photo agrees (long black aft band). Nozzle reported flush with the ring bottom. MEASURE"}
+  motor_case_od_mm: {value: 38.10, status: NOMINAL, note: "OWNER 2026-11-23: published nominal accepted. 1.500 in nominal from AeroTech I500T (different 38 mm DMS) page, via motor agent"}
+  thrust_ring_od_mm: {value: 41.0, status: NOMINAL, note: "OWNER 2026-11-23: no measurement; best available estimate (no official AeroTech drawing). Must be > lip bore to bear"}
+  thrust_ring_thk_mm: {value: 9.525, status: NOMINAL, note: "3/8 in: Rocketry Forum estimate for 38 mm DMS thrust rings (no official AeroTech drawing found, 2026-11-22); owner photo agrees (long black aft band). Nozzle reported flush with the ring bottom. OWNER 2026-11-23: accepted without measurement"}
   motor_length_mm: {value: 155, status: CITED, note: "motor agent 2026-11-21 (38 x 155 mm; ThrustCurve snippet said 153) — measure"}
   retention: {value: tail_cone, status: OWNER, note: "REV 8 (owner 2026-11-22): screw-on tail cone traps the thrust ring and forms the boattail; bosses kept solid (no insert holes). Rev 2-7: insert_bosses_at_fin_roots (Option A)"}
   tail_cone: {value: true, status: OWNER, note: "rev 8: threaded collar behind the aft face + separate tail cone (parts/tail_cone.py)"}
@@ -272,3 +272,16 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   airfoil_points: {value: 41, status: PROPOSED}
   target_mass_g: {value: 90.0, status: OWNER, note: "owner 2026-11-21: Bambu Studio slicer 90 g for REV 7 at 25 % GYROID infill (rev 6 was 84.83 g; rev 5 80 g)"}
   print_infill: {value: "25 % gyroid", status: OWNER, note: "owner 2026-11-21 for the fin can (shop default is 25 % grid); gyroid bonds to walls in all directions"}
+
+# ---- OWNER FLIGHT DESIGN (2026-11-23): owner's SolidWorks fin can + tail cone ("Pepto B. #2"), owner_cad/*.STEP ----
+owner_design:
+  basis: {value: owner_solidworks, status: OWNER, note: "owner flies the SolidWorks fin can + tail cone; no 6 mm root fillets (owner decision 2026-11-23); fine-mesh CFD on hold (owner)"}
+  fin_can_mass_g: {value: 97, status: OWNER, note: "Bambu slicer 2026-11-23"}
+  tail_cone_mass_g: {value: 15, status: OWNER, note: "Bambu slicer 2026-11-23 (fin can + cone 112 g)"}
+  fin_can_cg_from_aft_face_mm: {value: 59.5, status: ESTIMATE, note: "uniform-density CG of the owner STEP solid"}
+  tail_cone_cg_aft_of_aft_face_mm: {value: 10.3, status: ESTIMATE, note: "uniform-density CG of the owner STEP solid, seated"}
+  liftoff_mass_g: {value: 610, status: ESTIMATE, note: "OR v4 (649 g) with the printed parts replaced by slicer masses (97 + 15 g) and the nose at 65 g"}
+  cg_liftoff_from_tip_mm: {value: 763.3, status: ESTIMATE, note: "OR v4 CG 774.8 corrected for the slicer masses at their STEP CGs and the 65 g nose (main session 2026-11-23)"}
+  cp_cfd_owner_mm: {value: 809.9, status: UNCONFIRMED, note: "CFD own_a4 (coarse mesh); 1.13 cal on the corrected CG; +25.5 g nose ballast for 1.8"}
+  cp_cfd_rev9_interim_mm: {value: 827.4, status: PROVISIONAL, note: "CFD r9a4, interim basis for the near-identical owner geometry; 1.55 cal; +9.1 g ballast for 1.8"}
+  or_v4_note: "OR v4 (owner_cad/OR_Pepto_B_4.pdf) = v3 unchanged (fin offset, solid fairing, delay 14 s, nose 0.132 lb). OR v4 CP 861.5 -> 2.38 cal on the corrected CG; not trusted (fins 15 mm aft)"
