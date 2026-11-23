@@ -7,6 +7,9 @@ date: "2026-11-23"
 status: "Released for build — ballast decision and open items in §9"
 prepared_for: "Tripoli Level 1 certification flight, Palm Bay FL, 2026-12-14"
 prepared_by: ""
+tagline: "Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe components"
+ref_diameter: "41.275 mm"
+cover_image: "figures/cover_rocket.png"
 revisions:
   - {rev: "D", date: "2026-11-23", description: "Professional restructure; SolidWorks design basis; slicer masses; corrected CG and ballast recommendation"}
   - {rev: "C", date: "2026-11-23", description: "Rev 8/9, SolidWorks-geometry CFD, OpenRocket models v2/v3, flight sim"}

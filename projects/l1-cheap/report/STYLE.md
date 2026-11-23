@@ -20,6 +20,9 @@ revision: "D"            # bump one letter per issued release
 date: "2026-11-23"
 status: "Released for build — open items listed in §10"
 prepared_for: "Tripoli Level 1 certification flight, Palm Bay FL, 2026-12-14"
+tagline: "Minimum-diameter · <motor> · <construction>"   # cover footer line
+ref_diameter: "41.275 mm"   # body-tube reference diameter for calibers
+cover_image: "figures/cover_rocket.png"   # greyscale-friendly render, transparent background
 prepared_by: ""
 revisions:               # newest first, max ~8 rows
   - {rev: "D", date: "2026-11-23", description: "Professional restructure; SolidWorks design basis; slicer masses; corrected CG"}

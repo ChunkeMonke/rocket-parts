@@ -15,7 +15,7 @@ $endfor$
     <div class="cover-title">$title$</div>
     <div class="cover-subtitle">$subtitle$</div>
     <div class="cover-rule"></div>
-    <div class="cover-art"><img src="figures/cover_rocket.png" alt=""></div>
+    <div class="cover-art"><img src="$if(cover_image)$$cover_image$$else$figures/cover_rocket.png$endif$" alt=""></div>
   </div>
   <div class="cover-lower">
   <div class="cover-grid">
@@ -31,7 +31,7 @@ $if(prepared_by)$
 $endif$
   </div>
   <div class="cover-foot">
-    <div>Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe components</div>
+    <div>$tagline$</div>
     <div>$docnumber$ Rev $revision$</div>
   </div>
   </div>
@@ -73,7 +73,7 @@ $endfor$
     <span class="tag">ESTIMATE</span> calculated or assumed;
     <span class="tag">PROVISIONAL</span> interim basis pending a check;
     <span class="tag">UNCONFIRMED</span> result inside its own uncertainty band.
-    Stations are measured from the nose tip. Static margin is in calibers of the 41.275 mm body tube unless stated.
+    Stations are measured from the nose tip. Static margin is in calibers of the $ref_diameter$ body tube unless stated.
   </div>
 </section>
 
