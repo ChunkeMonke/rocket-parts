@@ -135,3 +135,13 @@ OR results: mass 1.31 lb (594 g), CG 29.552 in (750.6 mm), CP 32.896 in (835.6 m
 optimum delay 11.5 s, max 614 mph (M 0.80), landing 11.9 mph.
 CFD of the owner STEP gives CP 809.9 mm, **25.7 mm forward of OR**. With OR's CG that is **1.44 cal**.
 For 1.8 cal on the CFD CP: CG 735.6 mm, about **+15 g of nose ballast** (ESTIMATE, lever about 610 mm, 594 g).
+
+## Owner OR v3 (2026-11-23, owner_cad/OR_Pepto_B_3.pdf): geometry updated to the STEP
+Results: 1.43 lb (649 g), CG 30.502 in (774.8 mm), CP 33.918 in (861.5 mm), 1.85 cal, 4122 ft.
+Issues:
+- OR's caliber is now the max diameter, 1.842 in (sleeve): (33.918 - 30.502) / 1.85 = 1.846 in.
+  On the 1.625 in tube reference the same rocket is 2.10 cal.
+- The fin TE is flush with the sleeve bottom (from the drawing): the -0.59 in offset was not applied, so the fins sit 15 mm too far aft.
+- The fairing transition is filled solid: 0.17 lb (77 g). The OR fin-can total is 146 g vs the real part's ~95 g, so the CG is too far aft.
+- Still set: delay 14 s, nose 0.132 lb, elastic cords.
+CFD CP 809.9 with this CG gives 0.85 cal (tube ref). After the mass fix (CG ≈ 752 mm, ESTIMATE) it gives ≈1.40 cal.
