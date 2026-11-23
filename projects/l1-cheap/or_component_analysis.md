@@ -98,3 +98,22 @@ Case A (OR weights only, chute pack at 370 mm, extras zeroed): 583 g, CG 749.2 m
 apogee 1212 m, Vmax 266.1 m/s, M 0.785, rail exit 25.5 m/s on the 1.83 m rail (24.1 m/s for case B).
 Case B (+ motor stop, epoxy, buttons, retention): 619 g, CG 753.0, apogee 1224 m, M 0.761. Case C (pack slid onto the
 motor): CG 788.3, 0.40 cal on Barrowman (1.17 cal on the CFD CP).
+
+## Owner STEP model CFD (2026-11-23, case own_a4)
+
+Geometry: owner's SolidWorks fin can (fin tip r 69.5, span 46.1 mm on the r 23.40 sleeve, **intentional**) + owner tail cone
+seated (tools/rocket_oml_owner.py), tube 863 + 165 mm ogive. 633k cells, 1 skewed face (4.37), CP converged (-0.11 mm last quarter).
+simpleFoam, 100 m/s, α 4°.
+
+| | rev 9 (r9a4) | owner model (own_a4) |
+|---|---|---|
+| CP from tip | 827.4 mm | **809.9 mm** |
+| CN_α | 13.12 /rad | **11.89 /rad** |
+| per-fin pitch-plane lift slope | 3.46 /rad | 3.19 /rad |
+| CA total est. | 0.578 | 0.600 |
+| margin, 65 g nose (CG est. 761 / 759) | 1.61 cal | **≈1.23 cal** |
+
+The larger span did not raise the fin lift. The aft ~40 % of the owner fins carry almost no load
+(cfd_fin_pressure.png), and CN_α is 9 % lower. The cause is not yet isolated: the planform, thickness and mid-plane
+(no cant) were all checked. To reach 1.8 cal: about +23 g of nose ballast (ESTIMATE, at ≈1.05 mm CG per g). Redo this
+with the owner's slicer masses.

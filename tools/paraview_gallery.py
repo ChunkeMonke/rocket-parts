@@ -230,7 +230,8 @@ def top_slice():
 
 
 def cross_sections():
-    stations = [(0.08, "nose"), (0.5, "mid_tube"), (L - 0.12, "fairing"), (L - 0.025, "mid_fin"),
+    xle, xte = info.get("x_fin_le", L - 0.05), info.get("x_fin_te", L)   # fin span region from the OML (cfd_rocket setup)
+    stations = [(0.08, "nose"), (0.5, "mid_tube"), (xle - 0.07, "fairing"), ((xle + xte) / 2, "mid_fin"),
                 (L + 0.01, "base_plus10mm"), (L + 0.08, "wake_80mm"), (L + 0.25, "wake_250mm")]
     for x, tag in stations:
         s = Slice(registrationName=f"cross-section {tag}", Input=spd)

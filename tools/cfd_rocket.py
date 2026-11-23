@@ -243,6 +243,8 @@ echo "solved; now: .venv/bin/python tools/cfd_post.py --name {a.name} && .venv/b
     (case / "Allrun").chmod(0o755)
     meta = {"alpha_deg": a.alpha, "speed": a.speed, "L": L, "U": U, "t_prev": t_prev, "t_last": t_last,
             "compressible": comp, "solver": "rhoPimpleFoam LTS, first-order upwind" if comp else "simpleFoam", "mach": a.mach if comp else a.speed / math.sqrt(GAMMA * R_AIR * T_INF)}
+    fv = m.vertices[np.hypot(m.vertices[:, 1], m.vertices[:, 2]) > 0.040]          # fin region (r > 40 mm)
+    meta.update({"x_fin_le": float(fv[:, 0].min()), "x_fin_te": float(fv[:, 0].max())})
     if comp:
         meta.update({"p_inf": P_INF, "T_inf": T_INF, "rho_inf": P_INF / (R_AIR * T_INF)})
     json.dump(meta, open(case / "case.json", "w"))
