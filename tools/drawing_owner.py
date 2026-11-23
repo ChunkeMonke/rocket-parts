@@ -126,7 +126,8 @@ def sheet1(pdf, oml):
             [5, "Tail cone / motor retainer", "PETG", 1, "15"],
             [6, "Parachute 28 in + shroud lines", "ripstop nylon", 1, "38"],
             [7, "Shock cord", "Kevlar", 1, "≈6"],
-            [8, "Motor H100W-14A, delay drilled 12 s", "AeroTech DMS 38/155", 1, "121"],
+            [8, "Motor H100W-14A loaded, delay drilled 12 s", "AeroTech DMS 38/155", 1, "261"],
+            [9, "Bulkhead, rail buttons, epoxy (misc.)", "—", "—", "5"],
             ["", "LIFTOFF (ESTIMATE)", "", "", "610"]]
     parts_table(paper, 14, 122, rows, [10, 66, 36, 10, 22])
     notes = ["NOTES",

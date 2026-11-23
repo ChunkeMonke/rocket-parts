@@ -37,17 +37,17 @@ def main():
     A, B = split(a), split(b)
     fig, ax = plt.subplots(1, 2, figsize=(15, 5), gridspec_kw={"width_ratios": [1.4, 1]})
     i = np.arange(len(NAMES)); w = 0.38
-    ax[0].bar(i - w / 2, A, w, color="#7a8b99", label=f"rev 9 (total {A.sum():.2f})")
-    ax[0].bar(i + w / 2, B, w, color="#d1495b", label=f"your design (total {B.sum():.2f})")
+    ax[0].bar(i - w / 2, A, w, color="#b0b0b0", label=f"rev 9 reference (total {A.sum():.2f})")
+    ax[0].bar(i + w / 2, B, w, color="#303030", label=f"SolidWorks fin can (total {B.sum():.2f})")
     ax[0].set_xticks(i, NAMES, fontsize=9); ax[0].set_ylabel("share of CNα (/rad)"); ax[0].legend()
     ax[0].set_title("Where the side force comes from"); ax[0].grid(axis="y", alpha=.3)
     dlt = B - A
-    ax[1].barh(i, dlt, color=["#d1495b" if v < 0 else "#3a7d44" for v in dlt])
+    ax[1].barh(i, dlt, color=["#303030" if v < 0 else "#b0b0b0" for v in dlt])
     for k, v in enumerate(dlt):
         ax[1].text(v + (0.01 if v >= 0 else -0.01), k, f"{v:+.2f}", va="center", ha="left" if v >= 0 else "right")
     ax[1].set_yticks(i, [s.replace("\n", " ") for s in NAMES], fontsize=9); ax[1].invert_yaxis()
     ax[1].axvline(0, color="k", lw=.8); ax[1].set_xlim(-0.75, 0.3); ax[1].grid(axis="x", alpha=.3)
-    ax[1].set_title(f"Your design minus rev 9 (total {dlt.sum():+.2f})")
+    ax[1].set_title(f"SolidWorks fin can minus rev 9 (total {dlt.sum():+.2f})")
     fig.tight_layout()
     out = ROOT / "projects/l1-cheap/report/figures/cfd/owner/cfd_lift_breakdown.png"
     fig.savefig(out, dpi=140); print(out, A.round(2), B.round(2))

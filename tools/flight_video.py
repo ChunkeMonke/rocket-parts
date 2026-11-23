@@ -57,7 +57,7 @@ def build_track(F):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("flight"); ap.add_argument("--out", default="out/video/flight.mp4")
-    ap.add_argument("--title", default="Pepto B. #2  ·  H100W-14A (drilled 12 s)")
+    ap.add_argument("--title", default="Ms. Piggy  ·  H100W-14A (drilled 12 s)")
     a = ap.parse_args()
     F = json.load(open(a.flight))
     T, H, Z, SP, M, TH, t_dep = build_track(F)

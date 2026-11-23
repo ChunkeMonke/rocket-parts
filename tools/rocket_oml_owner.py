@@ -79,7 +79,7 @@ def main() -> None:
         for e in sec.discrete:
             a.plot(e[:, 2], e[:, 0], "k-", lw=0.8)
         a.set_xlim(lo, hi); a.set_aspect("equal"); a.grid(alpha=0.3)
-    ax[0].set_title("Owner model OML (XZ section through fin 0): full rocket / aft end, mm")
+    ax[0].set_title("Flight configuration OML (XZ section through fin 0): full rocket / aft end, mm")
     fig.tight_layout(); fig.savefig(OUT / "rocket_oml_owner_side.png", dpi=130)
 
 

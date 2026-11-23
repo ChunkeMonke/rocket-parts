@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 D = 41.275
 r9 = json.load(open(ROOT / "out/cfd/of_r9a4/result.json"))["final"]
 ow = json.load(open(ROOT / "out/cfd/of_own_a4/result.json"))["final"]
-CG = {"rev 9 (my model)": 761.0, "your STEP model": 759.0}
-rows = [("rev 9 (my model)", r9, "#7a8b99"), ("your STEP model", ow, "#d1495b")]
+CG = {"rev 9 reference": 763.3, "SolidWorks fin can": 763.3}
+rows = [("rev 9 reference", r9, "#b0b0b0"), ("SolidWorks fin can", ow, "#303030")]
 fig, ax = plt.subplots(1, 4, figsize=(15, 4.6))
 for a, key, ttl, fmt in [(ax[0], "CP_from_tip_mm", "CP from nose tip (mm)\nfurther aft = more stable", "{:.0f}"),
                          (ax[1], "CN_alpha_per_rad", "Normal-force slope CNα (/rad)\nfin 'grip'", "{:.2f}"),
@@ -31,10 +31,10 @@ b = ax[3].bar([n for n, _, _ in rows], m, color=[c for *_, c in rows])
 for bi, vi in zip(b, m):
     ax[3].text(bi.get_x() + bi.get_width() / 2, vi, f"{vi:.2f} cal", ha="center", va="bottom", fontsize=11)
 ax[3].axhline(1.8, ls="--", color="k", lw=1); ax[3].text(1.45, 1.82, "target 1.8", ha="right", fontsize=9)
-ax[3].axhline(1.0, ls=":", color="r", lw=1); ax[3].text(1.45, 1.02, "minimum 1.0", ha="right", fontsize=9, color="r")
-ax[3].set_ylim(0, 2.2); ax[3].set_title("Static margin, 65 g nose (calibers)\nCG ESTIMATE from rev 9 sim", fontsize=10)
+ax[3].axhline(1.0, ls=":", color="k", lw=1); ax[3].text(1.45, 1.02, "minimum 1.0", ha="right", fontsize=9)
+ax[3].set_ylim(0, 2.2); ax[3].set_title("Static margin, 65 g nose (cal)\nCG 763.3 mm corrected (ESTIMATE)", fontsize=10)
 for a in ax: a.tick_params(axis="x", labelsize=9); a.grid(axis="y", alpha=0.3)
-fig.suptitle("CFD at 100 m/s, α = 4°: your fin can (46.1 mm span) vs rev 9 (43.2 mm span)", fontsize=12)
+fig.suptitle("CFD at 100 m/s, α = 4°: SolidWorks fin can (46.1 mm span) vs rev 9 reference (43.2 mm span)", fontsize=12)
 fig.tight_layout()
 out = ROOT / "projects/l1-cheap/report/figures/cfd/owner/cfd_owner_vs_rev9.png"
 fig.savefig(out, dpi=150); print(out, [round(x, 2) for x in m])

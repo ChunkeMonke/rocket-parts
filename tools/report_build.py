@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def pandoc(md: Path, out: Path, resdir: Path):
-    subprocess.run(["pandoc", str(md), "-f", "markdown-tex_math_dollars+tex_math_single_backslash", "-t", "html5",
+    subprocess.run(["pandoc", str(md), "-f", "markdown+tex_math_dollars+tex_math_single_backslash", "-t", "html5",
                     "--template", str(ROOT / "tools/report_template.html"), "--toc", "--toc-depth=2",
                     "--number-sections", "--mathml", "--css", str(ROOT / "tools/report_pro.css"),
                     "--embed-resources", "--resource-path", str(resdir), "-o", str(out)], check=True)
@@ -133,7 +133,19 @@ def main():
     meta["footer_right"] = str(meta.get("status", "")).split("—")[0].strip()
     tmp = Path(tempfile.mkdtemp())
     raw = tmp / "raw.html"
-    pandoc(md, raw, rd)
+    # colour is kept only where it encodes data (CFD / FEA / ANSYS contour plots); everything else prints greyscale
+    src = md.read_text()
+
+    def colour(m):
+        path, attrs = m.group(2), m.group(3) or ""
+        if re.search(r"/(cfd|fea|ansys)/|paraview|flight_video", path):
+            attrs = "{.color " + attrs[1:] if attrs.startswith("{") else "{.color}"
+        return f"![{m.group(1)}]({path}){attrs}"
+    src = re.sub(r"!\[((?:[^\]]|\][^(])*)\]\(([^)]+)\)(\{[^}]*\})?", colour, src)
+    md2 = rd / ".report_build.md"
+    md2.write_text(src)
+    pandoc(md2, raw, rd)
+    md2.unlink()
     html, ids = prep(raw.read_text())
     h1 = rd / "report.html"
     h1.write_text(html)

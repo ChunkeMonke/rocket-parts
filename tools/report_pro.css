@@ -44,10 +44,10 @@ td.nw { white-space: nowrap; width: 24mm; }
 
 /* contents / lists with dot leaders */
 nav#TOC ul, .lof ul { list-style: none; padding: 0; margin: 0; }
-nav#TOC > ul > li { margin-top: 3mm; }
-nav#TOC > ul > li > a { font-weight: 700; text-transform: uppercase; font-size: 10pt; }
+nav#TOC > ul > li { margin-top: 1.6mm; }
+nav#TOC > ul > li > a { font-weight: 700; text-transform: uppercase; font-size: 9.4pt; }
 nav#TOC ul ul { margin: 0.8mm 0 0 10mm; }
-nav#TOC ul ul li { font-size: 9.6pt; margin: 0.5mm 0; }
+nav#TOC ul ul li { font-size: 9pt; margin: 0.15mm 0; line-height: 1.32; }
 nav#TOC ul ul ul { display: none; }
 nav#TOC a, .lof a { display: flex; align-items: baseline; }
 nav#TOC a .toc-section-number { min-width: 10mm; display: inline-block; }
@@ -55,7 +55,7 @@ nav#TOC ul ul a .toc-section-number { min-width: 11mm; }
 nav#TOC a::after, .lof a::after { content: ""; flex: 1; border-bottom: 1px dotted #000; margin: 0 1.5mm 1mm; order: 2; }
 nav#TOC a .pg, .lof a .pg { order: 3; min-width: 7mm; text-align: right; }
 nav#TOC a > .tt, .lof a > .tt { order: 1; }
-.lof li { font-size: 9.6pt; margin: 1.1mm 0; }
+.lof li { font-size: 9pt; margin: 0.5mm 0; line-height: 1.3; }
 .lof .lbl { display: inline-block; min-width: 21mm; font-weight: 700; }
 .lof-page h1.fm + .lof { margin-bottom: 8mm; }
 
@@ -131,3 +131,5 @@ div.kpis ul { border: 0.7pt solid #000; box-sizing: border-box; width: 100%; }
 div.kpis li { border-right: 0.7pt solid #000; border-bottom: 0.7pt solid #000; }
 div.kpis li:nth-child(4n) { border-right: 0; }
 div.kpis li:nth-last-child(-n+4) { border-bottom: 0; }
+/* monochrome document: images print greyscale unless their colour encodes data */
+figure img:not(.color), .cover-art img { filter: grayscale(1); }
