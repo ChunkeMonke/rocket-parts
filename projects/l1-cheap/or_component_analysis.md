@@ -126,3 +126,12 @@ the same for both, so the panels themselves work the same. The loss sits at the 
   fillets). Rev 9 also has the R6 TE skirt blending into the collar.
 - The rev 9 collar keeps full diameter for 18.5 mm behind the fin TE. The owner part starts the tail-cone taper about 16 mm behind it.
 Not yet proven by a controlled run (only one variable changed).
+
+## Owner OpenRocket "Pepto B. #2" (2026-11-23, owner_cad/OR_Pepto_B_2.pdf)
+Nose cone 6.5 in, 0.132 lb (59.9 g). Tube 29.25 in (exposed). Transition 1.625→1.842 in over 0.75 in (34.9 g).
+Sleeve 1.842 OD × 4 in (45.8 g). 3 trapezoidal fins, 0.315 in thick (15.9 g). Tail transition 1.842→1.638 in over 1.909 in (15.9 g).
+28 in chute. Total length 1077 mm, the same as the CFD OML.
+OR results: mass 1.31 lb (594 g), CG 29.552 in (750.6 mm), CP 32.896 in (835.6 mm), **1.82 cal**, apogee 4404 ft,
+optimum delay 11.5 s, max 614 mph (M 0.80), landing 11.9 mph.
+CFD of the owner STEP gives CP 809.9 mm, **25.7 mm forward of OR**. With OR's CG that is **1.44 cal**.
+For 1.8 cal on the CFD CP: CG 735.6 mm, about **+15 g of nose ballast** (ESTIMATE, lever about 610 mm, 594 g).
