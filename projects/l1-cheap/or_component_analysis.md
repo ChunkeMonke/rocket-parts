@@ -117,3 +117,12 @@ The larger span did not raise the fin lift. The aft ~40 % of the owner fins carr
 (cfd_fin_pressure.png), and CN_α is 9 % lower. The cause is not yet isolated: the planform, thickness and mid-plane
 (no cant) were all checked. To reach 1.8 cal: about +23 g of nose ballast (ESTIMATE, at ≈1.05 mm CG per g). Redo this
 with the owner's slicer masses.
+
+### Why the owner fins make less lift (tools/cfd_lift_breakdown.py, cfd_fin_chord_compare.py)
+CN_α difference −1.23, by region: fin roots (fillets, edges, skirt) −0.53; aft body/tail cone −0.25; fin panels −0.19
+(even with +10 % panel area); body between fins −0.17; nose and tube −0.08. Chordwise Cp at r = 30/45/60 mm is almost
+the same for both, so the panels themselves work the same. The loss sits at the junction and behind the fins.
+- The owner fins meet the sleeve with no root fillet (11.2 mm thick at the root vs rev 9's 13.6 mm with R6
+  fillets). Rev 9 also has the R6 TE skirt blending into the collar.
+- The rev 9 collar keeps full diameter for 18.5 mm behind the fin TE. The owner part starts the tail-cone taper about 16 mm behind it.
+Not yet proven by a controlled run (only one variable changed).
