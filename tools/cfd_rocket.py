@@ -97,7 +97,7 @@ relaxationFactors { equations { ".*" 1; } }
 
 def setup(a) -> Path:
     case = ROOT / "out" / "cfd" / f"of_{a.name}"
-    m = trimesh.load(ROOT / "out" / "cfd" / "rocket_oml.stl", force="mesh")
+    m = trimesh.load(ROOT / "out" / "cfd" / (a.stl or "rocket_oml.stl"), force="mesh")
     z_tip = m.bounds[1][2]
     v = m.vertices
     m.vertices = np.column_stack([(z_tip - v[:, 2]), v[:, 1], v[:, 0]]) / 1000.0   # (X,Y,Z)->(-Z,Y,X): proper rotation
@@ -292,5 +292,6 @@ if __name__ == "__main__":
     ap.add_argument("--iters", type=int, default=800)
     ap.add_argument("--np", type=int, default=4)
     ap.add_argument("--name", default="a4")
+    ap.add_argument("--stl", default=None, help="OML file in out/cfd/ (default rocket_oml.stl; owner model: rocket_oml_owner.stl)")
     a = ap.parse_args()
     setup(a) if a.cmd == "setup" else post(a)
