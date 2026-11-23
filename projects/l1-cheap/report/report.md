@@ -29,47 +29,44 @@ revisions:
 
 **Purpose.** This report sets out the design basis, analyses and verification status of *Ms. Piggy*, the rocket to be flown for a Tripoli Level 1 certification at Palm Bay, FL, on 2026-12-14 [D1]. The budget is \$100 including the motor [D1]. The report is the design basis for the build release and states the engineering recommendations for flight.
 
-**Configuration.** Ms. Piggy is a single-stage, minimum-diameter rocket. An AeroTech H100W-14A DMS 38 mm motor sits directly in a LOC BT-1.52 paper tube [D3]. A 165 mm PETG tangent-ogive nose carries 2 g of ballast, for a 65 g nose total [D3]. A PETG fin can modelled in SolidWorks carries three trapezoidal fins of 46.1 mm span [D15]. A screw-on tail cone traps the motor thrust ring and forms a 30 mm boattail [D15]. Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 12 s, a 28 in ripstop chute and 750 lb Kevlar [D3]. Fin can rev 9, generated from the design data, is geometrically almost identical to the flight part and serves as the analysed reference [D14].
+**Configuration.** Ms. Piggy is a single-stage, minimum-diameter rocket. An AeroTech H100W-14A DMS 38 mm motor sits directly in a LOC BT-1.52 paper tube [D3]. A 165 mm PETG tangent-ogive nose carries 2 g of ballast, for a 65 g nose total [D3]. A PETG fin can modelled in SolidWorks carries three trapezoidal fins of 46.1 mm span [D15]. A screw-on PETG tail cone with a foil-lined bore traps the motor thrust ring and forms a 30 mm boattail [D3][D15]. Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 12 s, a LOC Precision 28 in parachute with an 84 mm spill hole, and 3.5 m of 750 lb Kevlar with knotted ends; a printed bulkhead in the tube anchors the cord and holds the chute pack forward [D3]. Fin can rev 9, generated from the design data, is geometrically almost identical to the flight part and serves as the analysed reference [D14].
 
 | Quantity | Value | Basis | Status |
 |---|---|---|---|
 | Liftoff mass | **610 g** (1.344 lb) | OR model v4 with slicer-estimate masses, 65 g nose | [ESTIMATE]{.tag} |
 | Liftoff CG | **763.3 mm** from the tip | same | [ESTIMATE]{.tag} |
 | CP band | **809.9 – 827.4 mm** | CFD, SolidWorks geometry / rev 9; coarse mesh ±5–8 % | [UNCONFIRMED]{.tag} |
-| Static margin, 65 g nose | **1.13 – 1.55 cal** | tube reference 41.275 mm | below 1.8 target, above 1.0 minimum |
-| Ballast for 1.8 cal | **+25.5 g** / +9.1 g | CP band lower / upper bound | recommendation: about +25 g |
+| Static margin, 65 g nose | **1.13 – 1.55 cal** | tube reference 41.275 mm | below the 1.7 cal minimum: ballast required |
+| Ballast, 1.8 / 1.7 cal | **+25.6 / +21.6 g** (CP 809.9); +9.2 / +5.4 g (CP 827.4) | estimated CG 763.3 mm | sized at assembly [CONFIRMED]{.tag} |
 | Apogee | 1337 m (4388 ft) | RocketPy flight sim, no added ballast | [PROVISIONAL]{.tag} |
 | Max speed | 269 m/s, M 0.79 | same | [PROVISIONAL]{.tag} |
 | Rail exit speed | 24.9 m/s, 1.83 m rail | same | [PROVISIONAL]{.tag} |
 | Fin strength, rev 9 | FI 0.34 / 0.27 / 0.15 / 0.026 | CalculiX, ANSYS-calibrated | pass (limits 0.5 / 0.5 / 0.5 / 0.1) |
-| Delay | drill 14 s → **12 s** | coast to apogee 11.2–12.09 s | recommended |
-| Descent rate | **5.18 – 5.31 m/s** (17.0–17.4 ft/s) | 28 in chute, *C*~d~ 0.75, 489–514 g | [ESTIMATE]{.tag} |
-| Opening / snatch load | ≤ 72 N in the ±1.5 s delay band / 739 N at 20 m/s | against 1334 N knotted Kevlar | [ESTIMATE]{.tag} |
+| Delay | drill 14 s → **12 s** | coast to apogee 11.2–12.09 s | [CONFIRMED]{.tag} |
+| Descent rate | **5.22 – 5.35 m/s** (17.1–17.5 ft/s) | LOC 28 in chute, 84 mm spill hole, *C*~d~ 0.75, 489–514 g | [ESTIMATE]{.tag} |
+| Opening / snatch load | ≤ 71 N in the ±1.5 s delay band / 739 N at 20 m/s | against 1334 N knotted Kevlar | [ESTIMATE]{.tag} |
 | Printed thread | pitch 2.5 / depth 1.0 / clearance 0.2 mm | test print | [VALIDATED]{.tag .ok} |
 
 Table: Key results. Sources: §2.5, §4.4, §5.4, §6.2–6.5, §7.2–7.4, §8.2.
 
 **Findings**
 
-1. **The rocket is statically stable across the whole CP band, but below the 1.8 cal target.** With the 65 g nose and the liftoff CG of 763.3 mm [ESTIMATE]{.tag}, the margin is 1.13 cal on the SolidWorks-geometry CFD and 1.55 cal on the rev 9 CFD [D3]. Both exceed the 1.0 cal minimum.
+1. **The rocket is statically stable across the whole CP band, and ballast is required to meet the 1.7 cal minimum.** With the 65 g nose and the liftoff CG of 763.3 mm [ESTIMATE]{.tag}, the margin is 1.13 cal on the SolidWorks-geometry CFD and 1.55 cal on the rev 9 CFD [D3]. Both are below the 1.7 cal minimum and the 1.8 cal target, so ballast is required in all cases. It is sized at assembly from the measured ready-to-fly CG (§6.3).
 2. **The CP is reported as a band, 809.9–827.4 mm.** The SolidWorks fin can and rev 9 are geometrically almost identical. CFD gives *C*~Nα~ 11.89 against 13.12 /rad and CP 809.9 against 827.4 mm [D14]. The 9 % difference is within the ±5–8 % uncertainty of the single coarse mesh.
 3. **The OpenRocket model overstates the margin.** OpenRocket model v4 is v3 unchanged: the fins sit 15 mm too far aft and the fairing is modelled solid [D14][D16]. Its 2.38 cal on the liftoff CG is not used for ballast.
 4. **The rev 9 fin can passes all four structural criteria.** The SolidWorks fin can (flight part) is covered by similarity. It differs from rev 9 at the fin root (root-fillet thickness 11.1 mm against 13.4 mm) and at the trailing edge (1.0 mm against 2.5 mm) [D25].
-5. **The 28 in parachute is adequate.** Descent is 5.18–5.31 m/s (17.0–17.4 ft/s) at *C*~d~ 0.75, and body-section landing energy is 5.7–6.0 J (4.2–4.4 ft-lbf) [D27]. Opening and snatch loads stay far below the 1334 N knotted-cord strength.
-6. **Chute-pack position is critical.** If the pack slides aft onto the motor, the RocketPy basis drops to 0.15 cal and the simulation stalls [D25]. The pack is held about 300 mm from the tip.
+5. **The 28 in parachute is adequate.** Descent is 5.22–5.35 m/s (17.1–17.5 ft/s) at *C*~d~ 0.75, and body-section landing energy is 5.8–6.1 J (4.3–4.5 ft-lbf) [D27]. Opening and snatch loads stay far below the 1334 N knotted-cord strength.
+6. **Chute-pack position is critical.** If the pack slid aft onto the motor, the RocketPy basis would drop to 0.15 cal [D25]. The printed aft bulkhead holds the pack about 300 mm from the tip [D3].
 7. **Hardware dimensions are published nominal values, not measurements.** They were accepted by design decision on 2026-11-23 [D3]. The thrust-ring length (9.525 mm) is a forum estimate.
 
 **Recommendations**
 
-1. **Nose ballast of 25 g is recommended** (nose about 90 g total): 1.8 cal on the conservative CP of 809.9 mm. On the upper CP bound (827.4 mm), +9 g gives 1.8 cal.
-2. **Hold the chute pack forward**, about 300 mm from the tip, with a bulkhead or firm packing.
-3. **Balance the rocket ready to fly** with the CG at or forward of 735.6 mm from the tip [D14].
-4. **Fit-check the sleeve, motor, thrust ring and tail cone on the actual parts** before any epoxy is applied.
-5. **Print the tail cone in ABS/ASA, or line its bore with aluminium tape**, against nozzle heat [D18].
-6. **Drill the motor delay to 12 s** with the AeroTech UDDT.
-7. **Drop-test a printed flight fin can from 1.5 m** onto a fin tip as its structural acceptance test.
-8. **Use spliced or sewn shock-cord terminations** rather than knots.
-9. **Set the launch-wind limit from the size of the recovery area** (§7.8).
+1. **Size the nose ballast on the conservative CP curve (809.9 mm)** from the measured ready-to-fly CG, using the ballast chart (§6.3). On the estimated CG this is +25.6 g for 1.8 cal (minimum +21.6 g for 1.7 cal).
+2. **Fit-check the sleeve, motor, thrust ring and tail cone on the actual parts** before any epoxy is applied.
+3. **Drop-test a printed flight fin can from 1.5 m** onto a fin tip as its structural acceptance test.
+4. **Vent the aft bulkhead** (vented or baffle design) so that it passes the ejection gas.
+5. **Set the launch-wind limit from the size of the recovery area** (§7.8).
+6. **Run the flight simulation at the ballasted mass** as the launch-day prediction.
 
 # Introduction {#sec-intro}
 
@@ -92,8 +89,8 @@ The main body carries the current design and its conclusions. Superseded designs
 | Flyer | Tripoli member, uncertified; age 18+ confirmed | [D2] |
 | Launch site | Palm Bay, FL (approx. 28.03° N, 80.59° W, sea level) | [D1][D3] |
 | Launch date | 2026-12-14 | [D1] |
-| Launch rail | 1.83 m (simulation basis) [PLACEHOLDER]{.tag} | [D21] |
-| Club and waiver altitude | Not specified in the project sources [PLACEHOLDER]{.tag} | [D1][D23] |
+| Launch rail | 6 ft (1.83 m) rail; printed rail guides for both 1010 and 1515 rails [CONFIRMED]{.tag} | [D3] |
+| Waiver | None required (apogee 4388 ft) | [D3][D21] |
 | Payload | None; altimeter cost excluded from the budget | [D3][D10] |
 
 Table: Mission definition.
@@ -105,10 +102,10 @@ Table: Mission definition.
 | RQ-1 | Single certified H or I motor, 160.01–640 N·s | [R17] | **Complies**: H100W 223.9–234 N·s |
 | RQ-2 | Average thrust above 80 N (forum guidance only) | [R19] | **Complies**: 93.4–100 N; margin only 13–20 N |
 | RQ-3 | Rocket built by the flyer | [R17] | By the assembly sequence (§8.4) |
-| RQ-4 | Safe recovery; rocket flyable again | [R17] | **Complies** by analysis: 5.18–5.31 m/s, body landing energy ≤ 6.0 J (§7) |
+| RQ-4 | Safe recovery; rocket flyable again | [R17] | **Complies** by analysis: 5.22–5.35 m/s, body landing energy ≤ 6.1 J (§7) |
 | RQ-5 | \$100 total including motor; 5 % held as contingency | [D1][D3] | Cost basis: motor \$54.99, tube \$9.30; full budget not in the project sources [PLACEHOLDER]{.tag} |
-| RQ-6 | Static margin 1.8 cal at liftoff, band ±0.2 cal | [D3] | **Complies** with the recommended +25 g ballast (§6.3); 1.13–1.55 cal at the 65 g nose |
-| RQ-7 | Static margin at least 1.0 cal | Design decision 2026-11-23 [D25] | **Complies**: lowest basis 1.13 cal |
+| RQ-6 | Static margin target 1.8 cal at liftoff | Design decision 2026-11-23 [D3] | **Complies** with ballast sized at assembly on the conservative CP (§6.3); 1.13–1.55 cal without ballast |
+| RQ-7 | Static margin at least 1.7 cal at liftoff | Design decision 2026-11-23 [D3] | **Complies** with ballast sized at assembly (§6.3); ballast required on both CFD bases |
 | RQ-8 | Printed parts within 256 × 256 × 256 mm (Bambu P1S) | [D23] | **Complies** (§8.1) |
 | RQ-9 | Fin landing and gust criteria C1–C4 | [D11] | Rev 9 **complies**; flight part by similarity and drop test (§5.7) |
 | RQ-10 | Flutter speed at least 1.5 × V~max~ | [D11] | Complies by argument (§4.9) |
@@ -116,9 +113,8 @@ Table: Mission definition.
 
 Table: Requirements and compliance.
 
-- The stability band was written as "±2" and is read as ±0.2 cal [D3][D23].
 - The band gates the margin **at liftoff only**. In-flight margins are reported, not gated [D3].
-- The 1.0 cal minimum is a design decision of 2026-11-23, recorded in the design-review record [D25].
+- The 1.8 cal target and the 1.7 cal minimum, on the 41.275 mm reference, are design decisions of 2026-11-23 [D3].
 
 ## Conventions
 
@@ -134,7 +130,7 @@ Table: Requirements and compliance.
 | [PROVISIONAL]{.tag} | Analysis result on a stated interim mass or geometry basis |
 | [UNCONFIRMED]{.tag} | Result whose difference from a reference is within its own uncertainty |
 | [NOMINAL]{.tag} | Published or catalogue value accepted without measurement |
-| [PROPOSED]{.tag} | Analysis-based design feature, issued as a recommendation |
+| [CONFIRMED]{.tag} | Design decision confirmed 2026-11-23 and recorded in the design data file |
 | [PLACEHOLDER]{.tag} | Value not defined in the project sources; the stated basis applies |
 | [VALIDATED]{.tag .ok} | Confirmed by test or by an independent reference |
 
@@ -156,6 +152,22 @@ Ms. Piggy is a 1077 mm, 610 g minimum-diameter rocket. The SolidWorks fin can an
 The SolidWorks fin can and tail cone fly exactly as drawn; the optional 6 mm root fillets are not added. The CP basis is the single coarse-mesh CFD, reported as a band (§4.7). Published nominal dimensions are accepted for the tube, motor case and thrust ring, without caliper measurement [D3].
 :::
 
+| Confirmed design decision, 2026-11-23 | Section |
+|---|---|
+| Stability: 1.8 cal target, 1.7 cal minimum; ballast chosen at assembly from the measured CG | §6.3 |
+| Single deployment on the motor ejection charge, delay drilled to 12 s | §3.4, §7.1 |
+| LOC Precision 28 in parachute, 84 mm spill hole, 8 shroud lines | §7.2 |
+| Printed aft bulkhead epoxied in the tube: Kevlar anchor, chute-pack stop, chute protection | §7.1, §7.6 |
+| LOC Precision reusable wadding (chute protector) | §7.5 |
+| Shock cord: 750 lb Kevlar, 3.5 m, knotted ends; nose attachment through the nose-cap floor | §7.4 |
+| No forward backup motor stop; no heat protection around the motor case | §3.3 |
+| Tail cone: PETG with a foil-lined bore | §8.1 |
+| Fin can printed aft end (fins) down, axis vertical; 0.20 mm layers, 6 walls, 25 % gyroid | §5.6, §8.1 |
+| 6 ft (1.83 m) rail; printed rail guides for 1010 and 1515 rails | §1.2 |
+| Motor purchased on site; delay drilled with a delay drill tool | §3.1 |
+
+Table: Confirmed design decisions [CONFIRMED]{.tag}. Source: [D3].
+
 - **Flight hardware:** the SolidWorks fin can and tail cone [D15], nose cone rev 1 [D19], LOC BT-1.52 tube and the H100W motor.
 - **Reference design:** fin can rev 9 and tail cone rev 9 [D17][D18]. A true-scale overlay shows the two fin cans are geometrically almost identical [D14][D25]. Rev 9 carries the FEA (§5) and supplies the upper bound of the CP band (§4.7).
 - **Mass basis:** slicer-estimate masses for the printed parts [ESTIMATE]{.tag}, with the rest of the vehicle from OpenRocket model v4 (§2.5).
@@ -167,9 +179,9 @@ The SolidWorks fin can and tail cone fly exactly as drawn; the optional 6 mm roo
 | Nose cone rev 1 (cone, cap, plug) | Tangent ogive, 165 mm, fineness 4.0; base OD 41.275; shoulder 38.555 × 40 mm; wall 2.2 mm | PETG | 63 g printed + 2 g ballast | Slicer [ESTIMATE]{.tag} |
 | Body tube LOC BT-1.52 | ID 38.735 mm; OD 41.275 mm (1.625 in) | Kraft paper | OR model v4 0.229 lb | OD [NOMINAL]{.tag} |
 | Fin can (SolidWorks) | Sleeve 118 mm; fairing 46.8 → 43.3 mm over 40.5 mm; 3 fins, root ≈ 52, tip 30, sweep 18.8, span 46.1 mm | PETG | **97 g** | Slicer [ESTIMATE]{.tag} |
-| Tail cone (SolidWorks) | 46.8 → 41.6 mm over 29.9 mm; right-hand thread | ABS/ASA or foil-lined PETG recommended (§8.1) | **15 g** | Slicer [ESTIMATE]{.tag} |
+| Tail cone (SolidWorks) | 46.8 → 41.6 mm over 29.9 mm; right-hand thread | PETG, foil-lined bore [CONFIRMED]{.tag} (§8.1) | **15 g** | Slicer [ESTIMATE]{.tag} |
 | Motor H100W-14A DMS | Case 38.10 × 155 mm; ring 41.0 × 9.525 mm | — | 261 g loaded | [NOMINAL]{.tag} |
-| Recovery | 28 in ripstop chute; 750 lb Kevlar; wadding | Nylon, aramid | chute 38 g | Design decision |
+| Recovery | LOC Precision 28 in chute, 84 mm spill hole; 3.5 m 750 lb Kevlar; LOC reusable wadding; printed aft bulkhead | Nylon, aramid, PETG | chute 38 g [ESTIMATE]{.tag} | [CONFIRMED]{.tag} |
 
 Table: Vehicle layout. Sources: [D3][D15][D16][D19][D25].
 
@@ -236,13 +248,13 @@ Table: Liftoff mass properties, 65 g nose, no added ballast.
 
 - The fin can CG is the uniform-density CG of the STEP solid. The tail-cone CG is given as 10.3 mm aft of the fin-can aft face, seated [D3].
 - OpenRocket model v4 still models elastic shock cord and shroud lines, a bulkhead (0.005 lb) and an inner tube (0.043 lb) [D16]. These are carried unchanged.
-- **All printed-part masses are slicer estimates.** The materials are not purchased and no part has been weighed. The ready-to-fly balance check is the verification method for the CG (§9.3).
+- **Every mass is an estimate.** The materials are not purchased and no part has been weighed; the printed-part masses are slicer estimates at 0.20 mm layers, 6 walls and 25 % gyroid [D3]. The ready-to-fly balance check is the verification method for the CG (§9.3).
 
 # Propulsion {#sec-prop}
 
 ::: summary
 **Section summary**
-The AeroTech H100W-14A DMS (38 mm, single-use) delivers 228.4 N·s over 2.40 s on the thrust-curve file used by the simulations. The motor is retained by the screw-on tail cone, which traps the factory-glued thrust ring. Drilling the 14 s delay to 12 s is recommended; this is close to the predicted coast to apogee.
+The AeroTech H100W-14A DMS (38 mm, single-use) delivers 228.4 N·s over 2.40 s on the thrust-curve file used by the simulations. The motor is retained by the screw-on tail cone, which traps the factory-glued thrust ring. The 14 s delay is drilled to 12 s (design decision), close to the predicted coast to apogee.
 :::
 
 ## Motor data {#sec-motor}
@@ -264,14 +276,14 @@ Table: H100W-14A DMS data (AT part 081014). Sources: [D3][D4][D16].
 - ThrustCurve also lists an unlabelled "116.1 N", which no source identifies [D4].
 - The burnout mass of 140 g is derived (261 − 121 g) and ignores delay-grain and ejection mass [D3].
 - Case OD: 38.10 mm (1.500 in) [NOMINAL]{.tag}, taken from the AeroTech I500T DMS page [R9]. This gives 0.64 mm diametral clearance in the 38.735 mm tube [D4].
-- HAZMAT shipping is required. Price \$54.99 [R3][R4][R5]. Three failures are reported in MESS; their details are not in the project sources [R11].
+- The motor is purchased on site and its delay drilled with a delay drill tool [CONFIRMED]{.tag} [D3]. Mail-order motors require HAZMAT shipping. Price \$54.99 [R3][R4][R5]. Three failures are reported in MESS; their details are not in the project sources [R11].
 
 ![AeroTech H100W-14A DMS thrust versus time. The curve integrates to 228.4 N·s, peaks at 130.2 N at 0.696 s and ends at 2.40 s. Plotted from the thrust-curve file converted from the ThrustCurve CSV (contributor M. Haberer), 2026-11-21 [D4][R2].](figures/h100w_thrust.png){width=80%}
 
 ## Selection rationale
 
 - **2026-11-20:** the AeroTech H182R-14A (29 mm DMS) was selected. It was chosen over 29 mm reloads, which need a \$108.79–\$152.99 case [D2].
-- **2026-11-21:** design decision to change to the **H100W-14A (38 mm DMS)** and to a **minimum-diameter** layout [D3][D24]. The reasons are not recorded in the project sources. The H100W costs \$12.70 more than the H182R's lowest price [D4].
+- **2026-11-21:** design decision to change to the **H100W-14A (38 mm DMS)** and to a **minimum-diameter** layout [D3][D24]. The rationale: the H100W-14A is the most cost-effective motor for the goal, its long delay can be drilled shorter, and it is single-use, whereas the H182R needed a reusable case [D3]. The H100W costs \$12.70 more than the H182R's lowest price [D4].
 - The H182R history is in Appendix A.1.
 
 ## Retention and thrust path {#sec-retention}
@@ -283,8 +295,8 @@ $$ \sigma_b = \frac{F}{A}, \qquad A = \frac{\pi}{4}\left(D_{ring}^2 - D_{lip}^2\
 
   where *F* is the thrust (N), *D*~ring~ the ring OD and *D*~lip~ the lip bore (mm). The 15 MPa interlayer reference is reached at *A* = 9.2 mm² [D4]. The nominal annulus, 41.0 mm ring OD on the 38.28 mm lip bore, is far larger [D3][D17].
 - **Ejection.** The ejection kick pulls the motor aft onto the tail-cone shank. The collar thread carries it in shear, with about 6 kN capacity (§5.5) [D18].
-- **Backup stop.** A forward stop ring inside the tube is recommended as a backup to the thrust-ring glue joint [PROPOSED]{.tag}. The simulation carries it as a 10 g [ESTIMATE]{.tag} [D3][D8].
-- **Heat.** The paper tube touches the case directly [D4]. The tail cone surrounds the nozzle exit during the 2.4 s burn (§8.1).
+- **No backup stop.** No forward backup motor stop is fitted (design decision, 2026-11-23) [D3]. The simulation mass basis carried a 10 g stop ring [ESTIMATE]{.tag} [D3][D8].
+- **Heat.** The paper tube touches the case directly [D4]; no heat protection is fitted around the case (design decision, 2026-11-23) [D3]. The tail cone surrounds the nozzle exit during the 2.4 s burn (§8.1).
 
 ::: warning
 **Nominal motor dimensions**
@@ -308,8 +320,8 @@ $$ t_{delay} = t_{apogee} - t_{burnout} $$
 Table: Coast to apogee and 12 s deploy conditions.
 
 ::: decision
-**Recommendation: drill the 14 s delay to 12 s**
-Every basis puts the coast between 11.2 and 12.09 s. A 12 s delay deploys near apogee, at 0.9–7.4 m/s nominal. Across a ±1.5 s delay tolerance the deploy speed stays at or below 15.3 m/s (§7.3) [D27]. With the undrilled 14 s delay, OpenRocket model v4 deploys at 37.9 mph [D16]. Drilling follows the AeroTech UDDT instructions.
+**Design decision: delay drilled from 14 s to 12 s** [CONFIRMED]{.tag}
+Every basis puts the coast between 11.2 and 12.09 s. A 12 s delay deploys near apogee, at 0.9–7.4 m/s nominal. Across a ±1.5 s delay tolerance the deploy speed stays at or below 15.3 m/s (§7.3) [D27]. With the undrilled 14 s delay, OpenRocket model v4 deploys at 37.9 mph [D16]. The delay is drilled with a delay drill tool (AeroTech UDDT) [D3].
 :::
 
 - **Not ~7 s.** A 7 s delay deploys while still climbing, at 31–63 m/s over the drag spread (rev 5 basis) [D8]. The knotted Kevlar is good to about 27 m/s (§7.4).
@@ -637,7 +649,7 @@ Every printed structural part is printed with its axis vertical, so *Z* is acros
 
 Table: Load direction relative to the print layers. Sources: [D13][D17][D18][D19].
 
-- **Flight part.** The SolidWorks fin can is printed like rev 9, collar down with the axis vertical (recommended orientation); the table applies on that basis.
+- **Flight part.** The SolidWorks fin can is printed aft end (fins) down with the axis vertical [CONFIRMED]{.tag} [D3], as rev 9. The table applies to it directly.
 - The rev 9 fin-can specification states that fin-root bending is carried "within the layers". The ANSYS and CalculiX results show across-layer tension at the root, and this report follows the FEA (Appendix G).
 
 ## Flight fin can: structural basis {#sec-flight-struct}
@@ -654,7 +666,7 @@ The structural basis of the SolidWorks fin can is the rev 9 FEA. Its fin root is
 
 ::: summary
 **Section summary**
-On the liftoff CG of 763.3 mm [ESTIMATE]{.tag} the static margin is 1.13 cal on the SolidWorks-geometry CFD and 1.55 cal on the rev 9 CFD, both below the 1.8 cal target. About 25 g of nose ballast is recommended, sized on the conservative lower CP bound. The flight simulation predicts a 1337 m apogee at M 0.79 without added ballast; the nose-mass sweep shows apogee almost insensitive to ballast.
+On the liftoff CG of 763.3 mm [ESTIMATE]{.tag} the static margin is 1.13 cal on the SolidWorks-geometry CFD and 1.55 cal on the rev 9 CFD, both below the 1.7 cal minimum, so ballast is required in all cases. The ballast is chosen at assembly from the measured ready-to-fly CG; sizing on the conservative lower CP bound gives about +25.6 g for the 1.8 cal target. The flight simulation predicts a 1337 m apogee at M 0.79 without added ballast; the nose-mass sweep shows apogee almost insensitive to ballast.
 :::
 
 ## Static margin method {#sec-sm-method}
@@ -668,8 +680,8 @@ where *SM* is the static margin (calibers), *x*~CP~ and *x*~CG~ are measured fro
 | Basis | CP (mm) | CG (mm) | Margin | Ballast for 1.8 cal | Status |
 |---|---|---|---|---|---|
 | **Current: liftoff CG [ESTIMATE]{.tag}, 65 g nose** | | | | | |
-| CFD, SolidWorks geometry | 809.9 | 763.3 | **1.13 cal** | **+25.5 g** at 74.6 mm | CP band lower bound |
-| CFD, rev 9 | 827.4 | 763.3 | **1.55 cal** | +9.1 g | CP band upper bound |
+| CFD, SolidWorks geometry | 809.9 | 763.3 | **1.13 cal** | **+25.6 g** at 74.6 mm | CP band lower bound |
+| CFD, rev 9 | 827.4 | 763.3 | **1.55 cal** | +9.2 g | CP band upper bound |
 | OR model v4 | 861.5 | 763.3 | 2.38 cal | not trusted | fins 15 mm aft |
 | **History: earlier CG bases** | | | | | |
 | Rev 9 sim, rev 9 masses | 827.4 | 761.0 | 1.61 cal | +7.4 g | superseded |
@@ -681,24 +693,33 @@ where *SM* is the static margin (calibers), *x*~CP~ and *x*~CG~ are measured fro
 
 Table: Static margin at liftoff, reference 41.275 mm. Sources: [D3][D11][D14][D16][D25].
 
-- **Target and limits.** The target is 1.8 cal, with a band of ±0.2 cal at liftoff and a minimum of 1.0 cal [D3][D25].
-- On both CFD bases the rocket is stable and above the minimum, but below the target band.
+- **Target and minimum.** The stability requirement is a **1.8 cal target and a 1.7 cal minimum** at liftoff, on the 41.275 mm reference [CONFIRMED]{.tag} [D3].
+- **Ballast is required in all cases.** Without added ballast both CFD bases (1.13 and 1.55 cal) are statically stable but below the 1.7 cal minimum.
 - OpenRocket model v4 is identical to v3 in geometry and masses [D16]. It does not include the model fixes of Appendix D.4: fin offset −0.59 in, hollow fairing, 12 s delay, nose 0.143 lb, Kevlar cords [D25].
 - Earlier stability bases (rev 5–7, 73 g ballast, Barrowman CP) are in Appendix A.5.
 
-## Ballast recommendation {#sec-ballast}
+## Ballast sizing {#sec-ballast}
 
 Ballast goes in the nose tip pocket, whose uniform-fill CG is 74.6 mm from the tip [D3]. The pocket volume to 100 mm is 27.2 cm³ [D3].
 
 ::: decision
-**Recommendation: +25 g nose ballast**
-Nose ballast of **25 g** is recommended, bringing the nose to about **90 g** total. This sizes the margin to 1.8 cal on the conservative CP (809.9 mm), the lower bound of the CP band. On the upper bound (827.4 mm), +9.1 g would reach 1.8 cal, so the recommended ballast covers the whole band.
+**Design decision 2026-11-23: ballast chosen at assembly**
+The ballast is chosen after assembly from the measured ready-to-fly CG without added ballast, using the ballast chart below [CONFIRMED]{.tag} [D3]. The conservative recommendation is to size it on the CP 809.9 mm curve (lower bound of the CP band). On the estimated CG of 763.3 mm this is **+25.6 g** for the 1.8 cal target and **+21.6 g** for the 1.7 cal minimum.
 :::
 
-- **Balance target.** On the recommended basis the ready-to-fly CG is at or forward of **735.6 mm** from the tip [D14]. The target follows from *x*~CG~ = *x*~CP~ − 1.8 *d*.
+| CP basis | 1.7 cal (minimum) | 1.8 cal (target) |
+|---|---|---|
+| CFD flight geometry, CP 809.9 mm | +21.6 g (CG target 739.7 mm) | **+25.6 g (735.6 mm)** |
+| CFD rev 9, CP 827.4 mm | +5.4 g (757.2 mm) | +9.2 g (753.1 mm) |
+
+Table: Nose ballast at 74.6 mm required on the estimated liftoff CG of 763.3 mm [ESTIMATE]{.tag}, with the ready-to-fly CG target in brackets. Source: [D3].
+
+![Nose ballast required against the measured ready-to-fly CG without added ballast, for 1.7 cal (dashed lines) and 1.8 cal (solid lines) on the CFD flight-geometry CP of 809.9 mm (heavy lines) and the CFD rev 9 CP of 827.4 mm (light lines). Ballast at 74.6 mm from the tip, 610 g basis; the vertical line marks the estimated CG of 763.3 mm. The ballast is read from this chart at assembly. Source: ballast chart, 2026-11-23 [D3].](figures/ballast_vs_cg.png){width=85%}
+
+- **CG targets.** The targets follow from *x*~CG~ = *x*~CP~ − *SM* · *d*. On the conservative basis the ready-to-fly CG with ballast is at or forward of **739.7 mm** (1.7 cal) and **735.6 mm** (1.8 cal) from the tip [D3][D14].
 - **Sensitivity.** About 1.05 mm of CG shift per gram of nose ballast on the SolidWorks-geometry basis [D14], and about 1.1 g per mm on the rev 7 basis [D3].
 - **Tail mass costs ballast.** Every gram at the tail costs about 0.4 g of nose ballast [D11].
-- **Trade-off.** At the upper CP bound, the +25 g ballast puts the margin above 1.8 cal; the upper band edge is 2.0 cal [D3].
+- **Upper CP bound.** At the 827.4 mm CP, ballast sized on the conservative curve puts the margin above 1.8 cal.
 
 ::: note
 **Flight-performance basis**
@@ -783,35 +804,36 @@ Table: Sensitivities.
 
 ::: warning
 **Chute-pack position**
-With the pack free to slide aft onto the motor, the default mass model simulates at **0.15 cal** and stalls the RocketPy integrator [D25]. The flight simulation runs only with the pack held about 300 mm from the tip, as in the OpenRocket model. Hold the pack forward with a bulkhead or by packing, and verify it at the balance check (§7.6, §9.3).
+With the pack free to slide aft onto the motor, the default mass model simulates at **0.15 cal** and stalls the RocketPy integrator [D25]. The flight simulation runs only with the pack held about 300 mm from the tip, as in the OpenRocket model. The printed aft bulkhead holds the pack at this position (§7.6); the ready-to-fly CG is measured with the chute packed (§9.3).
 :::
 
 # Recovery {#sec-recovery}
 
 ::: summary
 **Section summary**
-Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 12 s so the 28 in parachute opens near apogee. The parachute gives 5.18–5.31 m/s (17.0–17.4 ft/s) at *C*~d~ 0.75, inside the common 15–20 ft/s target, and the opening and snatch loads stay far below the knotted-cord strength. The 28 in parachute is adequate; the chute pack must be held forward.
+Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 12 s so the LOC Precision 28 in parachute opens near apogee. The parachute gives 5.22–5.35 m/s (17.1–17.5 ft/s) at *C*~d~ 0.75, inside the common 15–20 ft/s target, and the opening and snatch loads stay far below the knotted-cord strength. A printed bulkhead in the tube anchors the Kevlar and holds the chute pack forward.
 :::
 
 ## Scheme
 
-- **Single deployment on the H100W-14A ejection charge, drilled to 12 s** (§3.4) [PROPOSED]{.tag}. No electronics are flown [D3].
+- **Single deployment on the H100W-14A ejection charge, delay drilled to 12 s** (§3.4) [CONFIRMED]{.tag}. No electronics are flown [D3].
 - The charge size is unpublished, and a DMS charge cannot be ground-tested on its own [D7].
-- The nose separates from the tube; the Kevlar ties the nose cap to an aft anchor in the tube.
-- **Aft anchor:** the mass model carries a 10 g ring [ESTIMATE]{.tag} [D3]; the sizing rule for a printed anchor is in §7.4.
-- **Heat:** the paper tube touches the motor case directly, and the case is hot when the charge fires [D4].
+- The nose separates from the tube. The Kevlar runs from the nose-cap floor to the aft bulkhead in the tube.
+- **Aft bulkhead:** a 3D-printed bulkhead epoxied inside the body tube [CONFIRMED]{.tag}. It anchors the Kevlar, holds the chute pack forward at about 300 mm from the tip, and protects the chute. It must pass the ejection gas, so it is vented or built as a baffle [D3].
+- **Ejection protection:** LOC Precision reusable wadding (chute protector) [CONFIRMED]{.tag} [D3].
+- **Heat:** the paper tube touches the motor case directly, and the case is hot when the charge fires [D4]. No heat protection is fitted around the case (design decision, 2026-11-23) [D3].
 
 | Input | Value | Basis |
 |---|---|---|
-| Canopy | 28 in flat circular ripstop; *A* = 0.3973 m² | [D3][D27] |
+| Canopy | LOC Precision 28 in flat ripstop, 84 mm spill hole, 8 shroud lines; net area *A* = 0.3917 m² | [D3][D27] [CONFIRMED]{.tag} |
 | Air density ρ | 1.20 kg/m³ | Palm Bay in December, near sea level [D27] |
-| Drag coefficient *C*~d~ | 0.75 nominal; band 0.60–0.90 | Flat circular canopy [D27] |
+| Drag coefficient *C*~d~ | 0.75 nominal on the net area; band 0.60–0.90 | Flat canopy [D3][D27] |
 | Descent mass | 489 g (liftoff 610 g − propellant 121 g); 498 g with +9 g; 514 g with +25 g ballast | [D3][D27] [ESTIMATE]{.tag} |
-| Nose mass (separate section) | 65 / 74 / 90 g | [D27] |
+| Nose mass (separate section) | 65 / 74 / 90 g | [D27] [ESTIMATE]{.tag} |
 | Apogee | 1337 m | Flight simulation [D21] |
 | Opening-force coefficient *C*~x~ | 1.6, infinite-mass upper bound | Knacke [R44] |
-| Shock cord | 750 lb Kevlar: 3336 N rated, 1334 N knotted (40 %) | [D3] |
-| Cord length | 3 × rocket length + 0.3 m = 3.53 m | [D3][D27] |
+| Shock cord | 750 lb Kevlar, knotted ends: 3336 N rated, 1334 N knotted (40 %) | [D3] [CONFIRMED]{.tag} |
+| Cord length | 3.5 m (design); analysis 3 × rocket length + 0.3 m = 3.53 m | [D3][D27] |
 
 Table: Recovery analysis inputs, 28 in parachute. Method: [D27].
 
@@ -819,22 +841,22 @@ Table: Recovery analysis inputs, 28 in parachute. Method: [D27].
 
 For a canopy at its steady descent rate,
 
-$$ v = \sqrt{\frac{2\,m\,g}{\rho\, C_d\, A}}, \qquad A = \frac{\pi D^2}{4}, \qquad t_{desc} = \frac{h_{apogee}}{v} $$
+$$ v = \sqrt{\frac{2\,m\,g}{\rho\, C_d\, A}}, \qquad A = \frac{\pi \left(D^2 - D_s^2\right)}{4}, \qquad t_{desc} = \frac{h_{apogee}}{v} $$
 
-where *v* is the descent rate (m/s), *m* the descent mass (kg), *g* = 9.80665 m/s², ρ = 1.20 kg/m³ the air density, *C*~d~ the canopy drag coefficient, *D* the canopy diameter (m), *A* the canopy area (m²), *t*~desc~ the descent time from apogee (s) and *h*~apogee~ = 1337 m the apogee [D27].
+where *v* is the descent rate (m/s), *m* the descent mass (kg), *g* = 9.80665 m/s², ρ = 1.20 kg/m³ the air density, *C*~d~ the canopy drag coefficient on the net area, *D* the canopy diameter (28 in), *D*~s~ = 0.084 m the spill-hole diameter, *A* the net canopy area (m²), *t*~desc~ the descent time from apogee (s) and *h*~apogee~ = 1337 m the apogee [D27].
 
 | Case | Descent mass | *v* at *C*~d~ 0.60 / **0.75** / 0.90 (m/s) | *v* at 0.75 (ft/s) | *t*~desc~ at 0.75 |
 |---|---|---|---|---|
-| No added ballast | 489 g | 5.79 / **5.18** / 4.73 | 17.0 | 258 s |
-| +9 g ballast | 498 g | 5.84 / **5.23** / 4.77 | 17.1 | 256 s |
-| +25 g ballast (recommended) | 514 g | 5.94 / **5.31** / 4.85 | 17.4 | 252 s |
+| No added ballast | 489 g | 5.83 / **5.22** / 4.76 | 17.1 | 256 s |
+| +9 g ballast | 498 g | 5.88 / **5.26** / 4.80 | 17.3 | 254 s |
+| +25 g ballast | 514 g | 5.98 / **5.35** / 4.88 | 17.5 | 250 s |
 
 Table: Descent rate and descent time on the 28 in parachute [ESTIMATE]{.tag}. Common target 15–20 ft/s. Source: [D27].
 
-- At *C*~d~ 0.75 every case descends at 5.18–5.31 m/s (17.0–17.4 ft/s). The band at +25 g is 4.85–5.94 m/s. All values lie within the common 15–20 ft/s target [D27].
-- Descent from apogee takes about 252–258 s at *C*~d~ 0.75.
+- At *C*~d~ 0.75 every case descends at 5.22–5.35 m/s (17.1–17.5 ft/s). The band across *C*~d~ 0.60–0.90 is 4.88–5.98 m/s at +25 g. All values lie within the common 15–20 ft/s target [D27].
+- Descent from apogee takes about 250–256 s at *C*~d~ 0.75.
 
-![28 in parachute: steady descent rate against descent mass for *C*~d~ 0.60 (dotted line), 0.75 (solid line) and 0.90 (dashed line). The shaded band is the common 15–20 ft/s target; the vertical lines mark the no-ballast, +9 g and +25 g cases (489, 498 and 514 g). Every case lies inside the band. Source: recovery analysis, 2026-11-23 [D27].](figures/recovery/descent_rate.png){width=85%}
+![LOC Precision 28 in parachute (84 mm spill hole): steady descent rate against descent mass for *C*~d~ 0.60 (dotted line), 0.75 (solid line) and 0.90 (dashed line). The shaded band is the common 15–20 ft/s target; the vertical lines mark the no-ballast, +9 g and +25 g cases (489, 498 and 514 g). Every case lies inside the band. Source: recovery analysis with the spill hole, 2026-11-23 [D27].](figures/recovery/descent_rate.png){width=85%}
 
 **Landing energy.** The nose and the body section land separately on the shared cord, at the same descent rate:
 
@@ -844,26 +866,26 @@ where *E* is the landing kinetic energy (J) and *m*~s~ the mass of the section (
 
 | Case, *C*~d~ 0.75 | Body section | Nose |
 |---|---|---|
-| No added ballast | 5.69 J (4.19 ft-lbf) | 0.87 J |
-| +9 g ballast | 5.79 J (4.27 ft-lbf) | 1.01 J |
-| +25 g ballast | 5.98 J (4.41 ft-lbf) | 1.27 J |
+| No added ballast | 5.77 J (4.25 ft-lbf) | 0.88 J |
+| +9 g ballast | 5.87 J (4.33 ft-lbf) | 1.03 J |
+| +25 g ballast | 6.06 J (4.47 ft-lbf) | 1.29 J |
 
 Table: Landing kinetic energy [ESTIMATE]{.tag}. Guideline 75 ft-lbf. Source: [D27].
 
-- The body section lands with 5.7–6.0 J (4.2–4.4 ft-lbf) and the nose with 0.9–1.3 J, well under the 75 ft-lbf guideline [D27].
-- At *C*~d~ 0.60 the body section reaches 7.47 J (5.51 ft-lbf) with +25 g of ballast [D27].
+- The body section lands with 5.8–6.1 J (4.3–4.5 ft-lbf) and the nose with 0.9–1.3 J, well under the 75 ft-lbf guideline [D27].
+- At *C*~d~ 0.60 the body section reaches 7.58 J (5.59 ft-lbf) with +25 g of ballast [D27].
 
 | Basis | Descent rate | Source |
 |---|---|---|
-| 28 in recovery analysis, *C*~d~ 0.75, ρ 1.20 kg/m³, 489–514 g | **5.18–5.31 m/s** | [D27] |
+| 28 in recovery analysis, spill hole, *C*~d~ 0.75, ρ 1.20 kg/m³, 489–514 g | **5.22–5.35 m/s** | [D27] |
 | Design data file, *C*~d~ 0.75, 469 g descent mass | 5.0 m/s | [D3] |
 | Flight simulation (analytic) | 5.5 m/s | [D21] |
 | OR model v2 / v3 / v4 landing speed | 11.9 / 12.3 / 12.2 mph | [D16] |
 | OR export, 2026-11-22 | 11.8 mph (5.3 m/s) | [D14] |
 
-Table: Descent rate by basis. The bases use different masses and densities, which the sources do not reconcile.
+Table: Descent rate by basis. The bases use different masses, areas and densities, which the sources do not reconcile.
 
-- **Chute:** 28 in ripstop nylon, flat circular, 38 g [ESTIMATE]{.tag} from the OpenRocket file [D3].
+- **Parachute:** LOC Precision 28 in, flat ripstop, 84 mm spill hole, 8 shroud lines [CONFIRMED]{.tag} [D3][R81]. Mass 38 g [ESTIMATE]{.tag}, from the OpenRocket file [D3].
 - The earlier 40 in basis is in Appendix A.7.
 - Reefing in wind is recommended in the earlier recovery analysis [D7], while the landing-load note recommends flying unreefed [D12]. Both statements are listed in Appendix G.2.
 
@@ -877,31 +899,31 @@ The opening load is bounded by
 
 $$ F_o = \tfrac{1}{2}\,\rho\, v_d^2\, C_d\, A\, C_x + m\,g $$
 
-where *F*~o~ is the opening load (N), *v*~d~ the deployment speed (m/s), *C*~x~ = 1.6 the opening-force coefficient for a flat circular canopy (infinite-mass upper bound, Knacke [R44]) and *m* = 0.514 kg the +25 g descent mass; *C*~d~ = 0.75 and the other symbols are as in §7.2 [D27].
+where *F*~o~ is the opening load (N), *v*~d~ the deployment speed (m/s), *C*~x~ = 1.6 the opening-force coefficient for a flat canopy (infinite-mass upper bound, Knacke [R44]) and *m* = 0.514 kg the +25 g descent mass; *C*~d~ = 0.75 and the other symbols are as in §7.2 [D27].
 
 | Actual delay after burnout | Deploy time | Deploy speed | Opening load, upper bound |
 |---|---|---|---|
-| 9.0 s | 11.40 s | 26.3 m/s | 203 N |
-| 10.5 s (−1.5 s) | 12.90 s | 11.2 m/s | 41 N |
+| 9.0 s | 11.40 s | 26.3 m/s | 201 N |
+| 10.5 s (−1.5 s) | 12.90 s | 11.2 m/s | 40 N |
 | 11.5 s | 13.90 s | 1.4 m/s | 6 N |
 | **12.0 s (nominal)** | **14.40 s** | **3.6 m/s** | **9 N** |
-| 13.5 s (+1.5 s) | 15.90 s | 15.3 m/s | 72 N |
-| 15.0 s | 17.40 s | 23.6 m/s | 164 N |
+| 13.5 s (+1.5 s) | 15.90 s | 15.3 m/s | 71 N |
+| 15.0 s | 17.40 s | 23.6 m/s | 162 N |
 
 Table: Deployment speed and opening load against the actual delay [ESTIMATE]{.tag}. Knotted cord strength 1334 N. Source: [D27]; 0.5 s steps in the figure.
 
 ![Deployment speed (solid line with markers, left axis) and opening-load upper bound (dashed line, right axis) against the actual ejection delay after burnout. The vertical line marks the 12 s nominal delay and the shaded region the ±1.5 s band. The speed minimum, 1.4 m/s at 11.5 s, lies near apogee. Source: recovery analysis on the flight-simulation trajectory, 2026-11-23 [D21][D27].](figures/recovery/deploy_vs_delay.png){width=85%}
 
-- **Nominal 12 s:** 3.6 m/s and 9 N. **Across ±1.5 s:** 11.2–15.3 m/s and 41–72 N. **At 9 s:** 26.3 m/s and 203 N. Every case is far below the 1334 N knotted cord [D27].
+- **Nominal 12 s:** 3.6 m/s and 9 N. **Across ±1.5 s:** 11.2–15.3 m/s and 40–71 N. **At 9 s:** 26.3 m/s and 201 N. Every case is far below the 1334 N knotted cord [D27].
 - The other simulation bases put the 12 s deployment at 0.9–7.4 m/s (§3.4).
-- The nose cap web is sized against a 343 N opening [ESTIMATE]{.tag} [D3], above the 203 N upper bound at 9 s.
+- The nose cap web is sized against a 343 N opening [ESTIMATE]{.tag} [D3], above the 201 N upper bound at 9 s.
 - The shock-cord and anchor requirements in the design data file (2860 N, 191 mm²) are 40 in values; the 40 in opening-load table is in Appendix A.7 [D3].
 
 ## Shock cord and anchors {#sec-cord}
 
 - **Cord:** 9KM DWLIFE hollow-braid Kevlar, 750 lb (3336 N), 2.3 mm, 2.91 g/m; 16 m on hand [D3].
-- **Length:** 3 × rocket length plus a 0.3 m loop allowance, 3.53 m [D3][D27].
-- **Knots:** at 40 % knot efficiency the cord holds 1334 N, enough up to about a 27 m/s deploy [D3].
+- **Length:** 3.5 m [CONFIRMED]{.tag}; the analysis uses 3 × rocket length plus a 0.3 m loop allowance, 3.53 m [D3][D27].
+- **Ends:** knotted [CONFIRMED]{.tag}. At 40 % knot efficiency the cord holds 1334 N, enough up to about a 27 m/s deploy [D3].
 
 **Snatch load.** When the nose and body separate at relative speed Δ*v*, the cord absorbs their relative kinetic energy elastically (energy method):
 
@@ -916,19 +938,19 @@ where *F*~s~ is the snatch load (N), Δ*v* the separation speed (m/s), *x* the c
 Table: Shock-cord snatch load, +25 g case [ESTIMATE]{.tag}. Knotted cord strength 1334 N. Source: [D27].
 
 - The margin on the knotted cord is at least 1.8, even at 20 m/s separation [D27].
-- **Terminations:** spliced or sewn terminations are preferred over knots, which reduce the cord to 1334 N.
-- **Forward anchor:** the nose cap floor, two 5 mm holes 14 mm apart, web capacity about 2.1 kN [D3].
-- **Aft anchor:** a printed anchor needs at least 48 mm² of net area for a deploy at or below 20 m/s [D7]. The mass model carries a 10 g ring [ESTIMATE]{.tag} [D3].
+- **Technical note:** sewn or spliced ends would raise the capacity to the 3336 N cord rating.
+- **Forward anchor:** the Kevlar passes through the two 5 mm holes in the nose-cap floor, 14 mm apart [CONFIRMED]{.tag}; web capacity about 2.1 kN [D3].
+- **Aft anchor:** the printed bulkhead epoxied inside the tube (§7.1). A printed anchor needs at least 48 mm² of net area for a deploy at or below 20 m/s [D7]. The liftoff mass basis carries the OpenRocket bulkhead entry (0.005 lb) [D16] [ESTIMATE]{.tag}.
 
 ## Ejection protection
 
-Estes recovery wadding is [PROPOSED]{.tag} (\$5.43–5.99). A reusable Nomex 6 × 6 in protector (about \$5) is the alternative [D7].
+LOC Precision reusable wadding (chute protector) [CONFIRMED]{.tag} protects the chute from the ejection gas, together with the aft bulkhead [D3].
 
 ## Pack position {#sec-pack}
 
 ::: warning
-**Hold the chute pack forward**
-The pack sits about 300 mm from the nose tip, as in the OpenRocket model. If it slides aft onto the motor, the RocketPy basis reads 0.15 cal and the simulation stalls [D25]. The OpenRocket model holds the pack forward with a light ABS bulkhead between the chute and the motor [D14][D16]. A bulkhead of this type, or firm packing, is recommended, with the ready-to-fly CG checked with the chute packed (§9.3).
+**Chute pack held forward by the aft bulkhead**
+The pack sits about 300 mm from the nose tip, as in the OpenRocket model. If it slid aft onto the motor, the RocketPy basis would read 0.15 cal and the simulation stalls [D25]. The printed bulkhead epoxied inside the tube holds the pack at this position [CONFIRMED]{.tag} [D3], as the light ABS bulkhead does in the OpenRocket model [D14][D16]. The ready-to-fly CG is measured with the chute packed (§9.3).
 :::
 
 ## Landing loads {#sec-landing}
@@ -942,7 +964,7 @@ The pack sits about 300 mm from the nose tip, as in the OpenRocket model. If it 
 
 Table: Landing-load estimate [ESTIMATE]{.tag}. Method: *E* = ½*mv*², *F* ≈ *E*/*s* with stopping distance *s* = 2–5 cm. Source: [D12].
 
-- This whole-rocket estimate (540–600 g) bounds the 28 in recovery analysis, which gives 5.7–6.0 J for the body section and 0.9–1.3 J for the nose (§7.2) [D27].
+- This whole-rocket estimate (540–600 g) bounds the 28 in recovery analysis, which gives 5.8–6.1 J for the body section and 0.9–1.3 J for the nose (§7.2) [D27].
 - The fin criteria use 200 N, which sits inside the 28 in average range; the peak bound is higher. The drop test from 1.5 m reproduces the 28 in landing energy of this estimate (§9.3).
 
 ## Drift and launch-wind limit {#sec-drift}
@@ -951,16 +973,16 @@ Drift from apogee is estimated for vertical flight, deployment at apogee and a c
 
 $$ x_{drift} = w\,\frac{h_{apogee}}{v} $$
 
-where *x*~drift~ is the drift distance (m), *w* the wind speed (m/s), *h*~apogee~ = 1337 m and *v* = 5.31 m/s the descent rate (+25 g, *C*~d~ 0.75) [D27].
+where *x*~drift~ is the drift distance (m), *w* the wind speed (m/s), *h*~apogee~ = 1337 m and *v* = 5.35 m/s the descent rate (+25 g, *C*~d~ 0.75) [D27].
 
 | Constant wind | 0 mph | 5 mph | 10 mph | 15 mph | 20 mph |
 |---|---|---|---|---|---|
-| Drift (m) | 0 | 563 | 1126 | 1689 | 2252 |
-| Drift (ft) | 0 | 1847 | 3694 | 5541 | 7388 |
+| Drift (m) | 0 | 559 | 1118 | 1677 | 2236 |
+| Drift (ft) | 0 | 1834 | 3668 | 5502 | 7336 |
 
 Table: Drift under the 28 in parachute from 1337 m [ESTIMATE]{.tag}. Source: [D27].
 
-![Drift under the 28 in parachute from the 1337 m apogee at 5.3 m/s descent, against constant wind speed. Drift grows linearly with wind, from 563 m at 5 mph to 2252 m at 20 mph. Source: recovery analysis, 2026-11-23 [D27].](figures/recovery/drift.png){width=85%}
+![Drift under the 28 in parachute from the 1337 m apogee at 5.35 m/s descent, against constant wind speed. Drift grows linearly with wind, from 559 m at 5 mph to 2236 m at 20 mph. Source: recovery analysis with the spill hole, 2026-11-23 [D27].](figures/recovery/drift.png){width=85%}
 
 - **Launch-wind limit.** The drift must stay inside the downwind length *L*~rec~ of the recovery area, so the wind limit is *w*~max~ = *L*~rec~ *v* / *h*~apogee~. A launch-wind limit set from the recovery-area size at the launch site is recommended. The site dimensions are not in the project sources [PLACEHOLDER]{.tag}.
 
@@ -968,14 +990,10 @@ Table: Drift under the 28 in parachute from 1337 m [ESTIMATE]{.tag}. Source: [D2
 
 ::: result
 **The 28 in parachute is adequate**
-Descent is 5.18–5.31 m/s (17.0–17.4 ft/s) at *C*~d~ 0.75 and 4.85–5.94 m/s across the *C*~d~ band at +25 g, all within the common 15–20 ft/s target. Landing energy is 5.7–6.0 J for the body section and 0.9–1.3 J for the nose, well under the 75 ft-lbf guideline. The opening-load upper bound is 9 N at the nominal delay, 41–72 N across the ±1.5 s band and 203 N at 9 s. The snatch load is 739 N at 20 m/s. All loads are far below the 1334 N knotted cord [D27].
+Descent is 5.22–5.35 m/s (17.1–17.5 ft/s) at *C*~d~ 0.75 and 4.88–5.98 m/s across the *C*~d~ band at +25 g, all within the common 15–20 ft/s target. Landing energy is 5.8–6.1 J for the body section and 0.9–1.3 J for the nose, well under the 75 ft-lbf guideline. The opening-load upper bound is 9 N at the nominal delay, 40–71 N across the ±1.5 s band and 201 N at 9 s. The snatch load is 739 N at 20 m/s. All loads are far below the 1334 N knotted cord [D27].
 :::
 
-**Recommendations**
-
-1. Spliced or sewn cord terminations are preferred over knots.
-2. The chute pack is held about 300 mm from the tip by a bulkhead or firm packing (§7.6).
-3. The launch-wind limit is set from the size of the recovery area (§7.8).
+**Recommendation.** The launch-wind limit is set from the size of the recovery area (§7.8).
 
 # Manufacturing and Assembly {#sec-mfg}
 
@@ -993,21 +1011,21 @@ All printed parts fit the Bambu P1S. The 2.5 mm pitch printed thread is validate
 | Fin can infill | 25 % gyroid (design decision) | [D3] |
 | Nose rev 1 | 3 wall loops, 20 % gyroid (slicer, 63 g) | [D3] |
 | PETG | 1.27 g/cm³; \$13/kg | [D1][D23] |
-| SolidWorks parts | slicer estimates 97 g / 15 g [ESTIMATE]{.tag}; settings not in the project sources | [D3] |
+| SolidWorks parts | 0.20 mm layers, 6 walls, 25 % gyroid [CONFIRMED]{.tag}: basis of the 97 g / 15 g slicer estimates [ESTIMATE]{.tag} | [D3] |
 
 Table: Print settings.
 
 | Part | Material | Orientation | Mass | Status |
 |---|---|---|---|---|
-| Fin can (SolidWorks) | PETG | as rev 9: collar down, axis vertical (recommended) | 97 g slicer [ESTIMATE]{.tag} | Flight part |
-| Tail cone (SolidWorks) | **ABS/ASA, or PETG with a foil-lined bore (recommended)** | narrow end down (rev 9) | 15 g slicer [ESTIMATE]{.tag} | Flight part |
+| Fin can (SolidWorks) | PETG | aft end (fins) down, axis vertical [CONFIRMED]{.tag} | 97 g slicer [ESTIMATE]{.tag} | Flight part |
+| Tail cone (SolidWorks) | **PETG, foil-lined bore** [CONFIRMED]{.tag} | narrow end down (rev 9) | 15 g slicer [ESTIMATE]{.tag} | Flight part |
 | Nose cone + cap + plug | PETG | cone tip up; cap flange down; plug head down | 63 g slicer [ESTIMATE]{.tag} | Flight part |
 | Fin can rev 9 | PETG | collar down; light tree supports under the trailing edges | 97.9 g [ESTIMATE]{.tag} | Reference |
 | Tail cone rev 9 | as above | narrow end down, no supports | 16.0 g model | Reference |
 
 Table: Printed parts. Sources: [D3][D17][D18][D19].
 
-- **Tail-cone heat.** The cone bore surrounds the nozzle exit during the 2.4 s burn. PETG softens near 80 °C, so the specification advises ABS/ASA or an aluminium-tape liner [D18]. The thread test pieces were PETG.
+- **Tail-cone heat.** The cone bore surrounds the nozzle exit during the 2.4 s burn. PETG softens near 80 °C, and the rev 9 specification advises ABS/ASA or an aluminium-tape liner [D18]. The design decision is PETG with the bore lined with aluminium foil (gum-wrapper foil in the design data file) [CONFIRMED]{.tag} [D3]. The thread test pieces were PETG.
 - **Build volume.** Rev 9 fin can 102.6 × 118.4 × 158.5 mm; tail cone 46.8 × 46.8 × 39.0 mm; nose cone 41.3 × 41.3 × 203.3 mm [D17][D18][D19].
 
 ![Fin can rev 9 (reference), isometric view in print orientation, collar on the bed. No insert bosses; thin trailing edges; the 40 mm fairing tapers at the top. Built with the nominal tube OD, case OD and ring. Source: rev 9 build, 2026-11-22 [D17].](figures/fin_can_md_rev9_iso.png){width=60%}
@@ -1052,16 +1070,17 @@ Published nominal values were accepted by design decision on 2026-11-23 instead 
 
 Recommended order:
 
-1. Print the fin can, tail cone, nose cone, cap and plug. Weigh each part.
+1. Print the fin can (aft end down), tail cone, nose cone, cap, plug and aft bulkhead at 0.20 mm layers, 6 walls and 25 % gyroid. Weigh each part.
 2. Dry-fit the motor in the tube, the sleeve on the tube, and the tail cone over the real thrust ring. Confirm that the shank seats on the ring and the motor cannot move.
 3. Inspect the thrust-ring glue joint (AeroTech advisory [R10]).
-4. Epoxy the fin-can sleeve to the tube.
-5. Fit the aft Kevlar anchor; tie the Kevlar to the nose cap with spliced or sewn loops.
-6. Load the ballast (25 g recommended, §6.3) into the nose tip pocket and close the plug.
-7. Drill the motor delay to 12 s with the UDDT.
-8. Pack the chute, cord and wadding, holding the pack about 300 mm from the tip.
+4. Epoxy the fin-can sleeve to the tube. Line the tail-cone bore with foil.
+5. Epoxy the vented aft bulkhead inside the tube with the Kevlar anchored to it, so that the chute pack sits about 300 mm from the tip.
+6. Knot the Kevlar through the two 5 mm holes in the nose-cap floor.
+7. Drill the motor delay to 12 s with the delay drill tool.
+8. Pack the chute and cord in the LOC reusable wadding, forward of the bulkhead.
 9. Install the motor and screw the tail cone fully home over the thrust ring.
-10. Weigh and balance ready to fly (§9.3).
+10. Measure the ready-to-fly CG without added ballast, read the ballast from the chart (§6.3), load it into the nose tip pocket and close the plug.
+11. Weigh and balance ready to fly (§9.3).
 
 ## Drawing set {#sec-drawings}
 
@@ -1069,10 +1088,10 @@ The flight hardware is defined by a four-sheet A3 drawing set cut from the Solid
 
 | Drawing no. | Title | Sheet | Rev | Scale |
 |---|---|---|---|---|
-| L1C-GA-001 | Ms. Piggy — general arrangement | 1 / 4 | A | 1:3 |
-| L1C-AS-002 | Aft-end assembly, section A-A and aft view | 2 / 4 | A | 1:1 |
-| L1C-FC-003 | Fin can (SolidWorks part, PETG, 97 g slicer) | 3 / 4 | A | 1:1 |
-| L1C-TC-004 | Tail cone / motor retainer (SolidWorks part, 15 g slicer) | 4 / 4 | A | 2:1 |
+| L1C-GA-001 | Ms. Piggy — general arrangement | 1 / 4 | B | 1:3 |
+| L1C-AS-002 | Aft-end assembly, section A-A and aft view | 2 / 4 | B | 1:1 |
+| L1C-FC-003 | Fin can (SolidWorks part, PETG, 97 g slicer) | 3 / 4 | B | 1:1 |
+| L1C-TC-004 | Tail cone / motor retainer (SolidWorks part, 15 g slicer) | 4 / 4 | B | 2:1 |
 | NC-R1-01 | Nose cone: section A-A and view from aft | 1 / 3 | 1 | 1:1 |
 | NC-R1-02 | Nose cone details: base thread ring, ballast bulkhead, ogive table | 2 / 3 | 1 | 4:1 |
 | NC-R1-03 | Bottom cap and ballast plug | 3 / 3 | 1 | 2:1 / 3:1 |
@@ -1081,7 +1100,7 @@ The flight hardware is defined by a four-sheet A3 drawing set cut from the Solid
 Table: Drawing register. Sheets L1C-GA-001 to L1C-TC-004 are issued together as ms_piggy_drawings.pdf. Sources: [D22][D26].
 
 - The general arrangement (L1C-GA-001) and aft-end section (L1C-AS-002) appear in §2.
-- Drawing L1C-TC-004 notes "ABS/ASA optional" for the tail cone, while the rev 9 specification advises ABS/ASA or a foil liner [D18][D26]. This report keeps the stronger advice (Appendix G.2).
+- Drawing L1C-TC-004 notes "ABS/ASA optional" for the tail cone, and the rev 9 specification advises ABS/ASA or a foil liner [D18][D26]. The design decision is PETG with a foil-lined bore [D3] (Appendix G.2).
 
 ![Fin can, drawing L1C-FC-003, sheet 3 of 4, rev A: section A-A through fin 0 (sleeve 118.0 mm, Ø46.8; fairing 40.5 mm; root 52.0, tip 29.9, sweep 18.8, span 46.1 mm; bore Ø41.6; lip Ø38.42 × 2.67; internal thread P2.5 RH), fin section B-B at *r* = 45 mm and the fin-thickness table measured from the solid.](figures/drawings/fincan_sheet.png){.drawing}
 
@@ -1120,17 +1139,17 @@ Analysis covers aerodynamics, structure, flight performance and recovery. The va
 | Requirement | Method | Result / basis |
 |---|---|---|
 | RQ-1, RQ-2 motor rules | Review | Complies: H100W 223.9–234 N·s, 93.4–100 N (§3.1) |
-| RQ-4 recovery | Analysis; pack test | Descent 5.18–5.31 m/s; body landing energy 5.7–6.0 J; loads below the 1334 N knotted cord (§7.9) |
-| RQ-6 margin 1.8 cal | Analysis; balance check | 1.13–1.55 cal at the 65 g nose; 1.8 cal with +25 g on the lower CP bound (§6.3) |
-| RQ-7 margin ≥ 1.0 cal | Analysis | Complies: 1.13 cal lowest |
+| RQ-4 recovery | Analysis; pack test | Descent 5.22–5.35 m/s; body landing energy 5.8–6.1 J; loads below the 1334 N knotted cord (§7.9) |
+| RQ-6 margin 1.8 cal target | Analysis; CG measurement; ballast chart | 1.13–1.55 cal without ballast; +25.6 g on the lower CP bound at the estimated CG (§6.3) |
+| RQ-7 margin ≥ 1.7 cal | Analysis; CG measurement; ballast chart | Ballast required on both CFD bases; +21.6 g on the lower CP bound at the estimated CG (§6.3) |
 | RQ-8 build volume | Verification script | Complies: all parts within 256 mm |
 | RQ-9 fin loads | FEA (rev 9); drop test (flight part) | Rev 9 passes C1–C4; flight part by similarity (§5.7) |
 | RQ-10 flutter | Analysis | C5 by argument (§4.9) |
 | Thread fit | Test print | [VALIDATED]{.tag .ok}, 2026-11-23 |
 | Part fit | Fit test on the actual parts | Method: §9.3 |
 | CP | CFD | Band 809.9–827.4 mm, coarse mesh [UNCONFIRMED]{.tag} |
-| Delay | Simulation; drill with the UDDT | 12 s; ≤ 15.3 m/s deploy across ±1.5 s (§7.3) |
-| CG | Weigh and balance ready to fly | Method: §9.3; target ≤ 735.6 mm |
+| Delay | Simulation; drill with the delay drill tool | 12 s; ≤ 15.3 m/s deploy across ±1.5 s (§7.3) |
+| CG | Weigh and balance ready to fly | Method: §9.3; with ballast ≤ 739.7 mm (1.7 cal) and ≤ 735.6 mm (1.8 cal) on the conservative CP |
 
 Table: Verification matrix.
 
@@ -1159,10 +1178,10 @@ Table: Verification-script results. Sources: [D17][D18][D19].
 | Ring inspection | Inspect the glue joint per the AeroTech advisory [R10] | No gaps or cracks |
 | Drop test | Printed SolidWorks fin can dropped from 1.5 m onto a fin tip, sideways | No crack at the fin root (fillet-to-sleeve line, aft face) |
 | Weigh | Nose, tube, fin can, tail cone, chute, Kevlar, motor | Measured masses replace the slicer estimates in the mass budget |
-| Balance | Ready to fly: motor in, chute packed forward, ballast in | CG ≤ **735.6 mm** from the tip (recommended basis) |
+| Balance | Ready to fly: motor in, chute packed; CG measured without ballast, then with the charted ballast | CG ≤ **735.6 mm** (1.8 cal), never aft of 739.7 mm (1.7 cal), conservative CP |
 | Swing test | Swing on a string at the CG | Flies nose first (qualitative CP check) |
-| Pack test | Chute, cord and wadding in the tube | Pack held about 300 mm from the tip; deploys freely |
-| Delay | Drill to 12 s with the UDDT | Per AeroTech instructions |
+| Pack test | Chute, cord and LOC wadding in the tube, forward of the aft bulkhead | Pack held about 300 mm from the tip; deploys freely; bulkhead vents pass |
+| Delay | Drill to 12 s with the delay drill tool | Per AeroTech instructions |
 
 Table: Test plan.
 
@@ -1170,10 +1189,10 @@ Table: Test plan.
 
 **Pre-flight checklist**
 
-1. Tail cone screwed fully home over the thrust ring; bore material or foil liner checked.
+1. Tail cone screwed fully home over the thrust ring; foil liner in the bore checked.
 2. Delay drilled to 12 s.
-3. Chute pack held forward; Kevlar loops spliced or sewn.
-4. Ballast plug tight; CG at or forward of the target.
+3. Chute pack forward of the aft bulkhead; Kevlar knots checked at both ends.
+4. Ballast sized from the measured CG (§6.3); plug tight; CG at or forward of the target.
 5. Wind within the launch-wind limit for the recovery area (§7.8).
 6. Witnesses arranged and the certification form given to the prefect [D2].
 
@@ -1183,18 +1202,19 @@ Likelihood (L) and severity (S) are rated Low, Medium or High (engineering judge
 
 | ID | Risk | L | S | Mitigation |
 |---|---|---|---|---|
-| K1 | Margin below target; CP band 809.9–827.4 mm | M | H | +25 g ballast on the lower CP bound |
-| K2 | Chute pack slides onto the motor (0.15 cal) | M | H | Pack held forward by bulkhead or packing; checked at balance |
-| K3 | Flight fin can fails on landing (covered by similarity to rev 9) | M | M | 1.5 m drop test; descent 5.18–5.31 m/s |
+| K1 | Margin below the 1.7 cal minimum; CP band 809.9–827.4 mm | M | H | Ballast sized at assembly on the lower CP bound from the measured CG |
+| K2 | Chute pack slides onto the motor (0.15 cal) | L | H | Printed aft bulkhead holds the pack; CG measured ready to fly |
+| K3 | Flight fin can fails on landing (covered by similarity to rev 9) | M | M | 1.5 m drop test; descent 5.22–5.35 m/s |
 | K4 | Nominal dimensions do not fit (ring, collar, sleeve) | M | M | Fit check before epoxy; reprint |
-| K5 | Tail cone softens from nozzle heat | M | M | ABS/ASA or foil-lined bore |
-| K6 | Thrust-ring glue joint fails | L | H | Ring inspection; forward backup stop [PROPOSED]{.tag} |
-| K7 | Delay drilled wrongly; deploy at speed | L | H | UDDT, 12 s; ±1.5 s band gives ≤ 72 N opening load |
+| K5 | Tail cone softens from nozzle heat | M | M | Foil-lined bore |
+| K6 | Thrust-ring glue joint fails | L | H | Ring inspection per the AeroTech advisory; no backup stop (design decision) |
+| K7 | Delay drilled wrongly; deploy at speed | L | H | Delay drill tool, 12 s; ±1.5 s band gives ≤ 71 N opening load |
 | K8 | Ballast changes apogee, Mach or rail exit | M | L | Nose-mass sweep: apogee within 5 m across 55–90 g |
-| K9 | Paper tube heat-damaged at ejection | L | M | Post-flight inspection |
-| K10 | Schedule: HAZMAT motor and 2026-12-14 deadline | M | M | Early motor order; build to nominal dimensions |
+| K9 | Paper tube heat-damaged at ejection | L | M | No heat protection (design decision); post-flight inspection |
+| K10 | Schedule: motor availability on site and the 2026-12-14 deadline | M | M | Motor purchased on site; build to nominal dimensions |
 | K11 | Budget above \$100 | M | L | Cost tracked against the \$100 limit with 5 % contingency |
 | K12 | Drift beyond the recovery area in wind | M | M | Launch-wind limit from the recovery-area size (§7.8) |
+| K13 | Aft bulkhead blocks the ejection gas | L | H | Vented or baffle bulkhead; pack test |
 
 Table: Risk register (engineering judgement).
 
@@ -1202,31 +1222,28 @@ Table: Risk register (engineering judgement).
 
 ::: summary
 **Section summary**
-The design is released for build. The rocket is statically stable across the whole CP band, and 25 g of nose ballast brings it to the 1.8 cal target. The 28 in parachute is adequate.
+The design is released for build. The rocket is statically stable across the whole CP band; ballast, chosen at assembly from the measured CG, brings it to the 1.7 cal minimum and 1.8 cal target. The 28 in parachute is adequate.
 :::
 
 **Conclusions**
 
 1. The configuration meets the Level 1 motor rules and fits the shop's printer. The printed thread is validated.
-2. The rocket is statically stable across the CP band at 1.13–1.55 cal, and needs ballast to reach the 1.8 cal target.
+2. The rocket is statically stable across the CP band at 1.13–1.55 cal without ballast. This is below the 1.7 cal minimum, so ballast is required in all cases.
 3. The CP is reported as the band 809.9–827.4 mm. The 9 % difference between the two near-identical CFD models is within the coarse-mesh uncertainty; sizing ballast on the lower bound covers the band.
 4. The OpenRocket model is not used as a stability basis: its fins sit 15 mm too far aft and its fairing is modelled solid.
 5. The rev 9 fin can meets all landing and gust criteria with a 2× margin. The SolidWorks flight part is covered by similarity, with a 1.5 m drop test as its acceptance test.
 6. The 12 s delay deploys near apogee on every simulation basis.
-7. The 28 in parachute is adequate: 5.18–5.31 m/s descent, 5.7–6.0 J body landing energy, and opening and snatch loads far below the knotted-cord strength.
-8. Holding the chute pack forward is essential to stability.
+7. The LOC Precision 28 in parachute is adequate: 5.22–5.35 m/s descent, 5.8–6.1 J body landing energy, and opening and snatch loads far below the 1334 N knotted-cord strength.
+8. Holding the chute pack forward is essential to stability; the printed aft bulkhead does this.
 
 **Recommendations**
 
-1. Nose ballast of 25 g is recommended (nose about 90 g), giving 1.8 cal on the conservative CP of 809.9 mm.
-2. A flight simulation at the ballasted mass is recommended as the launch-day prediction.
+1. Size the nose ballast at assembly on the conservative CP curve (809.9 mm) from the measured ready-to-fly CG: +25.6 g for 1.8 cal on the estimated CG, minimum +21.6 g for 1.7 cal.
+2. Run the flight simulation at the ballasted mass as the launch-day prediction.
 3. Fit-check all mating parts on the real hardware before epoxy.
 4. Drop-test a printed SolidWorks fin can from 1.5 m onto a fin tip.
-5. Print the tail cone in ABS/ASA, or line its bore with aluminium tape.
-6. Hold the chute pack about 300 mm from the tip, and balance to CG ≤ 735.6 mm.
-7. Drill the delay to 12 s.
-8. Use spliced or sewn shock-cord terminations rather than knots.
-9. Set the launch-wind limit from the size of the recovery area.
+5. Vent the aft bulkhead so that it passes the ejection gas.
+6. Set the launch-wind limit from the size of the recovery area.
 
 # Appendix A — Design History {#app-history .unnumbered .appendix}
 
@@ -1965,13 +1982,13 @@ Type: **Design decision** (project direction, binding), **Recommendation** (anal
 | 2026-11-20 | Motor H182R-14A (**superseded** 2026-11-21) | Design decision | [D24] |
 | 2026-11-20 | No payload; altimeter outside the budget | Design decision | [D3][D10] |
 | 2026-11-20 | Rail buttons, igniter and soldering iron handled outside the budget; ballast, calipers, scale on hand | Design decision | [D9] |
-| 2026-11-20 | Stability band gates liftoff only; aim 1.8, accept 1.6–2.0 cal | Design decision | [D3][D8] |
+| 2026-11-20 | Stability band gates liftoff only; aim 1.8, accept 1.6–2.0 cal (**superseded** 2026-11-23: 1.7 cal minimum) | Design decision | [D3][D8] |
 | 2026-11-20 | Single deploy on motor ejection | Recommendation | [D3] |
 | 2026-11-20 | Retention Option A: one M3 insert per fin root (**superseded** by the tail cone) | Design decision | [D3] |
-| 2026-11-21 | **Motor H100W-14A DMS 38 mm**, delay drilled with the UDDT; reason not recorded | Design decision | [D3][D24] |
+| 2026-11-21 | **Motor H100W-14A DMS 38 mm**, delay drilled with the UDDT. Rationale: most cost-effective motor for the goal; long delay that can be drilled shorter; single-use, whereas the H182R needed a reusable case | Design decision | [D3][D24] |
 | 2026-11-21 | **Minimum-diameter**: motor directly in the BT-1.52; liner dropped | Design decision | [D3][D4] |
 | 2026-11-21 | Fin can becomes a sleeve with an aft-lip thrust stop | Design decision | [D24] |
-| 2026-11-21 | Forward backup motor stop inside the tube | Recommendation | [D4] |
+| 2026-11-21 | Forward backup motor stop inside the tube (**not adopted** 2026-11-23) | Recommendation | [D4] |
 | 2026-11-21 | Thrust curve from the ThrustCurve CSV | Result | [D4] |
 | 2026-11-21 | Aero proposal 50/30/77/6 fins (**not adopted**) | Recommendation | [D5] |
 | 2026-11-21 | **Fins: OpenRocket set 50 / 30 / 43.18 / 20.32 mm** | Design decision | [D3] |
@@ -2004,10 +2021,24 @@ Type: **Design decision** (project direction, binding), **Recommendation** (anal
 | 2026-11-23 | **Published nominal dimensions accepted** (tube, case, ring); no caliper check | Design decision | [D3] |
 | 2026-11-23 | Slicer-estimate masses: fin can 97 g, tail cone 15 g [ESTIMATE]{.tag} | Result | [D3] |
 | 2026-11-23 | Liftoff basis: 610 g, CG 763.3 mm [ESTIMATE]{.tag} | Result | [D3][D25] |
-| 2026-11-23 | Minimum static margin 1.0 cal | Design decision | [D25] |
-| 2026-11-23 | **Nose ballast +25 g**: 1.8 cal on the lower CP bound | Recommendation | §6.3 |
-| 2026-11-23 | **28 in parachute adequate**: 5.18–5.31 m/s; loads below the 1334 N knotted cord | Result | [D27] |
-| 2026-11-23 | Spliced or sewn shock-cord terminations; launch-wind limit from the recovery-area size | Recommendation | §7.9 |
+| 2026-11-23 | **Stability: target 1.8 cal, minimum 1.7 cal** (41.275 mm reference) | Design decision | [D3] |
+| 2026-11-23 | **Ballast chosen after assembly** from the measured ready-to-fly CG with the ballast chart; conservative sizing on CP 809.9 mm | Design decision | [D3] |
+| 2026-11-23 | **Single deployment on the motor ejection charge, delay drilled to 12 s** | Design decision | [D3] |
+| 2026-11-23 | **Ejection protection: LOC Precision reusable wadding** (chute protector) | Design decision | [D3] |
+| 2026-11-23 | **Aft bulkhead**: printed, epoxied in the tube; anchors the Kevlar, holds the chute pack forward, protects the chute; vented or baffle | Design decision | [D3] |
+| 2026-11-23 | **No forward backup motor stop** | Design decision | [D3] |
+| 2026-11-23 | **Tail cone: PETG with a foil-lined bore** | Design decision | [D3] |
+| 2026-11-23 | **Fin can printed aft end (fins) down**, axis vertical | Design decision | [D3] |
+| 2026-11-23 | **Print settings: 0.20 mm layers, 6 walls, 25 % gyroid** (basis of the slicer estimates) | Design decision | [D3] |
+| 2026-11-23 | **Shock cord: 750 lb Kevlar, 3.5 m, knotted ends** (1334 N knotted) | Design decision | [D3] |
+| 2026-11-23 | **Nose attachment: Kevlar through the two 5 mm holes in the nose-cap floor** | Design decision | [D3] |
+| 2026-11-23 | **No heat protection** for the paper tube around the motor case | Design decision | [D3] |
+| 2026-11-23 | **Rail: 6 ft (1.83 m)**; printed rail guides for 1010 and 1515 rails; no waiver required (apogee 4388 ft) | Design decision | [D3] |
+| 2026-11-23 | **Parachute: LOC Precision 28 in**, 84 mm spill hole, 8 shroud lines | Design decision | [D3] |
+| 2026-11-23 | **Motor purchased on site**; delay drilled with a delay drill tool | Design decision | [D3] |
+| 2026-11-23 | All masses are estimates: materials not purchased | Design decision | [D3] |
+| 2026-11-23 | **28 in parachute adequate**: 5.22–5.35 m/s; loads below the 1334 N knotted cord | Result | [D27] |
+| 2026-11-23 | Launch-wind limit from the recovery-area size | Recommendation | §7.8 |
 
 Table: Decision log.
 
@@ -2096,6 +2127,7 @@ Accessed 2026-11-20 unless noted, as recorded in the project files. Entries with
 - [R52] Recovery wadding. https://www.schoolspecialty.com/estes-model-rocket-recovery-wadding-1006149 ; https://stemfinity.com/collections/estes-rockets/products/estes-recovery-wadding ; https://rainbowresource.com/product/000597/Recovery-Wadding-for-rockets.html ; https://store.hobbyetc.com/parts/view/123056
 - [R53] Nomex protectors. https://www.rocketryforum.com/threads/a-cornucopia-of-nomex-parachute-and-shock-cord-protectors.169577/
 - [R54] Giant Leap Rocketry, Kevlar chute protector. https://giantleaprocketry.com/products/kevlar-chute-protector-up-to-2-6-airframe
+- [R81] LOC Precision, model-rocket recovery parachutes (locprecision.com): 28 in parachute, 84 mm spill hole, 8 shroud lines; reusable wadding (chute protector) [D3].
 
 **Retention and inserts (revs 2–7)**
 
@@ -2135,7 +2167,7 @@ All paths are relative to the project repository. The project data file is the s
 |---|---|---|
 | D1 | projects/l1-cheap/goal.md | Goal, budget, deadline |
 | D2 | projects/l1-cheap/feasibility.md | Certification rules, feasibility, motor options |
-| D3 | projects/l1-cheap/design.yaml | **Source of truth**: all design parameters, including the 2026-11-23 SolidWorks design block |
+| D3 | projects/l1-cheap/design.yaml | **Source of truth**: all design parameters, including the 2026-11-23 SolidWorks design block and the confirmed design decisions of 2026-11-23 |
 | D4 | projects/l1-cheap/motor.md; motor/H100W.eng; motor/AeroTech_H100W_DMS.csv | Motor data, retention, thrust curve |
 | D5 | projects/l1-cheap/aero.md | Barrowman, drag, flutter method |
 | D6 | projects/l1-cheap/nosecone.md | Nose design and ballast cavity |
@@ -2157,9 +2189,9 @@ All paths are relative to the project repository. The project data file is the s
 | D22 | out/fin_can_md/rev9/*_drawings.pdf, *_blueprint.pdf; out/nose_cone/rev1/*_drawings.pdf; out/guides/; out/test_pieces/ | Drawings, guides, test pieces |
 | D23 | skills/SKILL.md; skills/build-planner/SKILL.md | Shop constants, phases, verification checks |
 | D24 | git history (`git log --oneline`) | Revision record |
-| D25 | Design-review record, 2026-11-22/23 (values held in the review record) | Overlay result, CP band, flight-simulation results, pack-position warning, OpenRocket mapping, mass-basis method, 1.0 cal minimum |
+| D25 | Design-review record, 2026-11-22/23 (values held in the review record) | Overlay result, CP band, flight-simulation results, pack-position warning, OpenRocket mapping, mass-basis method |
 | D26 | report/figures/drawings/ (ms_piggy_drawings.pdf; sheet images ga_vehicle, ga_aft_section, fincan_sheet, tailcone_sheet, nose_sheet-1…3) | Flight drawing set L1C-GA-001 … L1C-TC-004; nose drawings NC-R1-01 … 03 |
-| D27 | report/figures/recovery/recovery_results.json and figures; tools/recovery_analysis.py | Recovery analysis, 28 in parachute (2026-11-23) |
+| D27 | report/figures/recovery/recovery_results.json and figures; tools/recovery_analysis.py | Recovery analysis, 28 in parachute with 84 mm spill hole (2026-11-23) |
 
 Table: Data sources.
 
@@ -2174,17 +2206,17 @@ Where sources disagree, both values are reported with their basis; none are aver
 | 3 | Motor data | Impulse 226.8 / 228.4 / 234 / 223.9 N·s; maximum 137.8 / 130.2 / 131 N; burn 2.32 / 2.40 / 2.3 s; unlabelled 116.1 N. The design values are used |
 | 4 | Root-fillet thickness | 11.1 / 13.4 mm (overlay) against 11.2 / 13.6 mm (analysis note); both reported |
 | 5 | Stability block in the data file | Rev 7 / 73 g / Barrowman (CG 730.2, 1.81 cal); the current basis is in the 2026-11-23 design block |
-| 6 | Balance-check target | 730 mm (rev 7 basis) and 750 mm (65 g OpenRocket basis) in the data file; 735.6 mm on the recommended basis, used in this report |
+| 6 | Balance-check target | 730 mm (rev 7 basis) and 750 mm (65 g OpenRocket basis) in the data file; 739.7 mm (1.7 cal) and 735.6 mm (1.8 cal) on the conservative CP, used in this report |
 | 7 | Fin-can mass target | `target_mass_g` 90 g (rev 7); rev 9 model 101.0–116.3 g; flight part 97 g slicer estimate |
 | 8 | Flight-simulation mass | Rev 9 fin can + cone 113.9 g at 31.5 mm; flight part 97 + 15 g with CG 59.5 mm forward; no ballast |
 | 9 | Nose mass | Decision 65 g; `nosecone.mass_g` 80 g; verify target 52.7 g; stability target 122.7 g |
 | 10 | Landing speed | 12.3 mph (video tool), 11.9 (model v2), 12.2 (v4), 11.8 (2026-11-22 export) |
-| 11 | Ballast on earlier bases | +23 g (CG 759 mm) against +15 g (CG 750.6 mm); the current basis is §6.3 |
+| 11 | Ballast on the 763.3 mm CG | +25.6 / +9.2 g for 1.8 cal and +21.6 / +5.4 g for 1.7 cal on the current CG basis; earlier CG bases gave +23 g (CG 759 mm) and +15 g (CG 750.6 mm) |
 | 12 | *C*~d~ ×0.857 | Used by rev 8, rev 9 and flight simulations; derivation not documented |
-| 13 | Recovery values in the data file | Cord rating 2860 N, anchor area 191 mm², simulation chute mass 57 g are 40 in values; the 28 in analysis gives opening ≤ 203 N and snatch ≤ 739 N [D27] |
-| 14 | Landing load | Criteria at 200 N (40 in basis); 28 in whole-rocket estimate 180–450 N average, ≈ 900 N peak, 7.8–9.7 J [D12]; 28 in analysis 5.7–6.0 J body section [D27] |
+| 13 | Recovery values in the data file | Cord rating 2860 N, anchor area 191 mm², simulation chute mass 57 g are 40 in values; the 28 in analysis gives opening ≤ 201 N and snatch ≤ 739 N [D27] |
+| 14 | Landing load | Criteria at 200 N (40 in basis); 28 in whole-rocket estimate 180–450 N average, ≈ 900 N peak, 7.8–9.7 J [D12]; 28 in analysis 5.8–6.1 J body section [D27] |
 | 15 | Reefing | Recovery analysis (40 in): reef in wind; landing-load note: fly unreefed |
-| 16 | Descent rate | 5.18–5.31 m/s (28 in analysis, ρ 1.20 kg/m³, 489–514 g) [D27]; 5.0 m/s (data file, 469 g) [D3]; 5.5 m/s (flight simulation) [D21] |
+| 16 | Descent rate | 5.22–5.35 m/s (28 in analysis with spill hole, ρ 1.20 kg/m³, 489–514 g) [D27]; 5.0 m/s (data file, 469 g) [D3]; 5.5 m/s (flight simulation) [D21] |
 | 17 | Deploy speed, 12 s delay | 3.6 m/s (28 in analysis on the flight trajectory) [D27]; 0.9 m/s (rev 9 sim); 2.4 m/s (rev 8 sim); 7.4–7.9 m/s (rev 5 / rev 7) |
 | 18 | Loads versus layers | Specification sheets say fin-root bending is "within the layers"; FEA shows across-layer tension. The report follows the FEA |
 | 19 | Rev 9 specification text | Mentions screws and bosses (none in rev 9), "no supports" next to a supports requirement, a 5.4° cone (rev 9 is 5.0°); assembly figure labels 43 mm |
@@ -2199,10 +2231,9 @@ Where sources disagree, both values are reported with their basis; none are aver
 | 28 | Ballast packing density | ≥ 2.57 g/cm³ (data file, 70 g), ≥ 3.27 (stability note), ≥ 3.54 (BOM), H182R era; superseded by the lower ballast |
 | 29 | Bill of materials | Lists the H182R, inserts and screws, a 197.3 g fin can, the AeroTech delay tool |
 | 30 | OpenFOAM versions | v1912 (run log) and v2406 (reproduction): agreement 0.02 mm |
-| 31 | Tail-cone material | Rev 9 specification: ABS/ASA or foil-lined bore; drawing L1C-TC-004: PETG, "ABS/ASA optional". The report keeps the stronger advice |
+| 31 | Tail-cone material | Rev 9 specification: ABS/ASA or foil-lined bore. Design decision 2026-11-23: PETG with a foil-lined bore (aluminium gum-wrapper foil); drawing L1C-TC-004 Rev B matches |
 | 32 | Sleeve bore and lip | Drawing L1C-FC-003: bore Ø41.6, lip Ø38.42; rev 9: 41.455 / 38.28 mm (different parts) |
 | 33 | Ring-to-shank gap | Drawing L1C-AS-002 shows 0.9 mm at nominal dimensions: motor retained, not clamped |
-| 34 | GA parts list | Drawing L1C-GA-001 lists the motor at 121 g (propellant mass; loaded 261 g) and the tube at 123 g; the listed items do not sum to the stated 610 g |
 
 Table: Source discrepancies.
 

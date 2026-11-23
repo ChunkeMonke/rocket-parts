@@ -111,7 +111,7 @@ def main():
         ax.text(i, r["drift_m"] + 30, f'{r["drift_m"]:.0f} m\n({r["drift_ft"]:.0f} ft)', ha="center", fontsize=7.5)
     ax.set_xlabel("constant wind speed (mph)"); ax.set_ylabel("drift from apogee (m)")
     ax.set_ylim(0, max(r["drift_m"] for r in res["drift"]) * 1.25); ax.grid(axis="y", alpha=.3)
-    ax.set_title(f"Drift under the 28 in parachute from {apogee:.0f} m (descent {vnom:.1f} m/s)", fontsize=10)
+    ax.set_title(f"Drift under the 28 in parachute from {apogee:.0f} m (descent {vnom:.2f} m/s)", fontsize=10)
     fig.tight_layout(); fig.savefig(OUT / "drift.png", dpi=180); plt.close(fig)
 
     # console summary

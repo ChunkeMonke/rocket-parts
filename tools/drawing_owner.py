@@ -32,7 +32,7 @@ FIG = ROOT / "projects/l1-cheap/report/figures/drawings"
 CONE_DZ = -29.89                 # seated tail cone (shoulder on the collar aft face)
 TIP = 1047.5                     # nose tip z in the OML frame (fin-can aft face z = 0)
 N = 4
-REV = "A"
+REV = "B"
 KW = dict(drawn="rocket-parts", project="Ms. Piggy · L1 · H100W-14A", material="PETG",
           note="Geometry cut from the SolidWorks STEP solids; stations from the nose tip. Do not scale: use the dimensions.",
           finish="FDM 0.20 layer, 6 walls", tol="±0.2 · angles ±0.5°")
@@ -110,7 +110,7 @@ def sheet1(pdf, oml):
         ax.text(x, -D.k_(ax, 7 if kind == "cg" else 13), lab, fontsize=6, ha="center", va="top")
         ax.plot([x, x], [-D.k_(ax, 3), -D.k_(ax, 6 if kind == "cg" else 12)], color="k", lw=D.LW_THIN)
     D.leader(ax, (74.6, 0), (40, -60), "NOSE BALLAST STATION 74.6", ha="left")
-    D.leader(ax, (300, 0), (260, -60), "RECOVERY PACK ≈ 300 (HOLD FORWARD)", ha="left")
+    D.leader(ax, (300, 0), (260, -60), "RECOVERY PACK ≈ 300, HELD BY PRINTED AFT BULKHEAD", ha="left")
     D.view_label(ax, (540, -112), "SIDE ELEVATION  (FIN 0 IN PLANE)")
     iso = plt.imread(str(ROOT / "projects/l1-cheap/report/figures/cover_rocket.png"))
     g = iso[..., :3].mean(axis=2)
@@ -120,21 +120,20 @@ def sheet1(pdf, oml):
     paper.text(210, 130, "ISOMETRIC VIEW (REFERENCE, NOT TO SCALE)", fontsize=8, weight="bold", ha="center")
     # parts list
     rows = [[1, "Nose cone, 165 tangent ogive, cap + plug", "PETG", 1, "63"],
-            [2, "Nose ballast (fill hole, plug)", "lead shot", "A/R", "2 (+25 rec.)"],
+            [2, "Nose ballast (fill hole, plug)", "lead shot", "A/R", "2 + A/R"],
             [3, "Body tube BT-1.52 × 863", "LOC kraft paper", 1, "123"],
             [4, "Fin can, 3 fins (SolidWorks)", "PETG", 1, "97"],
             [5, "Tail cone / motor retainer", "PETG", 1, "15"],
-            [6, "Parachute 28 in + shroud lines", "ripstop nylon", 1, "38"],
-            [7, "Shock cord", "Kevlar", 1, "≈6"],
+            [6, "Parachute LOC 28 in, 84 mm spill hole, 8 lines", "ripstop nylon", 1, "38"],
+            [7, "Shock cord 3.5 m, knotted ends", "Kevlar 750 lb", 1, "≈10"],
             [8, "Motor H100W-14A loaded, delay drilled 12 s", "AeroTech DMS 38/155", 1, "261"],
-            [9, "Bulkhead, rail buttons, epoxy (misc.)", "—", "—", "5"],
             ["", "LIFTOFF (ESTIMATE)", "", "", "610"]]
     parts_table(paper, 14, 122, rows, [10, 66, 36, 10, 22])
     notes = ["NOTES",
              "1. ALL DIMENSIONS IN MM. STATIONS MEASURED FROM THE NOSE TIP.",
              "2. TUBE AND MOTOR DIAMETERS ARE PUBLISHED NOMINAL VALUES; FIT-CHECK AT ASSEMBLY.",
              "3. CG FROM SLICER MASSES AT CAD CENTROIDS (ESTIMATE). CP FROM 3D CFD, 100 m/s, α = 4°.",
-             "4. STATIC MARGIN 1.13 CAL AS SHOWN; +25 g NOSE BALLAST GIVES 1.8 CAL (CG ≤ 735.6).",
+             "4. BALLAST SIZED AT ASSEMBLY FROM THE AS-BUILT CG (EDR L1C-EDR-001 §6): MIN 1.7 CAL, TARGET 1.8 CAL.",
              "5. REFERENCE DIAMETER 41.275 MM. THIRD-ANGLE PROJECTION."]
     for k, t in enumerate(notes):
         paper.text(175, 122 - k * 5.5, t, fontsize=6 if k else 7, weight="bold" if k == 0 else "normal")
@@ -254,7 +253,7 @@ def sheet4(pdf, cn):
     D.leader(ev, (13.6, 13.6), (22, 25), "Ø38.6 BORE")
     D.view_label(ev, (0, -27), "AFT VIEW")
     for k, t in enumerate(["NOTES", "1. PRINT NARROW END DOWN, NO SUPPORTS.", "2. 5.0° HALF-ANGLE TAPER.",
-                           "3. HEAT: SHORT EXPOSURE TO EXHAUST AT BURNOUT; ABS/ASA OPTIONAL.",
+                           "3. BORE LINED WITH ALUMINIUM FOIL (HEAT SHIELD).",
                            "4. THREAD FIT VALIDATED BY TEST PRINT 2026-11-23."]):
         paper.text(270, 95 - k * 6, t, fontsize=6.5 if k else 7.5, weight="bold" if k == 0 else "normal")
     pdf.savefig(fig); fig.savefig(FIG / "tailcone_sheet.png", dpi=170); plt.close(fig)
