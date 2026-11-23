@@ -38,7 +38,9 @@ plt.rcParams["font.family"] = "DejaVu Sans"
 
 
 # ------------------------------------------------------------------ sheet frame and title block
-def new_sheet(title, number, rev, scale_txt, p):
+def new_sheet(title, number, rev, scale_txt, p, subtitle="MIN-DIAMETER FIN CAN + TAIL CONE RETAINER", prefix="FC-MD",
+              material="PETG (tail cone: ABS/ASA)", n_sheets=None):
+    n_sheets = n_sheets or N_SHEETS
     fig = plt.figure(figsize=(A3[0] * MM, A3[1] * MM))
     paper = fig.add_axes([0, 0, 1, 1])
     paper.set_xlim(0, A3[0]); paper.set_ylim(0, A3[1]); paper.axis("off")
@@ -64,20 +66,20 @@ def new_sheet(title, number, rev, scale_txt, p):
     def cell(cx, cy, label, val, fs=8):
         paper.text(x0 + cx + 1.2, y0 + cy + 7.4, label, fontsize=4.8, color="0.3", va="top")
         paper.text(x0 + cx + 1.5, y0 + cy + 2.2, val, fontsize=fs, va="bottom")
-    cell(0, 18, "MATERIAL", "PETG (tail cone: ABS/ASA)", 6.5)
+    cell(0, 18, "MATERIAL", material, 6.5)
     cell(45, 18, "FINISH / PRINT", "FDM 0.2 layer, 6 walls", 6.5)
     cell(90, 18, "SCALE", scale_txt)
-    cell(135, 18, "SHEET", f"{number} / {N_SHEETS}")
+    cell(135, 18, "SHEET", f"{number} / {n_sheets}")
     cell(0, 9, "DRAWN", "rocket-parts / Claude")
     cell(45, 9, "DATE", str(date.today()))
     cell(90, 9, "UNITS", "mm")
     cell(135, 9, "REV", str(rev))
     cell(0, 0, "PROJECT", "l1-cheap (H100W, 38 mm)", 6.5)
-    cell(45, 0, "DWG NO.", f"FC-MD-R{rev}-{number:02d}")
+    cell(45, 0, "DWG NO.", f"{prefix}-R{rev}-{number:02d}")
     cell(90, 0, "GENERAL TOL.", "±0.2 · angles ±0.5°", 6.5)
     paper.text(x0 + 137, y0 + 2.4, "SIZE A3", fontsize=7)
     paper.text(x0 + 2, y0 + 39, title, fontsize=11, weight="bold", va="center")
-    paper.text(x0 + 2, y0 + 31.5, "MIN-DIAMETER FIN CAN + TAIL CONE RETAINER", fontsize=6.5, va="center", color="0.25")
+    paper.text(x0 + 2, y0 + 31.5, subtitle, fontsize=6.5, va="center", color="0.25")
     # third-angle projection symbol
     sx, sy = x0 + 150, y0 + 37
     paper.add_patch(Circle((sx + 18, sy), 3.2, fill=False, lw=0.5))
@@ -86,7 +88,7 @@ def new_sheet(title, number, rev, scale_txt, p):
     paper.plot([sx - 1, sx + 23], [sy, sy], lw=0.25, color="k", ls=(0, (6, 2, 1, 2)))
     paper.text(sx + 11.5, sy - 6.3, "THIRD-ANGLE", fontsize=4.8, ha="center")
     # source note
-    paper.text(14, 13, "Geometry cut from the generated STL; dimensions from design.yaml (parts/fin_can_md.py). "
+    paper.text(14, 13, "Geometry cut from the generated STL; dimensions from design.yaml (parts/). "
                "Do not scale the print: use the dimensions.", fontsize=5.5, color="0.35")
     return fig, paper
 
