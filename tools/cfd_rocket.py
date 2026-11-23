@@ -138,10 +138,10 @@ geometry {{
 castellatedMeshControls {{
   maxLocalCells 4000000; maxGlobalCells 12000000; minRefinementCells 10; maxLoadUnbalance 0.10;
   nCellsBetweenLevels 3;
-  features ( {{ file "rocket.eMesh"; level 5; }} );
-  refinementSurfaces {{ rocket {{ level (4 5); patchInfo {{ type wall; }} }} }}
+  features ( {{ file "rocket.eMesh"; level {5 + a.refine}; }} );
+  refinementSurfaces {{ rocket {{ level ({4 + a.refine} {5 + a.refine}); patchInfo {{ type wall; }} }} }}
   resolveFeatureAngle 30;
-  refinementRegions {{ near {{ mode inside; levels ((1E15 3)); }} wake {{ mode inside; levels ((1E15 2)); }} }}
+  refinementRegions {{ near {{ mode inside; levels ((1E15 {3 + a.refine})); }} wake {{ mode inside; levels ((1E15 2)); }} }}
   locationInMesh ({L + 2.0137} 0.5131 0.4873);   // odd offsets: never on a cell face or processor boundary
   allowFreeStandingZoneFaces true;
 }}
@@ -294,6 +294,7 @@ if __name__ == "__main__":
     ap.add_argument("--iters", type=int, default=800)
     ap.add_argument("--np", type=int, default=4)
     ap.add_argument("--name", default="a4")
+    ap.add_argument("--refine", type=int, default=0, help="extra refinement levels on the surface + near box (mesh study)")
     ap.add_argument("--stl", default=None, help="OML file in out/cfd/ (default rocket_oml.stl; owner model: rocket_oml_owner.stl)")
     a = ap.parse_args()
     setup(a) if a.cmd == "setup" else post(a)
