@@ -145,3 +145,12 @@ Issues:
 - The fairing transition is filled solid: 0.17 lb (77 g). The OR fin-can total is 146 g vs the real part's ~95 g, so the CG is too far aft.
 - Still set: delay 14 s, nose 0.132 lb, elastic cords.
 CFD CP 809.9 with this CG gives 0.85 cal (tube ref). After the mass fix (CG ≈ 752 mm, ESTIMATE) it gives ≈1.40 cal.
+
+### CORRECTION (2026-11-23): the "why" above is RETRACTED
+A true-scale overlay (tools/fincan_compare.py) shows the owner fin can and rev 9 are almost identical in geometry.
+The fairing, sleeve, full-diameter section behind the fins and the 30 mm tail cone all coincide.
+The real differences are small: span +2.9 mm, root 52 vs 50 mm, root-fillet thickness 11.1 vs 13.4 mm, TE 1.0 vs 2.5 mm.
+The "no root fillet" and "cone tapers sooner" explanations above were wrong.
+The 9 % CN_α deficit is the size of the coarse single mesh's uncertainty (±5–8 %), so it is UNCONFIRMED.
+A fine-mesh check (r9a4_f / own_a4_f, --refine 1) was started and stopped before finishing: OPEN.
+Interim: use the rev 9 CFD CP (827 mm) for both designs, PROVISIONAL.

@@ -1,13 +1,14 @@
 # l1-cheap — Design & Research Report
-_Last updated: 2026-11-22 · 5bfc7c0_
+_Last updated: 2026-11-23 · 6674b87_
 
-> Living document, maintained by the `rocket-docs` agent. Every number is copied from a project source and cited inline. Labels ESTIMATE / PLACEHOLDER / PROPOSED / TBD / PREDICTION / INTERIM are carried over from the sources.
+> Living document, maintained by the `rocket-docs` agent. Every number is copied from a project source and cited inline. Labels ESTIMATE / PLACEHOLDER / PROPOSED / TBD / PREDICTION / INTERIM / UNCONFIRMED are carried over from the sources. Values marked "main session" were reported in the session and are not yet in a project file.
 >
-> **Current basis (2026-11-22):** AeroTech H100W-14A, minimum-diameter, **fin can rev 7** with the **owner's OpenRocket planform**, **nose rev 1 at 65 g total (63 g printed + 2 g ballast, owner decision per OpenRocket)**, **28 in chute**.
-> - **CP:** a **3D CFD run (OpenFOAM) gives 836.3 mm**, matching OpenRocket's 836.0 mm. Barrowman's 804.7 mm is conservative (§3.6.2).
-> - **Flight numbers:** the owner flies on the OpenRocket export of 2026-11-22 plus the CFD CP (§6.0). The design.yaml `stability` result block is still the rev 7 / **73 g** run and has not been re-solved for the 2 g ballast (§11.5).
-> - **Structure:** rev 7 passes the owner's fin criteria C1–C4 in the **in-house CalculiX FEA** (§4.4.7–4.4.8), scaled to the owner's rev 5 ANSYS. An owner ANSYS cross-check of rev 7 is optional.
-> - Rev 6 is superseded for flight; rev 8 was dropped unanalysed. H182R material is history only. Source conflicts are listed in §11.
+> **Current basis (2026-11-23):** AeroTech H100W-14A, minimum-diameter, nose rev 1 at **65 g total**, **28 in chute**, 12 s delay.
+> - **Owner's design basis:** the owner's own **SolidWorks fin can + tail cone** ("Pepto B. #2", `owner_cad/*.STEP`, fin span 46.1 mm, intentional). Masses are not weighed yet (§4.0.4).
+> - **Design-side candidate:** **fin can rev 9 + screw-on tail cone rev 9** (no insert bosses, R6 TE skirt, 30 mm boattail). FEA C1–C4 PASS, CFD CP 827.4 mm (§4.0.1, §3.6.3).
+> - **Threads validated:** the owner's test print of the 2.5 mm pitch / 0.2 mm clearance thread "screws great" (2026-11-23, §4.0.5).
+> - **Open CFD question:** the owner model's CFD gives CNα 9 % lower than rev 9. This is within the coarse-mesh uncertainty and is **UNCONFIRMED**; the fine-mesh check was stopped unfinished. **Interim: use the rev 9 CFD CP (827 mm) for both designs, PROVISIONAL** (§3.6.4).
+> - Rev 7, rev 6 and the 836.3 mm rev 7 CFD CP are superseded for flight. They stay below as history.
 
 ---
 
@@ -20,59 +21,58 @@ _Last updated: 2026-11-22 · 5bfc7c0_
 | | |
 |---|---|
 | Motor | AeroTech **H100W-14A DMS, 38 mm**, $54.99, HAZMAT. Curve: 228.4 N·s, peak 130.2 N, burn 2.40 s (design.yaml `motor`) |
-| Layout | Minimum-diameter: motor directly in the LOC BT-1.52, 863 mm. Length 1030.7 mm (design.yaml `stability.total_length_mm`) |
-| Nose | **Rev 1**: 165 mm ogive + screw-on Kevlar cap + ballast plug. Owner slicer **63 g + 2 g ballast = 65 g total** (OWNER DECISION, per OpenRocket; design.yaml `stability.ballast_g`, `nose_shell_mass_g`) |
-| Fins | **Owner's OR planform**: 3 × 50.0 / 30.0 / 43.18 span / 20.32 sweep; **12 mm root tapering to 6 mm tip**, fillet 6 mm; **rev 7: blunt 8 mm root TE, insert boss +1 mm wall** (design.yaml `aero`, `fin_can_md`) |
-| Fin can | **Rev 7** sleeve, owner slicer **90 g at 25 % gyroid**. Verify **5/5 PASS** at 90 g (out/fin_can_md/rev7) |
-| Recovery | Motor ejection, **drill to 12 s**; **28 in ripstop chute, 38 g** (owner, OR file; was 40 in); 750 lb Kevlar (design.yaml `recovery`) |
+| Layout | Minimum-diameter: motor in the LOC BT-1.52. A **screw-on tail cone traps the thrust ring** and forms the boattail (design.yaml `fin_can_md.retention`). CFD OML length 1077.5 mm (rev 9) / 1077.4 mm (owner) (`cfd_r9a4_result.json`, `cfd_own_a4_result.json` `case.L`) |
+| Nose | **Rev 1**, 165 mm ogive + screw-on Kevlar cap + ballast plug: **63 g + 2 g ballast = 65 g** (OWNER DECISION; design.yaml `stability.ballast_g`) |
+| Fin can (owner basis) | **Owner SolidWorks**: span 46.1 mm (INTENTIONAL), root ~52 / tip 30 / sweep 18.8 mm, sleeve 118 mm, tail cone 46.8 → 41.6 mm. Mass ~95 g ESTIMATE, slicer mass pending (main session) |
+| Fin can (design side) | **Rev 9**: OR planform 50 / 30 / 43.18 / 20.32 mm, 12 → 6 mm, TE root 2.5 mm, R6 TE skirt, collar 18.5 mm; ~97.9 g ESTIMATE + tail cone 16.0 g model (fin_design_criteria.md Rev 9) |
+| Thread | 45° trapezoid, pitch 2.5, depth 1.0, clearance 0.2 mm: **VALIDATED by test print 2026-11-23** (design.yaml `fin_can_md.thread_*`) |
+| Recovery | Motor ejection, **drill to 12 s**; **28 in ripstop chute, 38 g**; 750 lb Kevlar (design.yaml `recovery`) |
 
-**Stability: CFD settles the CP** (or_component_analysis.md, "3D CFD settles the CP"; ref 41.275 mm)
+**Stability: two fin cans, one open question** (100 m/s, α 4°, ref 41.275 mm; 65 g nose)
 
-| CP source | CP from tip | Margin on the OR CG (750.4 mm) |
-|---|---|---|
-| **3D CFD, OpenFOAM** (100 m/s, α 4°) | **836.3 mm** | **2.08 cal** |
-| OpenRocket | 836.0 mm | 2.07 cal (OR export) |
-| Barrowman / RocketPy | 804.7 mm | 1.32 cal: **conservative** (figure 33) |
-
-- Barrowman leaves out the body lift around the fin can and along the tube, which puts its CP 31 mm too far forward.
-- With the real extras the CG is 753 mm, giving **2.01 cal**. If the chute pack slides onto the motor (CG 788 mm), the margin drops to **1.17 cal**, which is still stable.
-- 2.08 and 2.01 cal sit **just above the owner's 1.6–2.0 band** (§11.6).
-- **CFD details and imagery:** §3.6.2, figures 32–56. The setup was a half model with 590k cells and k-ω SST; it converged and was reproduced on the owner's PC. The Mach 0.8 run (first-order, 2500 iterations) gives CP 818.3 mm, not yet trusted.
-
-**Key performance** (65 g nose basis; PROVISIONAL mass estimates)
-
-| | Apogee | Vmax / Mach | Rail exit | Source |
+| Basis | CP from tip | CG from tip | Margin | Source |
 |---|---|---|---|---|
-| OpenRocket export | 3945 ft (1202 m) | 615 mph | 41.5 mph off the pad | or_component_analysis.md (H100W_DMS-6) |
-| In-house sim, OR weights (case A) | 1212 m | M 0.785 | 25.5 m/s | main session 2026-11-22 (rail length not stated) |
+| Rev 9, CFD r9a4 | 827.4 mm | 761.0 mm (sim) | **1.61 cal**; +7.4 g ballast → 1.8 | fin_design_criteria.md Rev 9 |
+| Owner STEP, CFD own_a4 | 809.9 mm | 759 mm ESTIMATE | ≈ 1.23 cal | or_component_analysis.md |
+| Owner STEP CFD CP, OR v2 CG | 809.9 mm | 750.6 mm | **1.44 cal**; +15 g ballast ESTIMATE → 1.8 | or_component_analysis.md |
+| OR v2 (owner's own model) | 835.6 mm | 750.6 mm | 1.82 cal | owner_cad/OR_Pepto_B_2.pdf |
 
-**Fin can structure: rev 7 meets all four FEA criteria** (in-house CalculiX, ANSYS-scaled failure index FI / limit; out/fea/rev7/criteria.json)
+- **Correction (main session, 2026-11-23):** at true scale the owner fin can and rev 9 are almost identical. The earlier explanation (sharp root corner, earlier taper) was **wrong and is retracted**.
+- The 9 % CNα gap is comparable to the coarse-mesh uncertainty (±5–8 %), so it is **UNCONFIRMED**. **Interim: rev 9 CP 827 mm for both, PROVISIONAL.**
+- OR's CP sits 26–50 mm aft of the CFD (main session). OR v3 has model errors (§3.3.2).
+
+**Key performance** (simulations; masses are ESTIMATES until the parts are weighed)
+
+| Case | Apogee | Vmax / Mach | Rail exit | Source |
+|---|---|---|---|---|
+| Rev 9 sim, OR weights + extras | **1383 m** | — | — | fin_design_criteria.md Rev 9 |
+| Flight video sim (OR-matched, 1.83 m rail) | 1337 m (4388 ft) at 14.0 s | 269 m/s / M 0.79 | 24.9 m/s | out/video/flight.json; main session |
+| Owner OR v2 | 4404 ft | 614 mph / M 0.80 | — | OR_Pepto_B_2.pdf |
+
+**Fin can structure** (in-house CalculiX FEA, ANSYS-scaled FI / limit; out/fea/rev9/criteria.json)
 
 | C1 sideways 200 N | C2 tilted 200 N at 45° | C3 axial 200 N | C4 gust 15 N |
 |---|---|---|---|
-| **0.28** / 0.5 PASS | **0.25** / 0.5 PASS | **0.084** / 0.5 PASS | **0.022** / 0.1 PASS |
+| **0.34** / 0.5 PASS | **0.27** / 0.5 PASS | **0.15** / 0.5 PASS | **0.026** / 0.1 PASS |
 
-- **~2.6–2.8× better than rev 6** on identical meshes. Rev 6 fails C1 at 0.785 (out/fea/rev6/criteria.json).
-- Flutter: **PASS, ~5×** (rev 5, Vf ≈ 1330 m/s vs 250 m/s, G = 394 MPa). Not recomputed; thicker fins only raise Vf (C5).
-- In-house FEA validated against the owner's ANSYS: **axial within 3.6 %** (§4.4.2). The 200 N landing load is an ESTIMATE.
+- Rev 9 (above) and rev 8 (0.30 / 0.33 / 0.11 / 0.023) both pass. **The owner's SolidWorks fin can has no FEA.**
 
 **Phase status**
 
 | 0 Goal | 1 Feas. | 2 Design | 3 BOM | 4 Budget | 5 Sched. | 6 Parts | 7 Build | 8 Flight |
 |---|---|---|---|---|---|---|---|---|
-| done | Cond. GO | 65 g nose (owner, per OR); **CFD CP 836.3 mm confirms OR**; Mach 0.8 CFD first-order done (CP 818.3 mm, not yet trusted) | needs update | not started | — | fin can rev 7 5/5, FEA C1–C4 PASS; nose rev 1: cap, plug 5/5, cone 4/5 (mass target) | — | — |
+| done | Cond. GO | rev 9 done (FEA + CFD); owner design CFD done; fine-mesh check open | needs update | not started | — | rev 9 STEP/STL, drawings, guides; verify 4/5 (mass target stale) | **thread test print PASS** | — |
 
 **Top risks**
-1. **Unmeasured fit and masses:** tube OD, case OD and thrust ring are PLACEHOLDERS that block printing. The OR model uses a 123 g tube (our ESTIMATE: 93.6 g).
-2. **The margin depends on where the chute pack sits:** 2.08 cal with the pack forward, 1.17 cal if it slides onto the motor (§6.0). No part holds the pack forward yet (OR has a 2 g bulkhead).
-3. **Landing loads with the 28 in chute:** it roughly doubles the landing energy (7.8–9.7 J, peak to ~900 N ESTIMATE, §4.3.6). The fin criteria use a 200 N ESTIMATE on a solid FE model. A test print and a 1.5 m drop test are the checks.
+1. **Stability margin below target.** Every CFD-based margin (1.23–1.61 cal) sits under 1.8. The CP question is unsettled. With the chute pack on the motor the RocketPy basis reads **0.15 cal** and the sim stalls (§6.7).
+2. **Unmeasured hardware.** Tube OD, case OD and thrust ring (9.5 mm forum estimate sets the 18.5 mm collar) are PLACEHOLDERS. No slicer masses for the owner parts.
+3. **Tail cone heat and landing.** The cone surrounds the nozzle (ABS/ASA or foil-lined bore advised). The 28 in chute's landing load can exceed the 200 N criterion (§4.3.6).
 
 **Next steps**
-- Owner: measure the tube OD, motor case OD and thrust ring (OD, thickness), then regenerate rev 7 with the measured values.
-- Owner: test-print rev 7 (fit test, and the **1.5 m** drop test for the 28 in chute, §9.4).
-- Owner: weigh the parts, then do the **balance check: CG ≤ 750 mm (29.5 in) from the tip**, with the motor in and the chute packed **toward the nose** (design.yaml `stability.ballast_g`).
-- Sim lab: finish the **Mach 0.8 CFD**, then continue it in second order and compare the CP (§3.6.2).
-- Optional: owner ANSYS cross-check of rev 7 on `out/fin_can_md/rev7/fin_can_md_rev7.step` (§4.3.8).
+- Owner: slicer masses of the SolidWorks fin can and tail cone; caliper the tube OD, case OD and thrust ring (OD, length).
+- Owner: fix the OR file (fin offset, hollow fairing, delay 12 s, nose 0.143 lb, Kevlar); hold the chute pack forward.
+- Sim lab: finish the fine-mesh CFD (`--refine 1`, cases r9a4_f / own_a4_f) to settle the CNα gap.
+- Owner (optional): 6 mm root fillets on the SolidWorks fins. Then balance check and ballast.
 
 ---
 
@@ -153,6 +153,8 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
 - **Ring.** Factory-glued; AeroTech's DMS thrust-ring advisory (04/2014) says to check it. In this layout **the glue joint carries all of the thrust (137.8 N)**.
 - **PROPOSED:** a forward backup stop inside the tube (printed or plywood ring). The sim carries it as a 10 g ESTIMATE "stop/anchor ring" (stability.md §0.1). Owner decision.
 - **Heat.** The paper tube touches the case directly, and the case is hot when the ejection charge fires (motor.md §D).
+- **Ring length, 2026-11-22:** the fin can now models the ring as **9.525 mm (3/8 in)**, a Rocketry Forum estimate for 38 mm DMS rings. No official AeroTech drawing was found; the owner's photo "agrees (long black aft band)". **PLACEHOLDER, MEASURE** (design.yaml `fin_can_md.thrust_ring_thk_mm`). It sets the 18.5 mm collar (§4.0.1).
+- **Retention since rev 8:** the screw-on tail cone's shank face bears on the ring annulus (38.6–41.0 mm) and traps the motor. The M3 insert retention is dropped (design.yaml `fin_can_md.retention`, `tail_cone_bore_d_mm`). design.yaml `motor.retention` still describes the insert proposal (§11.5).
 
 ### 2.3 Selection rationale
 - **2026-11-20:** owner confirmed the H182R-14A (29 mm DMS), chosen over 29 mm RMS reloads that need a $108.79–$152.99 case (feasibility.md §2–3).
@@ -172,6 +174,16 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
   - OR's "optimum delay" of 11.6 s is the undisturbed coast, and it agrees with our 11.24 s (rev 7).
   - A 7 s delay deploys at 31–63 m/s while climbing. recovery.md puts the knotted-Kevlar limit at about 27 m/s.
 - The motor agent still has to confirm the AeroTech/UDDT drill steps (design.yaml `stability.recommended_delay_s`).
+- **Rev 8 / rev 9 and owner checks (2026-11-22/23) all keep 12 s:**
+
+| Basis | Coast to apogee | 12 s delay deploys at | Source |
+|---|---|---|---|
+| Rev 8 sim (OR weights + extras) | 11.75 s | 2.4 m/s | fin_design_criteria.md Rev 8 |
+| Rev 9 sim (OR weights + extras) | 12.09 s | 0.9 m/s | fin_design_criteria.md Rev 9 |
+| Flight video sim | apogee 14.0 s, burnout 2.4 s | deploy 14.4 s, "≈ apogee" | out/video/flight.json; main session |
+| Owner OR v2 | "optimum delay" 11.5 s | — | OR_Pepto_B_2.pdf |
+
+- **The owner's OR v3 is still set to a 14 s delay; it should be 12 s** (main session; or_component_analysis.md "Owner OR v3").
 
 ### 2.5 H182R-14A (29 mm): SUPERSEDED 2026-11-21, kept for history (motor.md, lower part)
 
@@ -188,9 +200,9 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
 
 ## 3. Aerodynamics
 
-### 3.1 Fins (design.yaml `aero`, `fin_can_md`, aero.md §0, fin_can_md rev 5, 6 and 7 specs)
+### 3.1 Fins (design.yaml `aero`, `fin_can_md`, aero.md §0, fin_can_md rev 5–9 specs, owner STEP)
 
-| Item | **Rev 7 (current)**, owner's OR planform | Rev 6 (superseded) | Rev 5 (ANSYS basis) | Aero rev 4 (PROPOSED, not adopted) | Old (rev 1–3) |
+| Item | Rev 7 (SUPERSEDED 2026-11-22 by rev 8/9), owner's OR planform | Rev 6 (superseded) | Rev 5 (ANSYS basis) | Aero rev 4 (PROPOSED, not adopted) | Old (rev 1–3) |
 |---|---|---|---|---|---|
 | Count | 3 | 3 | 3 | 3 | 3 |
 | Root / tip chord | **50.0 / 30.0 mm** | 50.0 / 30.0 | 50.0 / 30.0 | 50 / 30 | 100 / 40 |
@@ -209,6 +221,24 @@ TC = ThrustCurve, QA = Quest Aerospace, RR = RocketReviews. The design values ar
 - **Fillet:** 6 mm is the largest that does not collide with the sleeve bore geometry (spec `root_fillet_r_mm`). The owner's 3–5 mm range is not confirmed.
 - Barrowman CP does not depend on thickness, so the rev 7 Barrowman CP is unchanged at 804.7 mm (design.yaml `stability.cp_from_nose_mm`). The 3D CFD on the rev 7 OML gives **836.3 mm** (§3.6.2).
 - Thicker fins and the blunt TE, now **8 mm at the root**, add drag that the sim's Cd table does not model (§3.4).
+
+**Current fins (2026-11-22/23): rev 9 (design side) vs the owner's SolidWorks fin can (owner basis)**
+
+| Item | **Rev 9** (fin_can_md rev 9 spec, design.yaml) | **Owner SolidWorks** (`owner_cad/L1-Rocket-FinCan.STEP`; main session overlay) |
+|---|---|---|
+| Count | 3 | 3 |
+| Root / tip chord | 50 / 30 mm | **~52** / 30 mm |
+| Span | 43.18 mm (on r 23.40) | **46.1 mm** (fin tip r 69.5 on the r 23.40 sleeve), **INTENTIONAL (owner)** |
+| LE sweep | 20.32 mm | 18.8 mm |
+| Thickness | 12 mm root → 6 mm tip | not stated in the sources |
+| Root fillet | r 6 mm (PROPOSED) | **none** (root-fillet region thickness 11.1 mm vs rev 9 13.4 mm, main session; or_component_analysis.md gives 11.2 vs 13.6) |
+| TE at the root | **2.5 mm** (OWNER), tapering to 0.84 | **1.0 mm** (main session) |
+| TE junction | concave **R6 skirt** into the collar (PROPOSED) | not described |
+| Insert bosses | **none** (OWNER) | none (tail cone retention) |
+
+- **Rev 8** kept the rev 7 fins (8 mm blunt root TE, solid bosses) and added 45° TE gussets (fin_design_criteria.md Rev 8).
+- **Rev 9** removed the bosses and thinned the root TE to 2.5 mm, because "the 8 mm blunt TE only existed to bury the insert bosses" (design.yaml `fin_can_md.te_root_thickness_mm`).
+- **Overlay result (main session, 2026-11-23):** at true scale the two fin cans are "geometrically almost identical". The differences are span +2.9 mm, root 52 vs 50 mm, root-fillet thickness 11.1 vs 13.4 mm, and TE 1.0 vs 2.5 mm. CFD comparison in §3.6.4.
 
 ### 3.2 Barrowman centre of pressure (stability.md §0.2, aero.md §0.3)
 
@@ -287,6 +317,50 @@ OR config H100W_DMS-6, Mach 0.300, AoA 0, ref length 1.625 in (41.275 mm). OR to
 | 594 g | 29.545 in (750.4 mm) | 32.914 in (836.0 mm) | **2.07 cal** | 3945 ft (1202 m) | 615 mph | 41.5 mph | 11.6 s | 11.8 mph |
 
 - The H182R-6 run gives 3420 ft (superseded motor).
+- **SUPERSEDED 2026-11-23** by the owner's OR files `OR_Pepto_B_2.pdf` and `OR_Pepto_B_3.pdf` (§3.3.1–3.3.2).
+
+#### 3.3.1 Owner OpenRocket "Pepto B. #2", v2 (2026-11-23; owner_cad/OR_Pepto_B_2.pdf, or_component_analysis.md)
+
+**Inputs** (OR components):
+- nose cone 6.5 in, 0.132 lb (59.9 g); tube 29.25 in exposed;
+- transition 1.625 → 1.842 in over 0.75 in (34.9 g); sleeve 1.842 in OD × 4 in (45.8 g);
+- 3 trapezoidal fins, 0.315 in thick (15.9 g); tail transition 1.842 → 1.638 in over 1.909 in (15.9 g);
+- 28 in chute. Total length 1077 mm, "the same as the CFD OML".
+
+| Mass | CG | CP | Margin (ref 1.625 in) | Apogee | Max speed | Optimum delay | Landing |
+|---|---|---|---|---|---|---|---|
+| 594 g (1.31 lb) | 29.552 in (750.6 mm) | 32.896 in (835.6 mm) | **1.82 cal** | 4404 ft | 614 mph (M 0.80) | 11.5 s | 11.9 mph |
+
+- **Against the CFD of the owner STEP** (CP 809.9 mm, §3.6.4) the OR CP is **25.7 mm aft**. With OR's CG that gives **1.44 cal**.
+- For 1.8 cal on the CFD CP the CG must be 735.6 mm: about **+15 g of nose ballast** (ESTIMATE, lever about 610 mm, 594 g).
+
+#### 3.3.2 Owner OR v3 (2026-11-23; owner_cad/OR_Pepto_B_3.pdf): geometry updated toward the STEP
+
+| Mass | CG | CP | Margin as OR reports it | Apogee |
+|---|---|---|---|---|
+| 649 g (1.43 lb) | 30.502 in (774.8 mm) | 33.918 in (861.5 mm) | "1.85 cal" | 4122 ft |
+
+**Issues found** (or_component_analysis.md "Owner OR v3"; main session):
+1. **Caliber reference changed.** OR now uses the maximum diameter, the 1.842 in sleeve, as its reference. The owner's OR has no reference-length option. On the 1.625 in tube the same rocket is **2.10 cal**. Convert with **SM = (CP − CG) / 1.625 in**.
+2. **Fin offset missing.** The −0.59 in offset was not applied, so the fins sit **15 mm too far aft** (TE flush with the sleeve bottom).
+3. **Solid fairing.** The fairing transition is filled solid (0.17 lb, 77 g). The OR fin can totals **146 g against ~95 g** for the real part, so the CG is too far aft.
+4. **Still set:** delay 14 s (should be 12), nose 0.132 lb (should be 0.143), elastic cords (should be Kevlar).
+
+- **With the CFD CP (809.9 mm):** the v3 CG gives 0.85 cal (tube ref). After the mass fix (CG ≈ 752 mm, ESTIMATE) it is **≈ 1.40 cal**, ESTIMATE; about **+15 g** of nose ballast for 1.8 cal (main session).
+- **OR's CP sits 26–50 mm aft of the CFD** across v2 and v3 (main session).
+
+**Recommended OR component mapping** (main session summary given to the owner; not in a project file):
+
+| OR component | Recommended entry |
+|---|---|
+| Body tube | 28.57 in exposed |
+| Fairing transition | 1.704 → 1.842 in over 1.594 in (hollow, not solid) |
+| Sleeve | 4.646 in |
+| Fins | root 2.05 / tip 1.18 / height 1.815 / sweep 0.74 / thickness 0.35 in; offset −0.59 in |
+| Inner tube | 5.4 in at −0.83 in, mass 0.043 lb |
+| Tail transition | 1.841 → 1.638 in over 1.177 in |
+
+- The v2 entries (tube 29.25 in, transition over 0.75 in, sleeve 4 in, tail over 1.909 in) differ from this mapping. The mapping is the main session's recommendation for the next OR revision.
 
 ### 3.4 Drag and Mach
 
@@ -303,6 +377,17 @@ OR config H100W_DMS-6, Mach 0.300, AoA 0, ref length 1.625 in (41.275 mm). OR to
   - aero's Cd ESTIMATE at M 0.1 is 0.73.
   - The CFD figure is only rough: wall functions, no prism layers. It does model the rev 7 thick root and the 8 mm blunt TE.
 - **Mach 0.8 CFD (first-order, not yet trusted):** pressure CA 0.958 at 2500 iterations (1.138 at 500); total ≈ 1.23 with the flat-plate friction ESTIMATE (§3.6.2).
+- **Boattail designs, same CFD method (100 m/s, α 4°; §3.6.3–3.6.4):**
+
+| OML | CA pressure | CA total (with flat-plate friction ESTIMATE) | vs rev 7 | Source |
+|---|---|---|---|---|
+| Rev 7 (flat base) | 0.375 | 0.709 | — | `cfd_a4_result.json` |
+| Rev 8 (20 mm boattail to 43.0) | 0.266 | **0.608** | −14 % | `cfd_r8a4_result.json` |
+| **Rev 9** (30 mm boattail to 41.6, 40 mm fairing) | 0.232 | **0.578** | **−18 %** | `cfd_r9a4_result.json` |
+| Owner STEP (own_a4) | 0.252 | **0.600** | — | `cfd_own_a4_result.json` |
+
+- Rev 8: "base + fin pressure drag 0.360 → 0.236" (fin_design_criteria.md Rev 8).
+- The rev 8 and rev 9 sims scale Cd by **×0.857** (fin_design_criteria.md; `tools/flight_export.py`). The sources do not state how the factor was derived (§11.5).
 
 ### 3.5 Flutter (ansys_results.md Case 2; method aero.md §4)
 
@@ -333,7 +418,9 @@ Symbols: V_f flutter speed (m/s); a speed of sound (m/s); G shear modulus (Pa); 
 - First-cell heights (y+ ≈ 1, ESTIMATE from flat-plate Cf = 0.026 Re^-1/7) use H100W speeds from the rev 5 run: rail exit 24.0 m/s to Vmax 250.0 m/s (out/cfd/fluent_setup.md). Rev 7: 23.8 to 248.3 m/s (§6.4).
 - **Still stale in fluent_setup.md:** "compressible up to Mach 0.83" (H182R basis; H100W Vmax is M 0.732 in the rev 7 re-solve), and it points to `fin_can_rev2_fin_only.step` for 3D (§11).
 
-#### 3.6.2 3D CFD of the whole rocket: OpenFOAM, 100 m/s, α 4° (2026-11-22)
+#### 3.6.2 3D CFD of the whole rocket: OpenFOAM, 100 m/s, α 4° (2026-11-22; rev 7 OML, SUPERSEDED for flight)
+
+> The rev 7 CP of 836.3 mm is superseded for flight by the boattail designs: rev 9 827.4 mm (§3.6.3) and the owner model 809.9 mm (§3.6.4). The method, validation and imagery below still apply.
 
 Sources: or_component_analysis.md ("3D CFD settles the CP", "Mach 0.8 CFD: INTERIM"); `out/cfd/of_a4/result.json` (= `report/figures/cfd/cfd_a4_result.json`); `out/cfd/of_m08/result_interim.json`; docstrings of `tools/cfd_rocket.py`, `tools/cfd_post.py`, `tools/cfd_figures_extra.py`, `tools/paraview_views.py`, `tools/paraview_gallery.py`.
 
@@ -648,11 +735,339 @@ Sources: or_component_analysis.md CFD table; `result.json` (CN 0.98148, Fz 8.044
 - **Validation is limited** to the nose term against theory, plus a reproduction on a second machine and OpenFOAM version. There is no experimental comparison.
 - The OML is the rev 7 nominal geometry with the tube-OD and ring PLACEHOLDERS (§4.1). The figure 22 render is still rev 6.
 
+#### 3.6.3 3D CFD of the boattail designs: rev 8 and rev 9 (2026-11-22)
+
+Sources: fin_design_criteria.md (Rev 8, Rev 9); `report/figures/cfd/rev8/cfd_r8a4_result.json`, `rev9/cfd_r9a4_result.json`.
+- **Same tools and settings as §3.6.2:** `simpleFoam`, k-ω SST with wall functions, half model, 100 m/s (M 0.29), α 4°, 800 iterations, forces from surface pressure plus a flat-plate friction ESTIMATE. The equations are those of §3.6.2.
+- **The OML now includes the screw-on tail cone.** OML length 1061.0 mm (rev 8) and 1077.5 mm (rev 9) (`case.L`).
+- **Converged:** the CP moved 0.013 mm (rev 8) and −0.017 mm (rev 9) over the last quarter (`CP_change_last_quarter_mm`).
+
+| Item (ref 41.275 mm) | Rev 7 (§3.6.2) | Rev 8 | **Rev 9** |
+|---|---|---|---|
+| CP from tip | 836.3 mm | 834.4 mm | **827.4 mm** |
+| CNα total (/rad) | 14.06 | 13.67 | **13.12** |
+| Fin 1 lift (/rad, normal to the fin) | 4.42 | 4.26 | **4.00** (3.46 in the pitch plane; fins 1 + 2: 6.92) |
+| CA pressure / total ESTIMATE | 0.375 / 0.709 | 0.266 / 0.608 | **0.232 / 0.578** |
+| Drag vs rev 7 | — | −14 % | **−18 %** |
+
+- **Trend:** each boattail step cuts drag, and the CP moves forward (836.3 → 834.4 → 827.4 mm). Rev 9's 40 mm fairing was chosen because "the sleeve step was 2–4 % of pressure drag in CFD" (design.yaml `fin_can_md.fairing_length_mm`).
+- **Flight consequences** (sims with OR weights and extras, Cd ×0.857; fin_design_criteria.md):
+  - rev 8: CG 758.8 mm, **1.83 cal on the CFD CP**, apogee **1341 m**, M 0.781;
+  - rev 9: CG 761.0 mm, **1.61 cal** with the 65 g nose, **+7.4 g ballast (nose 72 g) for 1.8 cal**, apogee **1383 m**.
+- **Caveats:** the same as §3.6.2 (one angle, one speed, one mesh, wall functions, flat-plate friction). The fine-mesh check of rev 9 (case r9a4_f) is unfinished (§3.6.4).
+
+![Rev 8 CFD, velocity in the symmetry plane](figures/cfd/rev8/cfd_velocity_plane.png)
+
+*Figure 57. Rev 8 CFD (case r8a4, 100 m/s, α 4°): speed |U| in the symmetry plane through fin 0, whole rocket, nose and fin can.*
+- *The 20 mm boattail behind the fins narrows the base, and the dark wake starts from a smaller diameter than in rev 7 (figure 38).*
+- ***Look at** the fin can panel: the dead-air zone behind the base is the drag the boattail reduces (CA total 0.608 vs 0.709).*
+
+*Source: `report/figures/cfd/rev8/cfd_velocity_plane.png`, `tools/cfd_post.py`, fin can rev 8, 2026-11-22. Other rev 8 figures (surface Cp, pressure plane, fin pressure, force distribution, cross-sections, streamlines) are in `report/figures/cfd/rev8/`.*
+
+![Rev 9 CFD, normal-force distribution](figures/cfd/rev9/cfd_force_distribution.png)
+
+*Figure 58. Rev 9 CFD (case r9a4): where the normal force comes from.*
+- *Top: dCN/dx along the rocket with the CFD CP at 827 mm. A small hump on the nose, a spike at the 40 mm fairing (x ≈ 890 mm), and the large peak over the fins near x ≈ 1000 mm.*
+- *Bottom: body Cp on the windward and leeward lines; they separate only at the fairing and the fin can.*
+- ***Look at** the gap between the fin peak and the CP line: the nose and fairing lift pull the CP forward of the fins.*
+
+*Source: `report/figures/cfd/rev9/cfd_force_distribution.png`, `tools/cfd_post.py`, fin can rev 9, 2026-11-22.*
+
+![Rev 9 CFD, surface pressure](figures/cfd/rev9/cfd_surface_cp.png)
+
+*Figure 59. Rev 9 surface Cp, from below (windward) and above (leeward), whole rocket and fin can close-ups. Red = pressure, blue = suction.*
+- *From below: red at the fairing start (x ≈ 890 mm) and along the fin leading edges.*
+- *From above: deep blue suction over the fins and a red streak at the fin 0 root.*
+- ***Look at** the red underside and blue topside of the fins: the restoring force.*
+
+*Source: `report/figures/cfd/rev9/cfd_surface_cp.png`, `tools/cfd_post.py`, fin can rev 9, 2026-11-22.*
+
+![Rev 9 CFD, pressure on each fin](figures/cfd/rev9/cfd_fin_pressure.png)
+
+*Figure 60. Rev 9 surface Cp on each fin (x vs radius). Title values: fin 1 lift 4.00/rad normal to the fin, 3.46/rad in the pitch plane; fins 1 + 2: 6.92/rad.*
+- *Fin 0 (top) is edge-on and makes no lift. Fin 1's −θ face (bottom right) carries strong suction over the forward half.*
+- ***Look at** the two fin 1 faces: their difference is the lift. Compare with the owner fins in figure 66.*
+
+*Source: `report/figures/cfd/rev9/cfd_fin_pressure.png`, `tools/cfd_figures_extra.py`, fin can rev 9, 2026-11-22.*
+
+![Rev 9 CFD, velocity in the symmetry plane](figures/cfd/rev9/cfd_velocity_plane.png)
+
+*Figure 61. Rev 9 speed |U| in the symmetry plane through fin 0. The 30 mm boattail ends at 41.6 mm, and the slow wake behind it is narrower than in rev 8 (figure 57).*
+- ***Look at** the fin can panel: the long gentle 40 mm fairing ahead of the fins and the tapered tail behind them.*
+
+*Source: `report/figures/cfd/rev9/cfd_velocity_plane.png`, `tools/cfd_post.py`, fin can rev 9, 2026-11-22. More rev 9 figures are in `report/figures/cfd/rev9/`.*
+
+#### 3.6.4 3D CFD of the owner's SolidWorks model (case own_a4, 2026-11-23)
+
+Sources: or_component_analysis.md ("Owner STEP model CFD", "Why the owner fins make less lift"); `report/figures/cfd/owner/cfd_own_a4_result.json`; docstrings of `tools/rocket_oml_owner.py`, `tools/cfd_lift_breakdown.py`; main session.
+
+**Geometry** (`tools/rocket_oml_owner.py`)
+- The OML is built from the owner's STEP files `L1-Rocket-FinCan.STEP` and `FinCanBottom.STEP` (fin tip r 69.5, span 46.1 mm, intentional).
+- The tail cone is seated as in the thread review (dz = −29.89 mm). The tube starts on the owner's lip; the nose is the design.yaml tangent ogive. Bores, threads and the motor cavity are filled.
+- **Owner geometry** (main session): sleeve 118 mm; fairing 46.8 → 43.3 mm over 40.5 mm; tail cone 46.8 → 41.6 mm over 29.9 mm; threads right-hand, seated with 0 overlap.
+- Mesh **633k cells**, 1 skewed face (4.37). The CP moved −0.11 mm over the last quarter.
+
+![Owner model OML](figures/cfd/owner/rocket_oml_owner_side.png)
+
+*Figure 62. Owner model OML, XZ section through fin 0: full rocket (top) and aft end (bottom), mm, fin-can aft face at 0. The fin reaches r ≈ 70 mm; the tail cone runs from z = 0 to about −30 mm, and the fairing to about z = 158 mm. Source: `report/figures/cfd/owner/rocket_oml_owner_side.png`, `tools/rocket_oml_owner.py`, owner STEP 2026-11-23.*
+
+**Results (100 m/s, α 4°, ref 41.275 mm)**
+
+| | Rev 9 (r9a4) | **Owner model (own_a4)** |
+|---|---|---|
+| CP from tip | 827.4 mm | **809.9 mm** |
+| CNα | 13.12 /rad | **11.89 /rad** |
+| Per-fin pitch-plane lift slope | 3.46 /rad | 3.19 /rad |
+| CA total ESTIMATE | 0.578 | 0.600 |
+| Margin, 65 g nose (CG ESTIMATE 761 / 759 mm) | 1.61 cal | **≈ 1.23 cal** |
+
+- The larger span did not raise the lift: CNα is **9 % lower**.
+- or_component_analysis.md estimates about **+23 g of nose ballast** for 1.8 cal (ESTIMATE, at ≈ 1.05 mm CG per g), to be redone with the owner's slicer masses. The OR-CG basis gives +15 g instead (§3.3.1).
+
+**Where the lift difference sits** (`tools/cfd_lift_breakdown.py`; CNα difference −1.23)
+
+| Region | Owner − rev 9 (/rad) |
+|---|---|
+| Fin roots (fillets, LE/TE caps, skirt) | **−0.53** |
+| Aft body / tail cone | −0.25 |
+| Fin panels (side faces) | −0.19 (even with +10 % panel area) |
+| Body between the fins | −0.17 |
+| Nose and tube | −0.08 |
+
+- **Chordwise fin Cp at r = 30 / 45 / 60 mm is almost the same for both** (figure 65). The panels themselves work the same way.
+
+**CORRECTION (main session, 2026-11-23): the earlier explanation is RETRACTED**
+- or_component_analysis.md still gives two causes: the owner fins meet the sleeve with no root fillet, and the owner tail cone starts its taper ~16 mm behind the fin TE where rev 9's collar keeps full diameter for 18.5 mm.
+- A later **overlay at true scale** showed the two fin cans are **geometrically almost identical**: span +2.9 mm, root 52 vs 50 mm, root-fillet thickness 11.1 vs 13.4 mm, TE 1.0 vs 2.5 mm. **The "sharp root corner" and "tail cone tapers sooner" explanation given to the owner was wrong** and was retracted.
+- **The 9 % CNα deficit is comparable to the single coarse mesh's uncertainty (±5–8 %, ~1.6 mm cells on the fins). It is UNCONFIRMED.**
+- **Fine-mesh check:** `tools/cfd_rocket.py --refine 1` (one extra refinement level on the surface and near box), cases **r9a4_f** and **own_a4_f**. It was started but **stopped before finishing** (git 4ce7a83; §11.4).
+- **Interim guidance (main session): use the rev 9 CFD CP (827 mm) for both designs, PROVISIONAL.**
+- or_component_analysis.md also says "the aft ~40 % of the owner fins carry almost no load". The chordwise comparison (figure 65) shows the same pattern on rev 9, so this is not a difference between the designs (docs agent's reading of figures 60, 65, 66).
+
+![Owner vs rev 9, CFD summary](figures/cfd/owner/cfd_owner_vs_rev9.png)
+
+*Figure 63. CFD at 100 m/s, α 4°: owner fin can (46.1 mm span) vs rev 9 (43.2 mm). Panels: CP 827 vs 810 mm; CNα 13.12 vs 11.89; CA 0.578 vs 0.600; margin with the 65 g nose 1.61 vs 1.23 cal.*
+- ***Caution:** the margin panel uses **ESTIMATED CGs**: the rev 9 sim CG (761.0 mm), shifted 2 mm forward for the owner model "for the owner model's motor sitting 9 mm further forward (ESTIMATE until the owner's slicer masses are in)". Nothing is weighed. The CNα gap is UNCONFIRMED (see the correction above).*
+
+*Source: `report/figures/cfd/owner/cfd_owner_vs_rev9.png`, `tools/cfd_compare_owner.py`, 2026-11-23.*
+
+![Lift breakdown by region](figures/cfd/owner/cfd_lift_breakdown.png)
+
+*Figure 64. Share of CNα by region, rev 9 (total 13.12) vs owner (11.89), and the difference (total −1.23). Fin panels carry the most in both (about 6 /rad). The largest difference is at the fin roots (−0.53).*
+- ***Look at** the right panel: the losses are spread over roots, aft body, panels and the body between the fins. No single region explains the gap.*
+
+*Source: `report/figures/cfd/owner/cfd_lift_breakdown.png`, `tools/cfd_lift_breakdown.py`, 2026-11-23.*
+
+![Chordwise fin pressure](figures/cfd/owner/cfd_fin_chord_pressure.png)
+
+*Figure 65. Fin 1 pressure along the chord at r = 30, 45 and 60 mm, both faces, rev 9 (grey) vs owner (red). The curves lie almost on top of each other.*
+- ***Look at** how close the solid (+θ) and dashed (−θ) lines of both designs are: the panels make the same lift per unit area.*
+
+*Source: `report/figures/cfd/owner/cfd_fin_chord_pressure.png`, `tools/cfd_fin_chord_compare.py`, 2026-11-23.*
+
+![Owner model, pressure on each fin](figures/cfd/owner/cfd_fin_pressure.png)
+
+*Figure 66. Owner model surface Cp on each fin. Title values: fin 1 lift 3.68/rad normal to the fin, 3.19/rad in the pitch plane; fins 1 + 2: 6.38/rad. Same layout as figure 60 (rev 9: 4.00 / 3.46 / 6.92).*
+- ***Look at** the radius axis, which reaches r ≈ 70 mm: the owner fin is taller, yet the lift is lower.*
+
+*Source: `report/figures/cfd/owner/cfd_fin_pressure.png`, `tools/cfd_figures_extra.py`, case own_a4, 2026-11-23.*
+
+![Owner model, surface pressure](figures/cfd/owner/cfd_surface_cp.png)
+
+*Figure 67. Owner model surface Cp from below and above, whole rocket and fin can. The pattern matches rev 9 (figure 59): red along the windward fin leading edges, blue suction over the leeward fins.*
+
+*Source: `report/figures/cfd/owner/cfd_surface_cp.png`, `tools/cfd_post.py`, case own_a4, 2026-11-23.*
+
+**ParaView gallery, owner model** (42 views in `report/figures/cfd/owner/gallery/`; 3 shown)
+
+![Owner gallery 06: fin can Cp, windward iso](figures/cfd/owner/gallery/06_fincan_Cp_iso_windward.png)
+
+*Figure 68. Owner fin can surface Cp, iso view from the windward side. Red stagnation lines run along the fin leading edges, with blue suction behind them. A pressure ring marks the start of the fairing.*
+- ***Look at** the fin-to-sleeve junction: it has no fillet, as described in §3.1.*
+
+*Source: `report/figures/cfd/owner/gallery/06_fincan_Cp_iso_windward.png`, `tools/paraview_gallery.py`, case own_a4, 2026-11-23. The colour bar has no tick labels in this render.*
+
+![Owner gallery 12: side slice speed, fins](figures/cfd/owner/gallery/12_side_speed_fins.png)
+
+*Figure 69. Side slice through fin 0, speed / U∞ (0–1.1), fin can close-up. A thin dark boundary layer wraps the body and fins; behind the tail cone a slow (dark) wake forms.*
+- ***Look at** the wake: it starts from the narrowed tail cone base, not the full sleeve diameter.*
+
+*Source: `report/figures/cfd/owner/gallery/12_side_speed_fins.png`, `tools/paraview_gallery.py`, case own_a4, 2026-11-23.*
+
+![Owner gallery 37: base recirculation](figures/cfd/owner/gallery/37_streamlines_base_recirculation.png)
+
+*Figure 70. Streamlines seeded at the base, side view. Purple (slow) lines spiral in a recirculation bubble just aft of the tail cone, then leave downstream.*
+- ***Look at** the bubble's size against the rev 7 flat base (figure 53).*
+
+*Source: `report/figures/cfd/owner/gallery/37_streamlines_base_recirculation.png`, `tools/paraview_gallery.py`, case own_a4, 2026-11-23. The colour-bar labels are not legible in this render.*
+
+
 ---
 
 ## 4. Structures & Manufacturing
 
-### 4.1 Fin can rev 7: current flight candidate (DRAFT, NOT PRINT-READY)
+### 4.0 Current fin cans (2026-11-22/23): rev 9 (design side) and the owner's SolidWorks part (owner basis)
+
+**Status at a glance**
+
+| | **Rev 9 fin can + tail cone** | **Owner SolidWorks fin can + tail cone** |
+|---|---|---|
+| Role | Design-side flight candidate; CFD reference (CP 827.4 mm) | **Owner's design basis (Pepto B. #2)** |
+| Source | `make.py fin_can_md --rev 9`, `make.py tail_cone --rev 9` | `owner_cad/L1-Rocket-FinCan.STEP`, `FinCanBottom.STEP` |
+| FEA C1–C4 | **PASS** (0.34 / 0.27 / 0.15 / 0.026) | not run |
+| CFD | CP 827.4 mm, CNα 13.12, CA 0.578 | CP 809.9 mm, CNα 11.89, CA 0.600 (gap UNCONFIRMED, §3.6.4) |
+| Mass | fin can ~97.9 g ESTIMATE + tail cone 16.0 g model | ~95 g ESTIMATE (main session); **slicer mass pending** |
+| Thread | 2.5 / 1.0 / 0.2 mm, validated | test pieces cut from this STEP: **PASS** |
+
+#### 4.0.1 Fin can rev 9 (DRAFT, NOT PRINT-READY; out/fin_can_md/rev9/fin_can_md_rev9_spec.md, design.yaml `fin_can_md`)
+
+**Changes vs rev 8** (fin_design_criteria.md Rev 9; owner request 2026-11-22):
+
+| Change | Rev 8 | **Rev 9** | Status / why |
+|---|---|---|---|
+| M3 insert bosses | solid bosses, no holes | **removed** | OWNER: the tail cone retains the motor |
+| Root TE (`te_root_thickness_mm`) | 8.0 mm | **2.5 mm** → 0.84 at the tip | OWNER: the 8 mm TE "only existed to bury the insert bosses" |
+| TE-to-collar junction | 45° gusset (4 mm) | **concave R6 skirt** following the fin footprint (`te_fillet_r_mm` 6) | PROPOSED; owner: "conform smoothly, no harsh triangle" |
+| Boattail | 20 mm to 43.0 mm (5.4°) | **30 mm to 41.6 mm (5.0°)** | OWNER (length) / PROPOSED (end OD) |
+| Forward fairing | 20 mm | **40 mm** | OWNER: the sleeve step was "2–4 % of pressure drag in CFD" |
+| Collar | 18.5 mm | 18.5 mm | PROPOSED: 9.5 mm ring + 6.5 mm thread + 2.5 mm run-out |
+
+| Parameter | Value | Status |
+|---|---|---|
+| Tube OD (sets the sleeve bore) | 41.275 mm | **PLACEHOLDER**: measure |
+| Sleeve bore / wall / OD / length | 41.455 / 2.67 / 46.795 / 100 mm | derived / PROPOSED / derived / derived |
+| Lip thickness / bore | 2.67 / 38.28 mm | PROPOSED / derived |
+| Motor case OD / length | 38.10 / 155 mm | **PLACEHOLDER** / CITED |
+| Thrust ring OD × length | **41.0 × 9.525 mm** | **PLACEHOLDER** (3/8 in forum estimate) |
+| Fins | 50 / 30 / 43.18 / 20.32 mm, 12 → 6 mm, root fillet r 6 | owner OR planform / PROPOSED fillet |
+| Collar length / bore | **18.5 / 41.6 mm** (wall behind the groove 1.6 mm) | PROPOSED |
+| Thread | 45° trapezoid, pitch 2.5, depth 1.0, clearance 0.2 mm | **OWNER, VALIDATED 2026-11-23** (§4.0.5) |
+| Extents | 102.6 × 118.4 × 158.5 mm | verify check 5 |
+| Volumes | mesh 91.53 cm³; walls and skins 79.52 cm³; infill region 12.05 cm³ | spec |
+| Mass | model **101.0–116.3 g** (0–100 % infill); sim ESTIMATE **97.9 g**; no slicer value | spec; fin_design_criteria.md |
+| CG (fin can + tail cone) | **31.5 mm** forward of the fin-can aft face | fin_design_criteria.md Rev 9 |
+
+![Fin can rev 9, iso](figures/fin_can_md_rev9_iso.png)
+
+*Figure 71. Fin can rev 9, iso view in print orientation (collar on the bed, Z up). There are no insert bosses; the fins have thin trailing edges; the 40 mm fairing tapers at the top. Source: `out/fin_can_md/rev9/fin_can_md_rev9_iso.png`, `make.py fin_can_md --rev 9`, 2026-11-22. Built with the placeholder tube OD, case OD and ring. Reviewed for this report.*
+
+![Fin can rev 9, section](figures/fin_can_md_rev9_section.png)
+
+*Figure 72. Fin can rev 9, axial section through a fin (y = 0).*
+- *The sleeve wall runs from the lip at Z = 0 to the fairing top at Z ≈ 140 mm, with the 40 mm taper from Z = 100.*
+- *Below Z = 0 the collar carries the internal thread down to Z = −18.5 mm.*
+- *Right: the fin (root 50 mm at Z 0–50, tip at Z 30–50) and the concave R6 skirt that turns the fin root into the collar.*
+
+*Source: `out/fin_can_md/rev9/fin_can_md_rev9_section.png`, 2026-11-22.*
+
+![Rev 9 assembly half-section](figures/fin_can_md_rev9_assembly_section.png)
+
+*Figure 73. Rev 9 assembly half-section: fin can (orange, PETG), tail cone / motor retainer (blue, ABS/ASA), BT-1.52 tube, H100W case and thrust ring (both PLACEHOLDERS, 38.1 mm and 41.0 × 9.5 mm).*
+- *Right close-up: the ring pushes up on the lip; the cone shank presses up on the ring; the nozzle exit sits ~39 mm inside the cone.*
+- ***Look at** how the motor is held: lip above, cone shank below, thread in the collar.*
+- *Note: the "boattail 46.8 → 43 mm" label in the figure is the rev 8 value; rev 9 tapers to 41.6 mm (§11.5).*
+
+*Source: `out/fin_can_md/rev9/fin_can_md_rev9_assembly_section.png`, `tools/assembly_section.py`, 2026-11-22.*
+
+**Print orientation** (spec): aft face (collar) down, axis vertical. **The fin TEs overhang the collar and need light tree supports outboard of the skirt** (fin_design_criteria.md Rev 9). The spec's "no supports" sentence and its "hang 12 mm" note are rev 7/8 text (§11.5).
+
+**Verify, rev 9** (`fin_can_md_rev9_verify.json`): **4/5**
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Mesh integrity | PASS: watertight, 1 body, 91 534.8 mm³ |
+| 2 | Mass | **FAIL**: the target is still the rev 7 slicer 90.0 g; model 101.0–116.3 g |
+| 3 | Mating interference | PASS: 0 mm³ with the tube wall, case, ring and tail cone (**placeholders**) |
+| 4 | Renders | written, "VISUAL REVIEW REQUIRED"; iso and section reviewed for this report |
+| 5 | Build volume | PASS: 102.6 / 118.4 / 158.5 mm |
+
+- Check 2 needs the owner's slicer mass for rev 9 as the new target. Under CLAUDE.md the part is not "good" until it passes.
+
+**Loads vs layers (rev 9, printed axis-vertical, collar down).** Sources: rev 9 spec; out/fea/rev9 `result.json`; tail cone rev 9 spec.
+
+| Load | Direction vs layers | Bond loading |
+|---|---|---|
+| Motor thrust: ring pushes +Z on the lip underside | across layers | **compression** (good) |
+| Fin sideways / tilted / gust (C1, C2, C4) | root bending; peaks at r ≈ 23.0–23.2 mm, z ≈ 8.7–9.9 mm, where the root fillet meets the sleeve | **across-layer tension**: C1 0.34, C2 0.27, C4 0.026 |
+| Fin axial tip strike (C3) | push along Z; root-zone peak at (23.3, 1.6, 0.0) mm, the aft face | **across-layer tension**: C3 0.15 |
+| Ejection kick (−Z): ring pulls aft onto the tail-cone shank | collar thread flanks loaded along Z | **thread shear across layers** (~6 kN capacity, tail cone spec) |
+| Tail-first landing | cone → ring → motor → lip | compression across layers |
+| Sleeve-to-tube epoxy joint | shear on vertical cylindrical faces | in-plane shear |
+
+- The rev 9 spec still says fin root bending is "within the layers" and the ejection kick pulls "screws ... out of their bosses". Rev 9 has no bosses or screws; this report follows the FEA and the part (§11.5).
+
+#### 4.0.2 Tail cone rev 9 (`parts/tail_cone.py`; out/tail_cone/rev9/tail_cone_rev9_spec.md)
+
+- **Function:** screws into the fin can collar, **traps the thrust ring (motor retainer)** and forms the 30 mm boattail, 46.8 → 41.6 mm (5.0° half-angle).
+- **Bore 38.6 mm** clears the 38.10 mm case and nozzle; the shank face bears on the ring annulus 38.6–41.0 mm (PROPOSED).
+- **Mass:** 12.59 cm³, **16.0 g** (no infill region: prints solid). No target declared.
+- **Print:** narrow aft end on the bed, shank up, no supports; 45° thread flanks.
+- **HEAT:** "the cone bore surrounds the nozzle exit during the 2.4 s burn. PETG softens near 80 C; print this part in **ABS/ASA** or line the bore with **aluminium tape**" (spec). The thread test pieces were PETG (§4.0.5); the flight material is open (§11.6).
+
+**Verify, tail cone rev 9:** 4/5. Checks 1, 3, 4 (written, review required) and 5 PASS (46.8 × 46.8 × 39.0 mm); check 2 **FAIL: no target mass declared**.
+
+**Loads vs layers (tail cone rev 9, printed aft end down)** (spec)
+
+| Load | Path | Direction vs layers |
+|---|---|---|
+| Tail-first landing | cone pushed forward → shank → ring → motor → fin-can lip | **compression across layers** |
+| Ejection kick | motor pulls the ring aft onto the shank face; the thread shears | **shear across layers**: π × 41.6 × 6.5 × 0.5 = 425 mm² × 15 MPa ≈ **6 kN** |
+
+![Tail cone rev 9, iso](figures/tail_cone_rev9_iso.png)
+
+*Figure 74. Tail cone rev 9, iso view in print orientation (narrow aft end on the bed, threaded shank up). Source: `out/tail_cone/rev9/tail_cone_rev9_iso.png`, `make.py tail_cone --rev 9`, 2026-11-22.*
+
+![Tail cone rev 9, section](figures/tail_cone_rev9_section.png)
+
+*Figure 75. Tail cone rev 9, axial section. The taper runs from Z = 0 (narrow end) to the shoulder at Z = 30 mm; the external thread is on the shank from Z 30 to 39 mm.*
+- ***Look at** the wall: thin at the aft end (1.5 mm over the 38.6 mm bore, design.yaml) and thickest at the shoulder.*
+
+*Source: `out/tail_cone/rev9/tail_cone_rev9_section.png`, 2026-11-22.*
+
+#### 4.0.3 Fin can rev 8: screw-on tail cone, gusseted (SUPERSEDED by rev 9, 2026-11-22)
+
+- **Concept (owner request 2026-11-22):** rev 7 fins unchanged; a **threaded collar** behind the aft face and a **screw-on tail cone** that traps the thrust ring. The insert holes were removed and the bosses left solid (fin_design_criteria.md Rev 8).
+- **Boattail:** 46.8 → 43.0 mm over 20 mm (5.4°). Tail cone model 12.6 g (tail_cone rev 8 spec).
+- **45° gussets** under each fin root TE onto the collar. The first rev 8 FEA peaked at that 90° corner (C1 0.46).
+- **Collar:** first 12 mm (3 mm ring assumption), then **18.5 mm** for a **9.5 mm (3/8 in, forum estimate) ring**, PLACEHOLDER (git 74c09ac).
+  - The rev 8 FEA (git 45e3419) and CFD (c4680a4) commits precede the collar change, and fin_design_criteria.md describes rev 8 with a 12 mm collar. Whether they were re-run with 18.5 mm is not recorded.
+- **Results:** FEA C1–C4 all pass, **0.30 / 0.33 / 0.11 / 0.023** (gusseted). CFD **−14 % drag** vs rev 7, CP **834.4 mm**; sim **1.83 cal on the CFD CP**, apogee **1341 m** (§3.6.3).
+- **Verify:** 4/5; check 2 FAIL against the 90 g rev 7 target (model 98.4–122.3 g).
+- **Print:** collar on the bed; the blunt fin TEs overhang, so small supports go under the three TEs.
+
+![Fin can rev 8, iso](figures/fin_can_md_rev8_iso.png)
+
+*Figure 76. SUPERSEDED. Fin can rev 8, iso view in print orientation. The blunt rev 7 TEs and the gussets sit above the collar at the bottom. Source: `out/fin_can_md/rev8/fin_can_md_rev8_iso.png`, `make.py fin_can_md --rev 8`, 2026-11-22.*
+
+#### 4.0.4 Owner's SolidWorks fin can and tail cone (owner basis, 2026-11-23)
+
+- **Files:** `projects/l1-cheap/owner_cad/L1-Rocket-FinCan.STEP` and `FinCanBottom.STEP`.
+- **Geometry** (main session; `tools/rocket_oml_owner.py`): fin tip r 69.5 → **span 46.1 mm** on the r 23.40 sleeve (**INTENTIONAL**, owner); root ~52, tip 30, sweep 18.8 mm; sleeve 118 mm; fairing 46.8 → 43.3 mm over 40.5 mm; tail cone 46.8 → 41.6 mm over 29.9 mm. Threads right-hand, seated with 0 overlap.
+- **Compared with rev 9:** almost identical at true scale; differences in §3.1.
+- **Not yet available:** slicer masses, FEA, print orientation, loads-vs-layers statement. **Optional:** 6 mm root fillets on the owner fins (main session suggestion, open).
+- **Loads vs layers:** not stated in any source for the owner part. If it is printed like rev 9 (axis vertical), the same paths apply (§4.0.1); this is an assumption to confirm with the owner.
+
+#### 4.0.5 Printed thread validation (OWNER, 2026-11-23)
+
+- **Thread:** 45° trapezoid, **pitch 2.5 mm, depth 1.0 mm, clearance 0.2 mm** (design.yaml `fin_can_md.thread_*`, now OWNER status). The nose cap uses the same thread.
+- **Test pieces:** a collar ring and a tail-cone stub **cut from the owner's own STEP** (`out/test_pieces/collar_test_ring.*`, `tailcone_test_stub.*`).
+- **Print settings:** 0.20 mm "Strength" profile, 6 walls, PETG (main session; design.yaml: "0.20 mm layers, PETG").
+- **Result: "the screw works great"** (owner, 2026-11-23). design.yaml: "test-fit PASSED ... Keep 0.2".
+
+#### 4.0.6 Deliverables (rev 9, nose rev 1)
+
+| Item | File | Source tool |
+|---|---|---|
+| Rev 9 fin can STEP / STL (+ fin-only STEP, airfoil .dat) | `out/fin_can_md/rev9/` | `make.py` |
+| Tail cone rev 9 STEP / STL | `out/tail_cone/rev9/` | `make.py` |
+| 8-sheet dimensioned blueprint | `out/fin_can_md/rev9/fin_can_md_rev9_blueprint.pdf` | `tools/blueprint.py` |
+| ISO A3 engineering drawing set (true scale, hatched sections, title block, datums/GD&T) | `out/fin_can_md/rev9/fin_can_md_rev9_drawings.pdf` | `tools/drawing.py` |
+| Nose cone drawing set (section, details, ogive table, cap + plug) | `out/nose_cone/rev1/nose_cone_rev1_drawings.pdf` | `tools/drawing_nose.py` |
+| SolidWorks fin guide (sketched airfoil + loft) | `out/guides/fin/fin_modelling_guide_rev9.pdf` | `tools/fin_guide.py` |
+| SolidWorks thread guide (helix + sweep, tail cone and collar) | `out/guides/thread/thread_modelling_guide_rev9.pdf` | `tools/thread_guide.py` |
+| Thread test pieces | `out/test_pieces/` | main session |
+
+### 4.1 Fin can rev 7 (SUPERSEDED by rev 8, then rev 9, 2026-11-22)
 
 `parts/fin_can_md.py` (fin and boss geometry in `parts/fin_can.py`), built with `make.py fin_can_md --rev 7` on 2026-11-21 (out/fin_can_md/rev7/fin_can_md_rev7_spec.md; git 2438d93).
 - It is the outcome of the owner's fin loop (fin_design_criteria.md, §4.4.7). **The owner stopped the loop at rev 7.**
@@ -1010,7 +1425,7 @@ Method:
   1. Fly the 40 in chute unreefed (conflicts with recovery.md's reefing advice; §11).
   2. Drop-test the fit-test print: 0.8 m for the 40 in chute, 1.5 m for the 28 in.
   3. A landing-tough **rev 6** (~2.3× root bending strength needed). **Chosen by the owner and built 2026-11-21** (§4.3.7). In-house FEA gives rev 6 **2.87×** the rev 5 sideways strength (§4.4.3).
-  4. **Rev 7** (owner fin loop, §4.4.7): blunt 8 mm root TE and a thicker insert boss. It meets C1–C4 and is the current flight candidate (§4.1).
+  4. **Rev 7** (owner fin loop, §4.4.7): blunt 8 mm root TE and a thicker insert boss. It meets C1–C4; it was the flight candidate until rev 8/9 superseded it on 2026-11-22 (§4.0, §4.1).
 
 #### 4.3.7 Rev 6 design rationale: sizing from the owner's ANSYS data (PREDICTION, SUPERSEDED)
 
@@ -1063,7 +1478,7 @@ Symbols: FI failure index σ_Z / 19 MPa (–); σ_Z across-layer normal stress (
 - **Motor thrust:** +138 N on the lip underside (not run in-house either).
 - **Mode-shape identification** for modes 4–6 (and a rev 7 modal run).
 
-### 4.4 In-house FEA (CalculiX): validation, rev 6 and rev 7 results (fea_results.md; out/fea)
+### 4.4 In-house FEA (CalculiX): validation, rev 6, 7, 8 and 9 results (fea_results.md; fin_design_criteria.md; out/fea)
 
 The sim lab is `tools/fea_ccx.py` (gmsh 4.15.2 + CalculiX 2.21), run in the project container by the main session on 2026-11-21. The `rocket-simlab` agent (`.claude/agents/rocket-simlab.md`) now owns these runs.
 - Its rule is **validate before predicting**: reproduce an owner reference first and report the % difference.
@@ -1264,7 +1679,9 @@ Symbols: FI_crit failure index at the criterion load, ANSYS-scaled (–); FI_C,r
 
 *Source: `out/fea/rev7/m30r08_{tipY50,200N_at45,tipZ400,gust15}/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-21. Assembled 2 × 2 by rocket-docs, with panel labels added and pixels unchanged.*
 
-#### 4.4.9 Rev 8: generated, not analysed, dropped (fin_design_criteria.md Outcome; main session)
+#### 4.4.9 Original rev 8 (root 10 mm): generated, not analysed, dropped (fin_design_criteria.md Outcome; main session)
+
+> The rev 8 number was **reused on 2026-11-22** for the screw-on tail cone design (§4.0.3, §4.4.11). This subsection is about the earlier 10 mm-root step only.
 - **Rev 8** was the next, lighter step: **root 10 mm** (rev 7: 12 mm).
 - It was generated, but its FEA mesh failed in gmsh: "Failed to reach critical value ... ScaledJac".
 - **The owner chose rev 7.** Rev 8 is dropped and design.yaml is back at rev 7.
@@ -1280,6 +1697,55 @@ Symbols: FI_crit failure index at the criterion load, ANSYS-scaled (–); FI_C,r
 - **Material inputs** are the conservative set from search-result summaries (§4.3.1). The limits come from ansys_results.md; changing them is the owner's call (rocket-simlab.md).
 - **The landing load (~200 N) is an ESTIMATE.** The 40 in chute's peak-impact bound (to ~450 N, §4.3.6) is above the rev 6 sideways capacity. No rev 7 capacity has been stated.
 - **Not run in-house:** motor thrust on the lip; modal (rev 6 or rev 7); rev 7 200 N Y + 770 N Z.
+
+#### 4.4.11 Rev 8 and rev 9 results (fin_design_criteria.md; out/fea/rev8, out/fea/rev9 `criteria.json` and `result.json`)
+
+Same settings as the rev 7 loop: mesh 3.0 mm global / 0.8 mm root box, C3D10, direct solver, calibration ×1.294 sideways / ×1.222 axial (`criteria.json` `calibration`). Rev 9 meshes have 200,532–201,046 nodes.
+
+| Criterion (ANSYS-scaled FI) | Rev 7 | Rev 8, no gusset | **Rev 8, gusseted** | **Rev 9** | Limit |
+|---|---|---|---|---|---|
+| C1 sideways 200 N | 0.28 | 0.46 | **0.30** | **0.34** | 0.5 |
+| C2 tilted 200 N at 45° | 0.25 | 0.39 | **0.33** | **0.27** | 0.5 |
+| C3 axial 200 N | 0.084 | 0.20 | **0.11** | **0.15** | 0.5 |
+| C4 gust 15 N | 0.022 | 0.031 | **0.023** | **0.026** | 0.1 |
+
+- **Rev 8 (gusseted) and rev 9: C1–C4 ALL PASS** (`all_pass_C1_C4: true`). The main session quotes rev 9 C4 as "0.03"; `criteria.json` gives 0.0257.
+- Rev 9 is slightly weaker than rev 7 sideways and axially (it lost the 8 mm blunt TE), but stays within the 2× criterion.
+
+**Rev 9 raw runs** (root-zone FI = σ_Z / 19 MPa; load face excluded)
+
+| Run | Root FI (σ_Z) | Root peak (mm) | Global FI, load face excluded (location) | Max deflection |
+|---|---|---|---|---|
+| 50 N Y | 0.065 (1.24 MPa) | (23.0, −4.3, 9.1) | 0.073 at (60.7, −2.4, 9.5) | 0.88 mm |
+| 400 N Z | 0.240 (4.56 MPa) | (23.3, 1.6, 0.0) | 0.264 at (20.7, 1.0, 3.0) | 0.67 mm |
+| 200 N at 45° | 0.207 (3.93 MPa) | (23.2, −4.1, 8.7) | 0.212 at (60.7, −2.3, 8.9) | 2.50 mm |
+| 15 N Y (gust) | 0.020 (0.38 MPa) | (23.0, −4.5, 9.9) | 0.022 at (60.7, −2.4, 10.1) | 0.26 mm |
+
+- **Peak location moved again:** rev 7 peaked at the aft end near the insert boss (z ≈ 3 mm). Rev 9 has no boss; its bending peaks sit where the root fillet meets the sleeve (r ≈ 23 mm, z ≈ 9–10 mm), and the axial peak at the aft face.
+- **Global peaks outside the root zone:**
+  - Three runs peak at x ≈ 60.7 mm, out on the fin near the loaded tip, slightly above the root value. They lie outside the 5 mm load-face exclusion; whether they are load-introduction effects is not stated (§11.1).
+  - The 400 N Z run's global peak (20.7, 1.0, 3.0) mm again appears to lie on the fixed sleeve bore, as in rev 7 (§4.4.8).
+- **Rev 8 raw runs:** 50 N Y 0.058, 400 N Z 0.186, 200 N at 45° 0.257, 15 N Y 0.018; all root peaks at the aft face, r ≈ 22.8–22.9 mm, z ≈ 0, where the gusset meets the collar.
+
+![Rev 9, 50 N Y, overview](figures/fea/rev9_tipY50_overview.png)
+
+*Figure 77. In-house FEA, fin can **rev 9**, 50 N Y on the +X fin tip. Failure index σ_Z/19 MPa, legend 0–1, raw. Root FI max **0.065** (σ_Z 1.24 MPa). The whole part is dark blue; only a faint lighter patch shows at the loaded fin root. C1 = 0.34 after scaling to 200 N and ×1.294. Source: `out/fea/rev9/m30r08_tipY50/fi_overview.png`, `tools/fea_ccx.py`, 2026-11-22.*
+
+![Rev 9, 50 N Y, root zoom](figures/fea/rev9_tipY50_root.png)
+
+*Figure 78. Rev 9, 50 N Y, close-up of the loaded fin root. The lighter band follows the root fillet where it meets the sleeve.*
+- ***Look at** the fillet-to-sleeve line: that is the C1/C2/C4 peak location (z ≈ 9 mm), now that the insert boss is gone.*
+
+*Source: `out/fea/rev9/m30r08_tipY50/fi_root_zoom.png`, 2026-11-22.*
+
+![Rev 9, 200 N at 45°, root zoom](figures/fea/rev9_200N_at45_root.png)
+
+*Figure 79. Rev 9, 200 N at 45° (141.4 N Y + 141.4 N Z), root close-up. Root FI max **0.207** (σ_Z 3.93 MPa) → C2 0.27. A light-blue streak runs along the fillet-to-sleeve line, and the fin's aft lower corner is lighter.*
+- ***Look at** the aft lower corner of the fin: the axial part of the load adds there.*
+
+*Source: `out/fea/rev9/m30r08_200N_at45/fi_root_zoom.png`, 2026-11-22.*
+
+- **Not run on rev 8/9:** capacities (FI = 1), the extreme 200 N Y + 770 N Z case, motor thrust on the lip, ejection load on the collar thread, modal. **The owner's SolidWorks fin can has not been analysed.**
 
 ### 4.5 Mass model (walls + infill): skills/SKILL.md, verify check 2
 
@@ -1297,12 +1763,17 @@ Symbols:
 | rev 3 | 76.84 | 0.54 | 97.6 / 98.3 g | — |
 | rev 5 | 65.70 | 1.76 | 83.4 / 85.7 g | 80 g |
 | rev 6 | 68.51 | 11.76 | 87.0 / 101.9 g | 84.83 g at 25 % gyroid (88.43 g at other settings) |
-| **rev 7** | **71.36** | **18.17** | **90.6 / 113.7 g** | **90 g at 25 % gyroid** |
+| rev 7 | 71.36 | 18.17 | 90.6 / 113.7 g | 90 g at 25 % gyroid |
+| rev 8 | 77.50 | 18.78 | 98.4 / 122.3 g | — (sim ESTIMATE 94.6 g, "scaled from the rev 7 slicer") |
+| **rev 9** | **79.52** | **12.05** | **101.0 / 116.3 g** | — (sim ESTIMATE **97.9 g**) |
+| tail cone rev 8 / **rev 9** | 9.91 / **12.59** | 0 / 0 | 12.6 / **16.0 g** (solid) | — |
+| owner SolidWorks fin can | — | — | — | **pending** (~95 g ESTIMATE, main session) |
 
 - The model reads **~6 % high** vs the slicer (main session, rev 6). For rev 6 even its 0 % value (87.0 g) is above the slicer figure, so the verify's "infill to hit target" is −14.6 %.
 - **Rev 7:** the 0 % value (90.6 g) is again above the slicer's 90 g; "infill to hit target" is −2.7 % (rev 7 verify).
 - Rev 7 adds mass at the aft end: 8 mm blunt root TE and +1 mm boss wall. The CG moves aft, from 40.5 to 38.0 mm forward of the aft face (design.yaml `stability.fin_can_model_cg_from_aft_mm`).
 - The stability re-solve uses the slicer's **90.0 g** (design.yaml `stability.fin_can_model_mass_g`).
+- **Rev 8 / rev 9:** no slicer masses. The sims used fin can + tail cone ESTIMATES of 94.6 + 12.6 g (rev 8, CG 29.6 mm forward of the aft face, design.yaml note) and **97.9 + 16.0 = 113.9 g** (rev 9, CG 31.5 mm; fin_design_criteria.md, `tools/flight_export.py`). design.yaml `stability.fin_can_model_mass_g` still reads the rev 7 90.0 g (§11.5).
 
 ### 4.6 Fin can revision history
 
@@ -1314,8 +1785,11 @@ Symbols:
 | rev 4 | `fin_can_md.py` | Aero-optimised fins 50/30/77/6 | 105.2–108.7 g | 5/5 (target 108.7 g) | PROPOSED, not adopted |
 | rev 5 | `fin_can_md.py` | Owner's OR fins 50/30/43.18/20.32/6 | 83.4–85.7 g (slicer 80 g) | 5/5 at 80 g (re-run) | superseded for flight; ANSYS basis (§4.3); CalculiX validation basis (§4.4.2) |
 | rev 6 | `fin_can_md.py` + taper in `fin_can.py` | Landing-tough: root 12 → tip 6 mm, fillet 6, TE 2.0 → 0.84; same planform | 87.0–101.9 g (slicer 84.83 g, 25 % gyroid) | 5/5 at 84.83 g | **SUPERSEDED by rev 7**; in-house FEA: sideways ~252–308 N (§4.4.3); fails C1 at 0.785 (§4.4.8) |
-| **rev 7** | **`fin_can_md.py` + `boss_extra_wall_mm` in `fin_can.py`** | **Blunt root TE 8.0 → 0.84 mm; insert-boss wall +1.0 mm (2.67 → 3.67); rev 6 planform, taper and fillet** | **90.6–113.7 g (slicer 90 g, 25 % gyroid)** | **5/5 at 90 g** | **current flight candidate, DRAFT; FEA C1–C4 PASS (§4.4.8); owner stopped the fin loop here; ANSYS cross-check optional** |
-| rev 8 | `fin_can_md.py` | Root 10 mm (next lighter step of the fin loop) | not recorded | not recorded | **DROPPED:** gmsh mesh failed (ScaledJac), never analysed; owner chose rev 7 (§4.4.9) |
+| rev 7 | `fin_can_md.py` + `boss_extra_wall_mm` in `fin_can.py` | Blunt root TE 8.0 → 0.84 mm; insert-boss wall +1.0 mm (2.67 → 3.67); rev 6 planform, taper and fillet | 90.6–113.7 g (slicer 90 g, 25 % gyroid) | 5/5 at 90 g | **SUPERSEDED 2026-11-22 by rev 8/9**; FEA C1–C4 PASS (§4.4.8); CFD CP 836.3 mm |
+| rev 8 (original) | `fin_can_md.py` | Root 10 mm (next lighter step of the fin loop) | not recorded | not recorded | **DROPPED:** gmsh mesh failed (ScaledJac), never analysed; owner chose rev 7 (§4.4.9) |
+| rev 8 (2026-11-22) | `fin_can_md.py` + `parts/tail_cone.py` | Threaded collar (12 → 18.5 mm) + screw-on tail cone retainer (20 mm boattail to 43.0); solid bosses; rev 7 fins; 45° TE gussets | 98.4–122.3 g; cone 12.6 g | 4/5 (mass vs 90 g) | **SUPERSEDED by rev 9**; FEA 0.30 / 0.33 / 0.11 / 0.023; CFD CP 834.4 mm, −14 % drag (§4.0.3) |
+| **rev 9** | **`fin_can_md.py` + `parts/tail_cone.py`** | **No bosses; TE root 2.5 mm; concave R6 TE skirt; 30 mm boattail to 41.6; 40 mm fairing; collar 18.5 mm** | **101.0–116.3 g (sim ESTIMATE 97.9 g); cone 16.0 g** | **4/5 (mass target stale)** | **design-side flight candidate, DRAFT**; FEA 0.34 / 0.27 / 0.15 / 0.026; CFD CP 827.4 mm, −18 % drag (§4.0.1) |
+| owner | SolidWorks (`owner_cad/`) | Owner's own fin can + tail cone, span 46.1 mm | slicer pending | — | **owner's design basis**; CFD CP 809.9 mm (UNCONFIRMED gap); no FEA (§4.0.4) |
 
 ![Fin can rev 3, iso (superseded)](figures/fin_can_md_rev3_iso.png)
 
@@ -1361,6 +1835,8 @@ Owner layout (2026-11-22): an empty payload bay is reserved, the ballast goes in
 | `nose_plug` rev 1 | 5/5 (auto) | target 3.0 g, model 2.1–3.6 g |
 
 - All three spec sheets say "VISUAL REVIEW REQUIRED". The renders have **not** been reviewed for this report.
+- **Drawing set (2026-11-23):** `out/nose_cone/rev1/nose_cone_rev1_drawings.pdf`, A3: section A-A and view from aft; base thread ring and ballast bulkhead details with an ogive table; bottom cap and ballast plug (`tools/drawing_nose.py`; git 8f76d8c).
+- **Thread:** the cap uses the same 2.5 / 1.0 / 0.2 mm thread that passed the owner's fin-can test print (§4.0.5). The nose cap itself was not test-printed (not recorded).
 - Under CLAUDE.md the nose parts are not "good" yet.
 
 **Loads vs layers (nose rev 1; spec sheets, nosecone.md §4)**
@@ -1397,7 +1873,9 @@ Run: `sims/l1_cheap_sweep.py` `case()` with `stability.ballast_g` overrides.
 - **Single deploy on the H100W-14A's own ejection charge, drilled to 12 s** (§2.4). PROPOSED; no electronics are flown.
 - The charge size is unpublished, and a DMS charge can't be ground-tested on its own.
 - **Pack position:** the sim puts the pack on the stop ring ahead of the motor (stability.md §0.2). OR's model holds it forward with a 2 g bulkhead (§3.3). On the rev 5 basis this was worth +0.99 cal, or about 37 g of ballast.
-- **With the 65 g nose and the CFD CP:** 2.08 cal with OR's pack position, but **1.17 cal if the pack slides onto the motor** (CG 788 mm; or_component_analysis.md). **Pack the chute toward the nose.** No part holds it there yet (§11.4).
+- **With the 65 g nose and the rev 7 CFD CP (SUPERSEDED basis):** 2.08 cal with OR's pack position, but **1.17 cal if the pack slides onto the motor** (CG 788 mm; or_component_analysis.md). **Pack the chute toward the nose.** No part holds it there yet (§11.4).
+- **WARNING (main session, 2026-11-23):** on the current boattail basis, the default design.yaml mass model with the **pack sliding onto the motor simulates at 0.15 cal and stalls the RocketPy integrator**. The flight sim only runs with the pack held forward, **~300 mm from the tip, as in OR** (§6.7). This is now a pre-flight check (§9.6).
+- **Motor retention and ejection (rev 8+):** the ejection kick pulls the motor aft onto the tail-cone shank; the collar thread carries it (~6 kN shear capacity, tail cone rev 9 spec).
 - **Aft anchor:** not designed. The sim carries a 10 g ring ESTIMATE (§11).
 - **Heat:** the paper tube touches the motor case directly (motor.md §D).
 
@@ -1425,6 +1903,7 @@ Symbols:
   - recovery.md has no 28 in table. The 40 in table above is kept for reference.
   - The 28 in chute roughly **doubles the landing energy** compared with the 40 in (§4.3.6).
   - Whether the owner already has a 28 in chute is not recorded (§11.6).
+  - **Flight video sim (2026-11-23):** analytic descent at **5.5 m/s** (`tools/flight_video.py`: "OR 12.3 mph"), deploy at 14.4 s, **landing at ~258 s**, drifting in a 4.5 m/s wind (main session; figure 81). OR v2 gives landing 11.9 mph (§3.3.1).
 - **Reefing:** recovery.md recommends reefing in wind. The ANSYS mitigation is to fly unreefed for gentler landings (§11).
 
 ### 5.3 Opening load (recovery.md §3, §7)
@@ -1462,10 +1941,32 @@ Estes recovery wadding is PROPOSED ($5.43–5.99). A Nomex 6×6 (~$5) is the reu
 - The run is **PROVISIONAL**: the tube, chute, stop ring, epoxy, buttons, retention and nose shell masses are ESTIMATES.
 - **Basis:** the design.yaml `stability` result block is **rev 7: fin can 90 g, CG 38.0 mm forward of the aft face, 73 g ballast** (main session re-solve, 2026-11-21; git 370cebe).
   - It sits on the **Barrowman CP (804.7 mm)**. It has **not** been re-solved for the owner's 2 g ballast (`stability.ballast_g`).
-  - **The owner's flight basis since 2026-11-22 is §6.0:** a 65 g nose per OpenRocket, with the CP from the 3D CFD. §6.1–6.6 are kept as the in-house record on the superseded 73 g basis.
+  - **The current basis is §6.0a** (boattail fin cans, CFD CP, 65 g nose). §6.0 (rev 7, OR export 2026-11-22) is superseded. §6.1–6.6 are kept as the in-house record on the superseded 73 g basis.
+  - **The rev 8/9 sims and the flight video sim** use the same script with overrides (OR weights + extras, fin can + cone mass and CG, pack position, Cd ×0.857). They are not written back into the design.yaml `stability` block (§11.5).
   - stability.md §0, the delay table (§6.5) and the margin plot (figure 21) are still the **rev 5 / 70 g** run. Rev 5 and rev 6 rows are kept for reference.
 
-### 6.0 Owner basis (2026-11-22): 65 g nose per OpenRocket, CP from 3D CFD
+### 6.0a Current basis (2026-11-23): boattail fin cans, 65 g nose, CFD CP
+
+**Owner basis:** the owner flies the SolidWorks fin can (Pepto B. #2, §4.0.4) with the 65 g nose. **Design-side reference:** rev 9. The CP question between the two is open (§3.6.4).
+
+**Margins on the current fin cans** (ref 41.275 mm; SM = (CP − CG)/d, §6.1; all CGs are sims or ESTIMATES, nothing is weighed)
+
+| Case | CP (source) | CG from tip | Margin | Ballast for 1.8 cal | Source |
+|---|---|---|---|---|---|
+| Rev 8, OR weights + extras | 834.4 (CFD r8a4) | 758.8 mm | **1.83 cal** | — | fin_design_criteria.md Rev 8 |
+| **Rev 9**, OR weights + extras, 65 g nose | **827.4 (CFD r9a4)** | **761.0 mm** | **1.61 cal** | **+7.4 g** (nose 72 g) | fin_design_criteria.md Rev 9 |
+| Owner STEP, CG ESTIMATE | 809.9 (CFD own_a4) | 759 mm ESTIMATE | ≈ 1.23 cal | ~+23 g ESTIMATE | or_component_analysis.md |
+| Owner STEP, OR v2 CG | 809.9 (CFD own_a4) | 750.6 mm | **1.44 cal** | ~+15 g ESTIMATE | or_component_analysis.md |
+| Owner STEP, OR v3 after the mass fixes | 809.9 (CFD own_a4) | ≈ 752 mm ESTIMATE | **≈ 1.40 cal** ESTIMATE | ~+15 g ESTIMATE | or_component_analysis.md; main session |
+| OR v2 as exported | 835.6 (OR) | 750.6 mm | 1.82 cal | — | OR_Pepto_B_2.pdf |
+| OR v3 as exported, tube ref | 861.5 (OR) | 774.8 mm | 2.10 cal (OR: "1.85" on the sleeve ref) | — | or_component_analysis.md |
+
+- **Interim CP for both designs: 827 mm (rev 9 CFD), PROVISIONAL** until the fine-mesh check finishes (main session). The margin of the owner design on that CP has not been computed in any source (§11.4).
+- **For the current designs, every CFD-based margin (1.23–1.61 cal) is below the 1.8 cal target.** Only rev 9's 1.61 cal is inside the 1.6–2.0 band, at its lower edge (rev 8's 1.83 cal is superseded). The ballast numbers above depend on the basis; the final value comes from the weighed balance check.
+- **Pack position matters more than before:** with the pack on the motor the RocketPy basis reads 0.15 cal (§5.1, §6.7).
+- The rev 7 / 836.3 mm basis in §6.0 is **SUPERSEDED**.
+
+### 6.0 Owner basis (2026-11-22): 65 g nose per OpenRocket, CP from 3D CFD (rev 7; SUPERSEDED 2026-11-22/23)
 
 **Owner decision** (design.yaml `stability.ballast_g`, git fbb269f):
 - The nose is **65 g TOTAL**: 63 g printed plus **2 g ballast**, per OpenRocket (2.07 cal, CG 29.545 in, CP 32.914 in).
@@ -1605,6 +2106,45 @@ Case A values are from the main session (2026-11-22) and are not yet recorded in
 - **Delay/ejection mass loss** of 0–10 g moves the apogee margin from 3.02 to 3.11 cal (rev 5 run).
 - **Fin can mass:** about 0.4 g of nose ballast per gram at the tail (fin_design_criteria.md C8).
 - **Rev 6/7 drag:** the thick root and blunt TE (**8 mm at the root in rev 7**) are not in the Cd table (§3.4). A higher Cd lowers apogee and shortens the coast (Cd ×1.3 row).
+- **Boattail (rev 8/9):** the CFD shows −14 % / −18 % drag vs rev 7 (§3.4); the rev 8/9 sims apply a Cd ×0.857 factor, whose basis is not stated in the sources (§11.5).
+
+### 6.7 Flight simulation video: Pepto B. #2 (2026-11-23; `tools/flight_export.py`, `tools/flight_video.py`, out/video/)
+
+**What it is:** an animated MP4 of a simulated flight, `out/video/pepto_b2_flight.mp4` (git c532fc7). The trajectory comes from RocketPy (`sims/l1_cheap.py`); the rocket drawn is the owner's OML silhouette (`out/cfd/rocket_oml_owner.stl`). The RocketPy aerodynamic model is still built from design.yaml (docstrings).
+
+**Inputs** (`tools/flight_export.py` docstring and overrides):
+- recovery pack at **300 mm from the tip** (`recovery_pack_position` 300);
+- fin can + tail cone **113.9 g**, CG **31.5 mm** forward of the fin-can aft face (rev 9 ESTIMATE + model, §4.5);
+- **Cd ×0.857**; rail = the longer design rail, 1.83 m; vertical launch.
+- Liftoff mass **613.4 g** (`flight.json` `m`).
+
+**Results** (`out/video/flight.json`; main session)
+
+| Event / quantity | Value |
+|---|---|
+| Rail exit | **24.9 m/s** |
+| Burnout | 2.4 s (2.398 s) |
+| Vmax / Mach max | **269 m/s / M 0.79** |
+| Apogee | **1337 m (4388 ft) at 14.0 s** |
+| Deploy (12 s delay) | 14.4 s, ≈ apogee |
+| Descent / landing | 5.5 m/s on the 28 in chute (analytic, "OR 12.3 mph"); **landing ~258 s** |
+
+**Display assumptions and caveats**
+- The video footer reads "vertical launch, no wind on ascent; descent drifts in a **4.5 m/s wind**" (`flight.json` `wind` 4.5). After deployment the descent is analytic, not RocketPy.
+- The RocketPy (Barrowman) margin for this case is **0.93 cal** (`flight.json` `sm`). Barrowman is the conservative model here (§3.2); it is not the CFD margin.
+- **WARNING:** the **default design.yaml mass basis (pack sliding onto the motor) simulates at 0.15 cal and stalls the integrator** (main session). The chute pack must be held forward, ~300 mm from the tip, as in OR. This is in §9.6 and §11.4.
+- Apogee differs from the rev 9 sim (1383 m) and OR v2 (4404 ft). The cases use different masses and drag settings; the sources do not reconcile them.
+
+![Flight video still: boost](figures/flight_video_boost.png)
+
+*Figure 80. Flight video still at T+1.00 s (boost): 90 m, 187.4 m/s, M 0.55. Right: trajectory (downrange ~1 km by landing), altitude vs time with the peak near 1340 m, and speed vs time with the 269 m/s peak at burnout. Source: `out/video/pepto_b2_flight.mp4`, `tools/flight_video.py`, 2026-11-23. SIMULATION, OR-matched masses.*
+
+![Flight video still: descent](figures/flight_video_descent.png)
+
+*Figure 81. Flight video still at T+209.44 s, descent on the 28 in chute: 266 m, 5.5 m/s (12 mph), fast-forward ×20. The marker on the trajectory plot shows the wind drift.*
+- ***Look at** the straight descent line in the altitude plot: a constant 5.5 m/s analytic descent from deploy to landing at ~258 s.*
+
+*Source: `out/video/pepto_b2_flight.mp4`, `tools/flight_video.py`, 2026-11-23.*
 
 ---
 
@@ -1617,10 +2157,11 @@ Case A values are from the main session (2026-11-22) and are not yet recorded in
 | buy | Motor: bom.csv lists the H182R-14A | 1 | 207 | 42.29–56.40 | **H100W-14A DMS, 261 g, $54.99, HAZMAT** (motor.md §A) |
 | buy | LOC BT-1.52 tube, 34 in | 1 | 93.6 ESTIMATE | 9.30 | OR model: 123 g |
 | buy | Estes recovery wadding | 1 pack | 2 ESTIMATE | 5.43–5.99 | — |
-| buy | M3 brass heat-set inserts | 2 (pack of 100) | ~1 ESTIMATE | 10.99 / 100 | rev 7 uses 3 |
-| TBD | M3 screws + washers | 2 + 2 | ~3 ESTIMATE | TBD | 3 + 3; washer min. OD 13.795 mm (placeholder ring) |
+| buy | M3 brass heat-set inserts | 2 (pack of 100) | ~1 ESTIMATE | 10.99 / 100 | **not needed since rev 8/9** (tail cone retention); rev 7 used 3 |
+| TBD | M3 screws + washers | 2 + 2 | ~3 ESTIMATE | TBD | **not needed since rev 8/9**; rev 7 used 3 + 3 |
 | print | Nose cone | 1 | 52.7 | 0.69 | **rev 1 cone + cap + plug: 63 g owner slicer; 65 g with ballast** (§4.7) |
-| print | Fin can | 1 | 197.3 (stale) | 2.56 | **rev 7: slicer 90 g at 25 % gyroid** (model 90.6–113.7 g) |
+| print | Fin can | 1 | 197.3 (stale) | 2.56 | **owner SolidWorks part (slicer mass pending)** or rev 9 (model 101.0–116.3 g, sim ESTIMATE 97.9 g); rev 7 slicer was 90 g |
+| print | **Tail cone / motor retainer** (new, rev 8+) | 1 | 16.0 (rev 9 model) | not priced | ABS/ASA or foil-lined bore advised (heat); material and price not in bom.csv |
 | have | Ballast, 40 in chute, Kevlar, epoxy, PETG, glue stick, calipers, scale | — | — | 0 | **ballast 2 g** (owner, 65 g nose); **chute now 28 in ripstop, 38 g**: owned or bought is not recorded (§11.6) |
 | borrow | AeroTech delay tool; pad, rail, controller | — | — | 0 | **UDDT**; source TBD |
 | owner-handled | Rail buttons, igniter, soldering iron | — | — | excluded | — |
@@ -1639,13 +2180,17 @@ Case A values are from the main session (2026-11-22) and are not yet recorded in
 
 Phase 5 has not started, and there is no `schedule.md`.
 - Deadline: launch on 2026-12-14 (goal.md).
-- **Ordering constraints:**
-  - fin loop done: rev 7 chosen, FEA C1–C4 PASS (§4.4.7–4.4.8). The owner ANSYS cross-check is optional and not blocking;
-  - measure the tube OD and the motor → regenerate rev 7 with measured values → print;
-  - test-print rev 7 → fit test and drop test → final fin can;
+- **Ordering constraints (updated 2026-11-23):**
+  - design side done: rev 9 FEA C1–C4 PASS and CFD done; drawings and SolidWorks guides delivered (§4.0). **Thread test print: PASS (2026-11-23)**;
+  - owner basis: the SolidWorks fin can + tail cone → slicer masses → re-sim and ballast;
+  - fine-mesh CFD (r9a4_f / own_a4_f) to settle the CP question; interim CP 827 mm;
+  - measure the tube OD and the motor (case OD, ring OD and length) → update the collar, bore and cone → print;
+  - test-print the flight fin can and tail cone → fit test and drop test → final parts;
+  - (superseded order: regenerate rev 7 with measured values → print → drop test);
   - weigh the parts → re-sim → set the final ballast → balance check (CG ≤ 750 mm, chute packed toward the nose);
   - drill the delay to 12 s once the motor is in hand.
 - **3D CFD at 100 m/s: done** (2026-11-22). It confirmed OR's CP and fed the owner's 2 g ballast decision (§3.6.2, §6.0).
+- **Boattail CFD (rev 8, rev 9) and owner-model CFD: done** (2026-11-22/23). The fine-mesh check is unfinished (§3.6.4).
 - The Mach 0.8 second-order run is not on the critical path.
 - The motor is HAZMAT. If it is bought at the field, its dimensions may not be known before printing (fin_can_design.md, Risks).
 - Project difficulty is 3 / 5 (feasibility.md §5).
@@ -1656,13 +2201,15 @@ Phase 5 has not started, and there is no `schedule.md`.
 
 ### 9.1 verify.py (skills/SKILL.md)
 
-| # | Check | Pass condition | **Fin can rev 7** | Fin can rev 6 | Fin can rev 5 | **Nose rev 1: cone / cap / plug** |
-|---|---|---|---|---|---|---|
-| 1 | Mesh integrity | watertight, manifold, one body | **PASS** | PASS | PASS | PASS / PASS / PASS |
-| 2 | Mass | within ±5 % of target | **PASS** (90 g; model 90.6–113.7 g) | PASS (84.83 g; model 87.0–101.9 g) | PASS (80 g; model 83.4–85.7 g) | **FAIL** (52.7 g split target; model 61.2–62.4 g) / PASS / PASS. Owner slicer total 63 g |
-| 3 | Mating interference | 0 mm³ with each mating solid | **PASS** (vs placeholders) | PASS (vs placeholders) | PASS (vs placeholders) | PASS / PASS / PASS |
-| 4 | Renders | written and looked at | **PASS** (main session; iso and section reviewed here) | PASS | PASS | written; **visual review pending** |
-| 5 | Build volume | ≤ 256 mm on each axis | **PASS** | PASS | PASS | PASS (cone 203.3 mm tall) |
+| # | Check | Pass condition | **Fin can rev 9** | **Tail cone rev 9** | Fin can rev 8 / tail cone rev 8 | Fin can rev 7 | Fin can rev 6 | Fin can rev 5 | **Nose rev 1: cone / cap / plug** |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Mesh integrity | watertight, manifold, one body | **PASS** | **PASS** | PASS / PASS | PASS | PASS | PASS | PASS / PASS / PASS |
+| 2 | Mass | within ±5 % of target | **FAIL** (stale 90 g rev 7 target; model 101.0–116.3 g) | **FAIL** (no target; model 16.0 g) | FAIL (90 g; 98.4–122.3 g) / FAIL (no target) | PASS (90 g; model 90.6–113.7 g) | PASS (84.83 g; model 87.0–101.9 g) | PASS (80 g; model 83.4–85.7 g) | **FAIL** (52.7 g split target; model 61.2–62.4 g) / PASS / PASS. Owner slicer total 63 g |
+| 3 | Mating interference | 0 mm³ with each mating solid | **PASS** (vs placeholders, incl. tail cone) | **PASS** (incl. fin can) | PASS / PASS | PASS (vs placeholders) | PASS (vs placeholders) | PASS (vs placeholders) | PASS / PASS / PASS |
+| 4 | Renders | written and looked at | written; iso and section reviewed here | written; iso and section reviewed here | written; iso reviewed here | PASS (main session) | PASS | PASS | written; **visual review pending** |
+| 5 | Build volume | ≤ 256 mm on each axis | **PASS** (158.5 mm tall) | **PASS** (39.0 mm) | PASS / PASS | PASS | PASS | PASS | PASS (cone 203.3 mm tall) |
+
+- The owner's SolidWorks parts have not been run through verify.py.
 
 A part is not "good" until every check passes and its renders have been reviewed (CLAUDE.md).
 
@@ -1672,21 +2219,25 @@ A part is not "good" until every check passes and its renders have been reviewed
   - Done on rev 6: 50 N Y, 400 N Z, 200 N at 45°, 200 N Y + 770 N Z (2.5 / 0.7 mesh). Result: survives 200 N sideways and 200 N at 45°; the extreme combined case fails (§4.4.3–4.4.4).
   - **Fin loop (3.0 / 0.8 mesh, `tools/fin_iter.py`):** rev 5 calibration; rev 6 50 N Y and 400 N Z; **rev 7 50 N Y, 400 N Z, 200 N at 45°, 15 N Y**.
   - **Result:** **rev 7 meets C1–C4** (0.28 / 0.25 / 0.084 / 0.022 vs 0.5 / 0.5 / 0.5 / 0.1); rev 6 fails C1 at 0.785 (§4.4.8).
+  - **Rev 8 (gusseted) and rev 9 (2026-11-22):** both meet C1–C4: rev 8 0.30 / 0.33 / 0.11 / 0.023; **rev 9 0.34 / 0.27 / 0.15 / 0.026** (§4.4.11).
+  - **The owner's SolidWorks fin can: no FEA.** It is close to rev 9 but has no root fillet (§3.1); a run on the owner STEP would close this.
 - **To do:**
-  - Optional: owner ANSYS cross-check of rev 7 (§4.3.8).
+  - Sim lab: FEA of the owner's STEP fin can (C1–C4), and of the collar thread under the ejection load.
+  - Optional: owner ANSYS cross-check (rev 7 STEP listed in §4.3.8; rev 9 is now the design-side part).
   - Sim lab: rev 7 capacities (FI = 1) and the extreme 200 N Y + 770 N Z case. Confirm whether the 400 N Z global peak at the sleeve bore is a support artifact (§4.4.8).
   - The thrust case (+138 N on the lip underside); a rev 7 modal run; identify the mode shapes for modes 4–6.
   - Confirm the material source data.
 
-### 9.2b CFD verification (§3.6.2)
+### 9.2b CFD verification (§3.6.2–3.6.4)
 - **Done:**
+  - rev 8, rev 9 and owner-model runs converged (CP change over the last quarter 0.013, −0.017, −0.11 mm);
   - convergence (CP change < 0.001 mm from iteration 600 to 800);
   - the nose term against theory (2.01 at 78.0 mm vs 2.00 at 76.9 mm);
   - a reproduction on the owner's PC (OpenFOAM 2406, 8 cores): CP 836.30 mm, CNα 14.058 (main session).
 - **To do:**
   - Mach 0.8: finish 2500 iterations, then continue in second order and compare the CP;
   - a second angle of attack (α 0 or 2°) for a real CNα slope;
-  - a grid study;
+  - **a grid study: the fine-mesh check `--refine 1` (r9a4_f, own_a4_f) was started and stopped unfinished. It decides whether the owner model's 9 % CNα deficit is real** (§3.6.4);
   - prism layers, or a y+ check, if drag is needed.
 
 ### 9.3 Measurements and fit tests before printing
@@ -1699,8 +2250,12 @@ A part is not "good" until every check passes and its renders have been reviewed
   5. Overall length.
 - **Thrust ring glue:** inspect per the AT 2014 advisory.
 - **Fit test:** slide the motor into the BT-1.52, and the sleeve onto the tube.
+- **Thread fit: DONE 2026-11-23.** Collar ring + tail-cone stub test pieces from the owner STEP, 0.20 mm Strength, 6 walls, PETG: "the screw works great" (§4.0.5).
+- **Ring length** (now a 9.525 mm PLACEHOLDER) sets the collar length; **ring OD** (41.0 PLACEHOLDER) sets the collar bore and the cone's bearing annulus (§4.0.1).
+- **Fit test with the motor:** screw the tail cone on over the real thrust ring; check that the shank seats on the ring and the motor cannot move.
 
 ### 9.4 Test print and drop test (PROPOSED, ansys_results.md)
+- **Current part (2026-11-23):** test-print the fin can the owner will fly (SolidWorks part or rev 9) plus the tail cone, then drop-test as below. For rev 9 the FEA peak is the **root fillet-to-sleeve line, z ≈ 9 mm**, and the aft face for axial loads (figures 78–79). The rev 7 bullets below are kept for history.
 - **Test-print rev 7** at the owner's settings (25 % gyroid, target 90 g). Weigh it against the 90 g slicer figure and check the fit on the tube and motor (§9.3).
 - Drop the rev 7 print from **1.5 m** (the 28 in chute equivalent, now the flight chute). The 0.8 m height was for the 40 in chute (§4.3.6).
 - Land it on a fin tip sideways. Inspect the aft end of the fin root around the insert boss: the rev 7 FEA peak (figure 31) and the rev 5 crack origin (figure 13).
@@ -1709,13 +2264,16 @@ A part is not "good" until every check passes and its renders have been reviewed
 
 ### 9.5 Weigh-and-balance
 - Weigh the nose, tube, fin can, chute and Kevlar, then re-run the sim with the as-built masses.
-- **Owner basis: ready-to-fly CG ≤ 750 mm (29.5 in) from the tip**, with the motor in and the chute **packed toward the nose** (design.yaml `stability.ballast_g`). On the CFD CP, 750.4 mm gives 2.08 cal (§6.0).
+- **Current target CG is not yet set.** The sources give 735.6 mm for 1.8 cal on the owner-model CFD CP (809.9 mm; or_component_analysis.md). No CG target is stated for the interim 827 mm CP. Set it after the fine-mesh check and the slicer masses (§11.4).
+- SUPERSEDED (rev 7 basis): ready-to-fly CG ≤ 750 mm (29.5 in), with the motor in and the chute packed toward the nose (design.yaml `stability.ballast_g`). On the rev 7 CFD CP, 750.4 mm gave 2.08 cal (§6.0).
 - The older 73 g basis value is 730 mm (window 722–739) (design.yaml `stability.balance_check_cg_from_nose_mm`, not updated; §11.5).
 - A swing test checks the CP qualitatively.
 
 ### 9.6 Recovery and pre-flight
 - Pack-test the chute, cord and wadding (recovery.md §6). Splice or sew the Kevlar loops.
 - **Drill the H100W delay to 12 s with the UDDT** (§2.4).
+- **Chute pack held forward, ~300 mm from the tip** (as in OR). With the pack on the motor the sim reads 0.15 cal and stalls (§6.7). Decide how it is held (bulkhead or packing).
+- **Tail cone:** screwed fully home over the thrust ring; bore material or foil liner checked for the nozzle heat (§4.0.2).
 - Arrange witnesses and give the cert form to the prefect (feasibility.md §1).
 
 ### 9.7 Analysis tools
@@ -1726,6 +2284,10 @@ A part is not "good" until every check passes and its renders have been reviewed
 - `tools/cfd_post.py`: forces from surface pressure plus flat-plate friction; figures 32–34, 36–38.
 - `tools/cfd_figures_extra.py`: cross-sections, streamlines and per-fin pressure (figures 35, 39, 40).
 - `tools/paraview_views.py` and `tools/paraview_gallery.py`: ParaView (pvbatch) views and a 43-image gallery with a `gallery.pvsm` state file (figures 41–56).
+- `tools/rocket_oml_owner.py`: OML from the owner's STEP fin can + tail cone (§3.6.4). `tools/cfd_rocket.py --stl` runs it; `--refine N` adds refinement levels for a mesh study.
+- `tools/cfd_lift_breakdown.py`, `tools/cfd_fin_chord_compare.py`, `tools/cfd_compare_owner.py`, `tools/fincan_compare.py` (draft): owner vs rev 9 comparisons (figures 63–65).
+- `tools/assembly_section.py`: assembly half-section (figure 73). `tools/blueprint.py`, `tools/drawing.py`, `tools/drawing_nose.py`: drawing sets. `tools/fin_guide.py`, `tools/thread_guide.py`: SolidWorks guides (§4.0.6).
+- `tools/flight_export.py`, `tools/flight_video.py`: RocketPy time series and the MP4 flight video (§6.7; ffmpeg).
 - `tools/fin_iter.py`: scores a fin-can revision against criteria C1–C4 at fixed FEA settings and writes `out/fea/rev<N>/criteria.json` (§4.4.7).
 - Ansys Mechanical 2023 R1 (owner): FEA (§4.3).
 - **In-house sim lab** (`rocket-simlab` agent, `.claude/agents/rocket-simlab.md`; owner request, 2026-11-21):
@@ -1782,14 +2344,30 @@ A part is not "good" until every check passes and its renders have been reviewed
 | 2026-11-22 | **3D CFD in-house (OpenFOAM simpleFoam, k-ω SST, half model, 590k cells, 100 m/s, α 4°)**: CP 836.3 mm confirms OR; Barrowman is conservative | main session (sim lab) | or_component_analysis.md; git 5793578, 0be64fc, 61333bc |
 | 2026-11-22 | Mach 0.8 CFD run with `rhoPimpleFoam` (LTS, first-order upwind, temperature limiter) after `rhoSimpleFoam` diverged twice. Results INTERIM | main session (sim lab) | or_component_analysis.md; git 15facc0, 919b387, bc4e276, 795d7af |
 | 2026-11-22 | ParaView views and gallery scripts for the owner to explore the CFD (Windows GUI or pvbatch) | main session | git 76d5961, 9938a78, c371876, 5bfc7c0 |
+| 2026-11-22 | **Rev 8: threaded collar + screw-on boattail tail cone that retains the motor** (traps the thrust ring); insert holes removed, bosses solid; rev 7 fins. **Superseded by rev 9** | owner request; main session design | design.yaml `fin_can_md.retention`, `tail_cone`; git a29a464 |
+| 2026-11-22 | Rev 8: 45° TE gussets onto the collar, after the first rev 8 FEA peaked at the 90° corner (C1 0.46 → 0.30) | main session | fin_design_criteria.md Rev 8; git 1c54e7c, 45e3419 |
+| 2026-11-22 | **Thrust ring modelled 9.525 mm (3/8 in, forum estimate, PLACEHOLDER); collar 12 → 18.5 mm** | main session (owner photo "agrees") | design.yaml `fin_can_md.thrust_ring_thk_mm`, `collar_length_mm`; git 74c09ac |
+| 2026-11-22 | **Rev 8 → rev 9 adopted on the design side:** no insert bosses, TE root 2.5 mm, smooth concave R6 TE skirt, 30 mm boattail to 41.6 mm, 40 mm fairing | **owner** (TE, bosses, boattail length, fairing, "conform smoothly"); main session (skirt radius, end OD) | design.yaml `fin_can_md` (OWNER / PROPOSED); fin_design_criteria.md Rev 9; git 4ab168a, d3ae53c, c20cedf |
+| 2026-11-22 | Rev 9 drawings: 8-sheet blueprint, ISO A3 drawing set, SolidWorks fin and thread guides, for the owner to re-model in SolidWorks | main session | git 80cbcdf, 95c2efb, df208c4, 2847efe |
+| 2026-11-23 | **Thread pitch 2.5 / depth 1.0 / clearance 0.2 mm validated by test print**; status OWNER, "keep 0.2" | **owner** (test print) | design.yaml `fin_can_md.thread_*`; git 73f814b |
+| 2026-11-23 | **Owner fin span 46.1 mm (tip r 69.5) is intentional** | **owner** | `tools/rocket_oml_owner.py` docstring; or_component_analysis.md |
+| 2026-11-23 | **Owner's design basis: their own SolidWorks fin can + tail cone ("Pepto B. #2")**, with the OR files v2/v3 as their model. Rev 9 stays the design-side reference. Final masses, ballast and CG target are still open | **owner** | owner_cad/; or_component_analysis.md; main session |
+| 2026-11-23 | **Retraction:** the explanation given for the owner model's lower CNα (sharp root corner, earlier taper) was wrong; the overlay shows near-identical geometry and the 9 % gap is within mesh uncertainty (UNCONFIRMED) | main session | main session record; §3.6.4 |
+| 2026-11-23 | **Interim: use the rev 9 CFD CP (827 mm) for both designs, PROVISIONAL**, until the fine-mesh check (`--refine 1`) finishes | main session | main session record; git 4ce7a83 |
 
 ---
 
 ## 11. Open Items & Placeholders
 
 ### 11.1 Structures and FEA
+- **NEW (2026-11-23): no FEA of the owner's SolidWorks fin can**, the owner's design basis. It has no root fillet and a 1.0 mm TE (§3.1). Run C1–C4 on the owner STEP (sim lab).
+- **NEW: optional 6 mm root fillets on the owner fins** (main session suggestion). Owner to decide.
+- **NEW: rev 9 runs not done:** capacities, motor thrust, **ejection load on the collar thread** (hand value ~6 kN, tail cone spec), modal. Rev 9 global FI peaks at x ≈ 60.7 mm near the loaded tip (§4.4.11): confirm whether they are load-introduction effects.
+- **NEW: tail cone material.** The spec advises ABS/ASA or a foil-lined bore for nozzle heat; the test pieces were PETG; the assembly figure labels the cone ABS/ASA. Owner to choose (§4.0.2).
+- **NEW: rev 9 prints with light tree supports** under the fin TEs outboard of the skirt (fin_design_criteria.md).
+- *The rev 7 items below are kept for history; rev 7 is superseded.*
 - **Owner ANSYS cross-check of rev 7: OPTIONAL.** The cases and the raw in-house FIs to compare against are in §4.3.8. The rev 6 ANSYS run is no longer needed.
-- **Test print and drop test of rev 7** (**1.5 m** for the 28 in chute, §9.4). They check the FEA result with the real gyroid core and the higher 28 in landing energy (§4.3.6).
+- **Test print and drop test** of the flight fin can (now the owner part or rev 9; was rev 7) (**1.5 m** for the 28 in chute, §9.4). They check the FEA result with the real gyroid core and the higher 28 in landing energy (§4.3.6).
 - **C8 "lowest mass" not demonstrated.** The lighter rev 8 (root 10 mm) was never scored, because of the gmsh ScaledJac mesh failure. The owner accepted rev 7 (§4.4.9).
 - **Rev 7 runs not yet done (sim lab):** capacities (FI = 1); the extreme 200 N Y + 770 N Z case; motor thrust; modal.
 - **400 N Z global peak:** FI 0.191 raw at (20.6, 2.6, 3.0) mm, on what appears to be the fixed sleeve bore. That is above the root-zone 0.138 that C3 uses. Confirm whether it is a support artifact (§4.4.8).
@@ -1804,24 +2382,31 @@ A part is not "good" until every check passes and its renders have been reviewed
 
 ### 11.2 Placeholders that block printing
 - `tube_od_mm` 41.275: measure the tube.
-- `motor_case_od_mm` 38.10, `thrust_ring_od_mm` 41.0, `thrust_ring_thk_mm` 3.0, motor length 155: measure the motor.
-- Then regenerate the rev 7 fin can with the measured values and re-run verify.
+- `motor_case_od_mm` 38.10, `thrust_ring_od_mm` 41.0, **`thrust_ring_thk_mm` 9.525** (3/8 in forum estimate; was 3.0), motor length 155: measure the motor (case OD, ring OD and length).
+- These set the collar length (18.5 mm), collar bore (41.6 mm) and tail-cone bore (38.6 mm). Update rev 9 and/or the owner's SolidWorks part with the measured values and re-run verify.
+- **Rev 9 verify check 2** fails against the stale 90 g rev 7 target; the tail cone has no target. Both need slicer masses (§4.0.1–4.0.2).
 - No aft Kevlar anchor or forward stop part yet (the sim carries a 10 g ESTIMATE).
 - Nose rev 1: the cone fails verify check 2 against its 52.7 g split target (model 61.2–62.4 g; owner slicer total 63 g). Fix the per-part targets, then review the renders (§4.7). The ballast material is TBD (2 g now, in the tip pocket).
 
 ### 11.3 Weigh the parts
-- Weigh the tube (93.6 g ESTIMATE vs OR's 123 g), the nose rev 1 parts (63 g slicer), the fin can (rev 7: 90 g slicer vs 90.6–113.7 g model), the 28 in chute (38 g per OR) and the Kevlar.
-- Then re-sim and do the **balance check: CG ≤ 750 mm (29.5 in)** from the tip, with the motor in and the **chute packed toward the nose** (owner basis, §6.0).
+- **Owner: slicer masses for the SolidWorks fin can and tail cone** (now ~95 g ESTIMATE; OR v3 carries 146 g).
+- Weigh the tube (93.6 g ESTIMATE vs OR's 123 g), the nose rev 1 parts (63 g slicer; OR should read 0.143 lb), the fin can and tail cone, the 28 in chute (38 g per OR) and the Kevlar.
+- Then re-sim, set the ballast and do the balance check with the motor in and the **chute packed toward the nose**. The CG target depends on the CP chosen (§9.5); the old ≤ 750 mm target was for the rev 7 basis.
 
 ### 11.4 CP, CFD and OpenRocket
-- **CP discrepancy: RESOLVED 2026-11-22.** The 3D CFD gives 836.3 mm against OR's 836.0 and Barrowman's 804.7. Barrowman is conservative (§3.6.2).
+- **NEW (2026-11-23): owner model vs rev 9 CNα, UNCONFIRMED.** CFD own_a4 gives CP 809.9 mm and CNα 11.89, 9 % below rev 9 (827.4 mm, 13.12). This is comparable to the coarse-mesh uncertainty (±5–8 %). **Finish the fine-mesh check** (`tools/cfd_rocket.py --refine 1`, cases r9a4_f / own_a4_f; started, stopped unfinished). Until then: **rev 9 CP 827 mm for both, PROVISIONAL.**
+- **NEW: the retracted explanation is still in or_component_analysis.md** ("Why the owner fins make less lift": no root fillet, earlier taper). Update that file to match the overlay result (§3.6.4).
+- **NEW: margin of the owner design on the interim 827 mm CP** is not computed in any source; the CG target for the balance check is therefore open.
+- **NEW: OR file fixes (owner)**, from the v3 review: apply the −0.59 in fin offset; make the fairing transition hollow; delay 14 → 12 s; nose 0.132 → 0.143 lb; elastic cords → Kevlar; read the margin on the 1.625 in tube, SM = (CP − CG)/1.625 (§3.3.2). The OR CP still sits 26–50 mm aft of the CFD.
+- **NEW: chute pack position is critical.** The default design.yaml basis (pack on the motor) simulates at 0.15 cal and stalls the integrator; the pack must be held ~300 mm from the tip (§6.7). Decide the holding method (bulkhead or packing).
+- **CP discrepancy (rev 7 basis): RESOLVED 2026-11-22.** The 3D CFD gave 836.3 mm against OR's 836.0 and Barrowman's 804.7 (§3.6.2). Superseded by the boattail designs.
 - **Mach 0.8 CFD (sim lab):** first-order run complete (CP 818.3 mm, CNα 14.89, 1.64 cal on the OR CG), not yet trusted. Continue in **second order** and compare the CP against 836.3 mm.
   - The first-order CP runs against the expected aft trend.
   - The surface T of 350 K is above the ~321 K adiabatic wall temperature.
 - **CFD robustness:** one α (4°), one mesh (no grid study), wall functions, flat-plate friction. A second α and a grid study would firm up CNα.
 - **CNα totals differ:** CFD 14.06 vs OR 11.364 (OR at M 0.3, AoA 0), with the fins at 7.70 vs 9.364. The CPs agree; the totals are not reconciled in any source.
-- **Owner-PC reproduction** (CP 836.30 mm, CNα 14.058, OpenFOAM 2406, 8 cores) and **case A flight numbers** (CG 749.2 mm, 1212 m, M 0.785, 25.5 m/s): reported by the main session but **not recorded in a project file**. Add them to or_component_analysis.md, and state the case A rail length.
-- **Pack retention:** OR has a 2 g bulkhead at 19.461 in that holds the pack forward. Is it a planned part? Without it the pack can slide onto the motor: **1.17 cal** on the CFD CP (CG 788 mm).
+- **Closed:** the owner-PC reproduction (CP 836.2966 mm, CNα 14.0585) and case A (1.83 m rail, 25.5 m/s) are now recorded in or_component_analysis.md.
+- **Pack retention:** OR has a 2 g bulkhead at 19.461 in that holds the pack forward. Is it a planned part? Without it the pack can slide onto the motor: **1.17 cal** on the rev 7 CFD CP (CG 788 mm), 0.15 cal on the current RocketPy basis.
 - **.ork upload** to `projects/l1-cheap/openrocket/` for headless OpenRocket: it would read the fin count and delay setting directly. The OR export (test.pdf) is the H100W_DMS**-6** configuration.
 - OR has a 6 g inner tube (6.1 in in the 2026-11-22 export), which does not exist in the min-diameter layout.
 - **Fluent:** is the owner's planned Fluent run still wanted, now that OpenFOAM has answered the CP question?
@@ -1855,24 +2440,41 @@ A part is not "good" until every check passes and its renders have been reviewed
 26. **Recovery after the 28 in switch:** `recovery.chute*` read 28 in / 38 g, but recovery.md, `recovery.shock_cord_min_rating_n`, `shock_cord_check`, `anchor_min_net_area_mm2` and the §5.3 opening-load table are 40 in values. The sim's `stability.assumptions.chute_mass_g` is still 57 g (40 in), and `recovery_pack_length_mm` is based on it.
 27. **Landing load:** the fin criteria C1–C3 use the 200 N ESTIMATE set with the 40 in chute. ansys_results.md puts the 28 in at 180–450 N average and up to ~900 N peak (§4.3.6).
 28. **OR delay and apogee:** the 2026-11-22 OR export flies H100W_DMS**-6** and reports 3945 ft (1202 m). Our earlier reading was that −6 deploys before apogee and cuts OR's apogee short (§2.4, §6.4). The new OR apogee agrees with case A (1212 m), so it is unclear how OR treats the delay.
-29. **OpenFOAM versions:** the a4 run log is v1912 (`OPENFOAM=1912`); the owner reproduction used v2406. Both are reported as agreeing to 0.01 mm.
+29. **OpenFOAM versions:** the a4 run log is v1912 (`OPENFOAM=1912`); the owner reproduction used v2406. The main session reported agreement to 0.01 mm; or_component_analysis.md now records 836.2966 vs 836.3131 mm, "agreement 0.02 mm".
 30. **Per-fin vs component fin CNα:** 7.65 (fins 1 + 2, `tools/cfd_figures_extra.py`) vs 7.70 ("fins only", CFD component table). Both are reported.
 31. **nose_plug rev 1 spec** lists `cap_flange_thickness_mm` 3 and `kevlar_hole_spacing_mm` 12; design.yaml and the cap spec read 5 and 14. The plug was generated before the cap change (git 3b99f0b). This does not affect the plug geometry, but the spec record is stale.
 32. **Mach:** design.yaml `stability.max_mach` 0.732 (73 g basis) vs case A M 0.785 (OR weights) vs `aero.max_mach` 0.79 (owner OR, 2026-11-21).
 33. **Figure 44 legend** reads "U Magnitude", but `tools/paraview_views.py` colours by U_x (axial), which explains the negative minimum.
+34. **Owner root-fillet thickness:** or_component_analysis.md gives 11.2 mm (owner) vs 13.6 mm (rev 9); the main session's overlay gives 11.1 vs 13.4 mm. Both reported.
+35. **Retracted explanation still in a source:** or_component_analysis.md "Why the owner fins make less lift" names the missing root fillet and the earlier tail-cone taper as causes; the main session retracted this (§3.6.4).
+36. **Rev 9 spec sheets stale text:** fin can spec says fin root bending is "within the layers", the ejection kick pulls "screws" out of "bosses" (rev 9 has none), and "No supports" next to a rev 8 "hang 12 mm" note (collar is now 18.5 mm; fin_design_criteria.md says light tree supports). Tail cone spec says the taper "leans 5.4 deg" (rev 8; rev 9 is 5.0°). `parts/tail_cone.py` docstring still describes the rev 8 cone (20 mm, 46.8 → 43). The assembly figure (73) labels the boattail "46.8 → 43 mm".
+37. **design.yaml stale after rev 9:** `stability.fin_can_model_mass_g` 90.0 and `fin_can_model_cg_from_aft_mm` 38.0 are rev 7 (rev 9 sims used 97.9 + 16.0 g, CG 31.5 mm as overrides); `fin_can_md.target_mass_g` 90 (rev 7) makes rev 9 verify check 2 fail; `motor.retention` still describes the M3 insert proposal; `fin_can_md.retention` note says "bosses kept solid" (rev 8) while `insert_bosses` is false (rev 9); `boss_extra_wall_mm`, `insert_*` and `boss_fairing_length_mm` remain although unused.
+38. **Cd ×0.857:** used by the rev 8, rev 9 and video sims (fin_design_criteria.md, `tools/flight_export.py`); its derivation is not recorded.
+39. **Rev 8 analyses vs collar change:** fin_design_criteria.md describes rev 8 with a 12 mm collar; the FEA and CFD commits precede the change to 18.5 mm (git 74c09ac). Not stated whether they were re-run.
+40. **Landing speed:** `tools/flight_video.py` uses "OR 12.3 mph = 5.5 m/s"; OR v2 reports 11.9 mph; the 2026-11-22 export 11.8 mph.
+41. **Owner-model ballast:** +23 g (own_a4 CG ESTIMATE 759 mm, ≈ 1.05 mm per g) vs +15 g (OR v2 CG 750.6 mm, lever ~610 mm). Different CG bases; both reported.
+42. **Margin figures for the owner design:** ≈ 1.23 cal (CG 759 ESTIMATE), 1.44 cal (OR v2 CG), ≈ 1.40 cal (v3 after mass fixes, ESTIMATE). All on the own_a4 CP 809.9; none weighed.
+43. **Flight video wind:** `flight.json` records `wind` 4.5 m/s while design.yaml `stability.assumptions.wind_m_s` is 0; the video footer says no wind on ascent. How the 4.5 m/s entered the export is not recorded.
+44. **Rev 9 C4:** `criteria.json` 0.0257 (fin_design_criteria.md "0.026"); the rev 9 commit message and main session say "0.03".
 
 ### 11.6 Owner inputs still TBD
 - Approve or reject the forward backup stop; choose the aft Kevlar anchor.
 - **UDDT:** do you own one, or who has one? What are its step sizes?
-- **Margin band:** the owner basis gives **2.08 cal** (2.01 with the real extras), just above the 1.6–2.0 band. Accept this, or add/remove nose mass? The source puts it in the 1.17–2.08 cal range depending on the pack position.
+- **NEW: slicer masses** for the SolidWorks fin can and tail cone (and the print settings).
+- **NEW: caliper measurements:** tube OD, motor case OD, thrust ring OD and length.
+- **NEW: root fillets:** add the optional 6 mm root fillets to the SolidWorks fins?
+- **NEW: tail cone material:** PETG (as test-printed), ABS/ASA, or PETG with a foil-lined bore?
+- **NEW: OR file:** apply the v3 fixes (§3.3.2) and send the updated file.
+- **NEW: does the owner part get FEA** (sim lab on the STEP) before printing?
+- **Margin band (updated):** current CFD-based margins are 1.23–1.61 cal, below the 1.8 target. Add nose ballast (+7.4 g on rev 9; +15 to +23 g ESTIMATE on the owner model), after the fine-mesh check and the weigh-in? *(Old rev 7 question: 2.08 cal, just above the band; superseded.)*
 - **Chute pack:** how will the pack be held toward the nose: a bulkhead like OR's 2 g part, or packing only? Is the 28 in chute owned or to be bought (brand, measured mass)?
 - **Fluent:** is the owner Fluent run still wanted (§11.4)?
-- Minimum thrust-to-weight and rail-exit-speed thresholds (rail exit 25.5 m/s in case A; 21.4 / 23.8 m/s on the 73 g basis).
+- Minimum thrust-to-weight and rail-exit-speed thresholds (rail exit 24.9 m/s in the video sim, 1.83 m rail; 25.5 m/s in case A; 21.4 / 23.8 m/s on the 73 g basis).
 - Rev 7: confirm that stopping the loop waives C8 (lowest mass); slicer-preview check of the boss and blunt-TE region (walls vs infill).
 - Reasons for the H100W switch and for min-diameter; motor vendor (HAZMAT).
 - Heat protection for the paper tube around the case.
 - Carried over:
-  - club rail size, club name, waiver altitude (apogee 1202 m OR / 1212 m case A; 1234 m on the 73 g basis);
+  - club rail size, club name, waiver altitude (current sims: 1337 m video sim, 1383 m rev 9 sim; OR v2 4404 ft);
   - descent-rate target; cord SF; fillet radius (6 mm proposed);
   - confirm the ±0.2 cal reading and single deploy on motor ejection;
   - epoxy type; whether M3 screws and washers are owned;
@@ -1949,6 +2551,13 @@ Accessed 2026-11-20 unless noted (as recorded in the project files).
 - VTK 9.6 legacy readers — `tools/cfd_post.py` (git 372d6a2)
 - OpenRocket export "test.pdf" (owner, 2026-11-22, Pepto B. #2) — or_component_analysis.md
 
+**Owner files and later tools (2026-11-22/23; no URLs recorded)**
+- Owner SolidWorks STEP: `projects/l1-cheap/owner_cad/L1-Rocket-FinCan.STEP`, `FinCanBottom.STEP` — `tools/rocket_oml_owner.py`
+- Owner OpenRocket exports "Pepto B. #2": `owner_cad/OR_Pepto_B_2.pdf` (v2), `OR_Pepto_B_3.pdf` (v3) — or_component_analysis.md
+- Rocketry Forum estimate of the 38 mm DMS thrust-ring length (3/8 in); thread URL not recorded in design.yaml (see the ring thread listed under Motor: H100W) — design.yaml `fin_can_md.thrust_ring_thk_mm`
+- SolidWorks (owner's CAD; helix + sweep threads, sketched-airfoil loft) — `tools/fin_guide.py`, `tools/thread_guide.py`
+- ffmpeg (MP4 encoding) and trimesh (owner silhouette) — `tools/flight_video.py`
+
 **Aerodynamics, CFD & stability**
 - Barrowman CP method; OpenRocket technical documentation (drag buildup) — aero.md
 - NACA TN 4197 flutter, via Apogee *Peak of Flight* #291 — aero.md, ansys_results.md
@@ -1993,7 +2602,19 @@ Accessed 2026-11-20 unless noted (as recorded in the project files).
 
 ## Changelog
 
-- **2026-11-22 (5bfc7c0)**: 3D CFD and imagery; owner's 65 g nose, 28 in chute, nose rev 1 (rocket-docs).
+- **2026-11-23 (6674b87)**: rev 8, rev 9, tail cone, thread validation, owner SolidWorks model and OR v2/v3, flight video (rocket-docs; covers git a29a464 → 6674b87).
+  - Header and Briefing **rewritten**: owner's SolidWorks fin can as the owner's design basis, rev 9 as the design-side candidate; new stability table (rev 9 / owner CFD / OR v2), key performance (rev 9 sim, video sim, OR v2), rev 9 FEA table, phase status, top risks, next steps. Retraction and interim CP 827 mm stated.
+  - §2: 9.525 mm ring PLACEHOLDER and tail-cone retention (§2.2); delay table for rev 8/9, video sim and OR v2; OR v3 still at 14 s (§2.4).
+  - §3: rev 9 vs owner fin table (§3.1); **new §3.3.1–3.3.2** OR v2 and v3 with issues and the recommended mapping; boattail drag table (§3.4); §3.6.2 marked superseded for flight; **new §3.6.3** rev 8/9 CFD (figures 57–61); **new §3.6.4** owner-model CFD, lift breakdown, **correction/retraction**, fine-mesh status (figures 62–70).
+  - §4: **new §4.0** (status table; rev 9 fin can with change table, parameters, verify 4/5, loads vs layers; tail cone rev 9; rev 8 SUPERSEDED; owner SolidWorks part; thread validation; deliverables; figures 71–76). §4.1 rev 7 marked SUPERSEDED. **New §4.4.11** rev 8/9 FEA (figures 77–79); §4.4.9 notes the reused rev 8 number. §4.5 and §4.6 gain rev 8, rev 9, tail cone and owner rows. §4.7 nose drawing set.
+  - §5: pack-position warning (0.15 cal, integrator stall); ejection path through the collar thread; video descent 5.5 m/s, ~258 s.
+  - §6: **new §6.0a** current margins table; §6.0 marked SUPERSEDED; boattail sensitivity; **new §6.7** flight video sim (figures 80–81).
+  - §7–§9: BOM (inserts and screws not needed, tail cone line); schedule order; verify table with rev 9 / tail cone / rev 8 columns; FEA and CFD to-dos (owner-part FEA, fine mesh); thread fit done; CG target open; pre-flight pack and tail-cone checks; new tools.
+  - §10: ten new entries (rev 8, gussets, ring/collar, rev 9 adoption, drawings, thread validated, span intentional, owner design basis, retraction, interim CP).
+  - §11: new structure, placeholder, mass, CFD/OR and owner items; closed the owner-PC reproduction and case A items; new conflicts 34–44.
+  - §12: owner STEP and OR files, forum ring estimate, SolidWorks, ffmpeg.
+  - Figures linked (already in `report/figures/`): `fin_can_md_rev8_iso`, `fin_can_md_rev9_iso`, `fin_can_md_rev9_section`, `fin_can_md_rev9_assembly_section`, `tail_cone_rev9_iso`, `tail_cone_rev9_section`, `fea/rev9_tipY50_overview`, `fea/rev9_tipY50_root`, `fea/rev9_200N_at45_root`, `cfd/rev8/cfd_velocity_plane`, `cfd/rev9/{cfd_force_distribution, cfd_surface_cp, cfd_fin_pressure, cfd_velocity_plane}`, `cfd/owner/{rocket_oml_owner_side, cfd_owner_vs_rev9, cfd_lift_breakdown, cfd_fin_chord_pressure, cfd_fin_pressure, cfd_surface_cp}`, owner gallery 06, 12, 37, `flight_video_boost`, `flight_video_descent`.
+- **2026-11-22 (5bfc7c0; committed as 90b7fdb)**: 3D CFD and imagery; owner's 65 g nose, 28 in chute, nose rev 1 (rocket-docs).
   - Header and Briefing:
     - new basis (65 g nose per OR, 28 in chute);
     - new "CFD settles the CP" table (836.3 / 836.0 / 804.7 mm; 2.08 / 2.07 / 1.32 cal), plus the 2.01 and 1.17 cal cases;
@@ -2102,3 +2723,19 @@ Project history (git log):
   - 15facc0, 919b387, 1870077, bc4e276, 5c5d60a: compressible Mach option (rhoSimpleFoam, then rhoPimpleFoam LTS).
   - 795d7af: Mach 0.8 interim results (stopped at ~1500 iterations).
   - 5bfc7c0: selected ParaView gallery views copied into the report figures.
+  - 90b7fdb: living report update (3D CFD section, 65 g nose, 28 in chute, nose rev 1).
+  - a29a464, 9f935ad, 1c54e7c: rev 8 fin can (threaded collar + screw-on boattail tail cone, solid bosses), airfoil exports, 45° TE gussets.
+  - 45e3419, 35a1000, c4680a4, 46b8ac3: rev 8 FEA C1–C4 pass; r8a4 CFD (−14 % drag, CP 834.4, 1.83 cal, 1341 m); assembly half-section.
+  - 74c09ac: collar 18.5 mm for a 9.5 mm (3/8 in, forum estimate) ring; `tools/assembly_section.py`.
+  - 4ab168a, d3ae53c, 6914c3f: rev 9 geometry (no bosses, TE 2.5, R6 skirt, 30 mm boattail, 40 mm fairing); blueprint tool.
+  - 769d755, 3e97e99, 6d1b2bf, c20cedf: rev 9 FEA pass; r9a4 CFD (−18 % drag, CP 827.4, 1.61 cal, +7.4 g, 1383 m).
+  - 80cbcdf, 95c2efb, df208c4, 2847efe: 8-sheet blueprint; ISO A3 drawing set; SolidWorks fin and thread guides.
+- 2026-11-23:
+  - 8f76d8c: nose cone drawing set.
+  - 73f814b: thread test-fit pass (pitch 2.5, clearance 0.2).
+  - a9d2491, 11f4967, d099d26: owner-model OML and CFD (CP 809.9, CNα 11.89); 42-view gallery; comparison chart.
+  - c28f7e8: CFD lift breakdown by region.
+  - c4f3edb, dc73a1e: owner OR "Pepto B. #2" v2 and v3 reviews.
+  - 4ce7a83: CFD `--refine` option (fine-mesh check, unfinished); `tools/fincan_compare.py` draft.
+  - 91af875, c532fc7: flight video renderer and video (apogee 1337 m, M 0.79, descent 258 s).
+  - 6674b87: report figures (rev 8/9 fin can, tail cone, rev 9 FEA, flight video stills).
