@@ -77,7 +77,8 @@ def main():
     gs = fig.add_gridspec(3, 2, width_ratios=[1.55, 1], left=.03, right=.97, top=.92, bottom=.06, hspace=.35, wspace=.12)
     cam = fig.add_subplot(gs[:, 0]); tr = fig.add_subplot(gs[0, 1]); pa = fig.add_subplot(gs[1, 1]); pv = fig.add_subplot(gs[2, 1])
     fig.text(.03, .955, a.title, color="w", fontsize=20, weight="bold")
-    fig.text(.97, .955, "SIMULATION (RocketPy, project masses)", color="#9fb3c8", fontsize=12, ha="right")
+    fig.text(.97, .955, "SIMULATION (RocketPy, OR-matched masses)", color="#9fb3c8", fontsize=12, ha="right")
+    fig.text(.03, .02, f"Vertical launch, no wind on ascent; descent drifts in a {float(F.get('wind') or 0):.1f} m/s wind. Chute at burnout + {DELAY:.0f} s. Rocket icon enlarged for visibility.", color="#9fb3c8", fontsize=11)
     for axx in (tr, pa, pv):
         axx.set_facecolor("#13203a"); axx.tick_params(colors="#c8d3df"); [s.set_color("#3a4c6a") for s in axx.spines.values()]
         axx.grid(alpha=.2)
