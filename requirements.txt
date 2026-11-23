@@ -13,3 +13,4 @@ networkx==3.7
 rtree==1.4.1
 gmsh==4.15.2
 meshio==5.3.5
+pypdf

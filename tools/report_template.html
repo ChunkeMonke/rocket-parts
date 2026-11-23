@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>$title$ — $subtitle$</title>
+$for(css)$
+<link rel="stylesheet" href="$css$">
+$endfor$
+</head>
+<body>
+
+<section class="cover">
+  <div class="cover-band">
+    <div class="cover-kicker">ENGINEERING DESIGN REPORT · $docnumber$</div>
+    <div class="cover-title">$title$</div>
+    <div class="cover-subtitle">$subtitle$</div>
+    <div class="cover-art"><img src="figures/cover_rocket.png" alt=""></div>
+  </div>
+  <div class="cover-lower">
+  <div class="cover-grid">
+    <div><span>Document No.</span>$docnumber$</div>
+    <div><span>Revision</span>$revision$</div>
+    <div><span>Date</span>$date$</div>
+    <div><span>Status</span>$status$</div>
+    <div class="wide"><span>Prepared for</span>$prepared_for$</div>
+    <div class="wide"><span>Prepared by</span>$prepared_by$</div>
+  </div>
+  <div class="cover-foot">
+    <div class="cover-foot-l">Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe components</div>
+    <div class="cover-foot-r">$docnumber$ Rev $revision$</div>
+  </div>
+  </div>
+</section>
+
+<section class="doc-control">
+  <h1 class="fm">Document Control</h1>
+  <table class="dc-meta">
+    <tr><th>Title</th><td>$title$ — $subtitle$</td></tr>
+    <tr><th>Document number</th><td>$docnumber$</td></tr>
+    <tr><th>Revision / date</th><td>$revision$ / $date$</td></tr>
+    <tr><th>Status</th><td>$status$</td></tr>
+    <tr><th>Prepared for</th><td>$prepared_for$</td></tr>
+    <tr><th>Prepared by</th><td>$prepared_by$</td></tr>
+  </table>
+  <h2 class="fm">Revision History</h2>
+  <table class="dc-rev">
+    <thead><tr><th>Rev</th><th>Date</th><th>Description of change</th></tr></thead>
+    <tbody>
+$for(revisions)$
+      <tr><td class="c">$revisions.rev$</td><td class="nw">$revisions.date$</td><td>$revisions.description$</td></tr>
+$endfor$
+    </tbody>
+  </table>
+  <h2 class="fm">Approval</h2>
+  <table class="dc-sign">
+    <thead><tr><th>Role</th><th>Name</th><th>Signature</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>Prepared</td><td>Design team</td><td></td><td></td></tr>
+      <tr><td>Checked</td><td></td><td></td><td></td></tr>
+      <tr><td>Approved (project owner)</td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="dc-note">
+    <b>Status conventions.</b> Values are tagged by maturity:
+    <span class="tag ok">VALIDATED</span> confirmed by test;
+    <span class="tag">NOMINAL</span> published value, not measured;
+    <span class="tag">ESTIMATE</span> calculated or assumed;
+    <span class="tag">PROVISIONAL</span> interim basis pending a check;
+    <span class="tag">UNCONFIRMED</span> result inside its own uncertainty band.
+    Positions are measured from the nose tip; static margin is in calibers of the 41.275 mm body tube unless stated.
+  </div>
+</section>
+
+$if(toc)$
+<section class="toc-page">
+  <h1 class="fm">Contents</h1>
+  <nav id="TOC">
+  $table-of-contents$
+  </nav>
+</section>
+$endif$
+
+<main class="body">
+$body$
+</main>
+</body>
+</html>
