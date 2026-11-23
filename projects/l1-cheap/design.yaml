@@ -259,9 +259,9 @@ fin_can_md:                # part library — parts/fin_can_md.py, MIN-DIAMETER 
   boattail_length_mm: {value: 30.0, status: OWNER, note: "REV 9 (owner 2026-11-22): 30 mm (rev 8: 20)"}
   boattail_end_od_mm: {value: 41.6, status: PROPOSED, note: "REV 9: 46.8 -> 41.6 over 30 mm = 5.0 deg half-angle; 1.5 mm wall over the 38.6 cone bore at the aft end (rev 8: 43.0 over 20)"}
   tail_cone_bore_d_mm: {value: 38.6, status: PROPOSED, note: "clears the 38.10 case/nozzle; shank face bears on the thrust ring annulus 38.6-41.0"}
-  thread_pitch_mm: {value: 2.5, status: PROPOSED, note: "printed 45-deg trapezoid thread, same as the nose cone cap"}
-  thread_depth_mm: {value: 1.0, status: PROPOSED}
-  thread_clearance_mm: {value: 0.2, status: PROPOSED, note: "same as the nose cap (owner to test-fit)"}
+  thread_pitch_mm: {value: 2.5, status: OWNER, note: "printed 45-deg trapezoid thread, same as the nose cone cap. VALIDATED 2026-11-23: owner test print (collar ring + tail-cone stub cut from owner STEP) screws together well"}
+  thread_depth_mm: {value: 1.0, status: OWNER}
+  thread_clearance_mm: {value: 0.2, status: OWNER, note: "test-fit PASSED 2026-11-23 (owner print, 0.20 mm layers, PETG). Keep 0.2"}
   insert_hole_d_mm: {value: 4.0, status: CITED, note: "accu-components chart (motor.md)"}
   insert_depth_mm: {value: 5.7, status: CITED, note: "Prusa/CNC Kitchen M3 x 5.7 (motor.md)"}
   boss_fairing_length_mm: {value: 20, status: PROPOSED}
