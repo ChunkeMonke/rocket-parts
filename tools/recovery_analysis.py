@@ -1,4 +1,4 @@
-"""Recovery analysis, 28 in parachute: descent rate, landing energy, opening load, shock-cord snatch, drift,
+"""Recovery analysis, LOC Precision 28 in parachute (84 mm spill hole, 8 lines): descent rate, landing energy, opening load, shock-cord snatch, drift,
 deployment speed vs actual delay.
 
   .venv/bin/python tools/recovery_analysis.py
@@ -22,11 +22,12 @@ G = 9.80665
 RHO = 1.20            # Palm Bay, mid-December, near sea level, ~20 °C (ISA sea level 1.225)
 D_IN = 28.0
 D = D_IN * 0.0254
-A = math.pi * D ** 2 / 4
+D_SPILL = 0.084       # LOC Precision 28 in parachute: 84 mm spill hole, 8 shroud lines (vendor listing)
+A = math.pi * (D ** 2 - D_SPILL ** 2) / 4
 CD = {"low (0.60)": 0.60, "nominal (0.75)": 0.75, "high (0.90)": 0.90}
 CX = 1.6              # opening-force coefficient, flat circular canopy, infinite-mass upper bound (Knacke)
 KEV_RATED = 3336.0    # 750 lb hollow-braid Kevlar
-KNOT_EFF = 0.40       # figure-8 knot efficiency (aramid study, recovery analysis)
+KNOT_EFF = 0.40       # figure-8 knot efficiency (aramid study); cord ends are knotted (design decision 2026-11-23)
 EA_KEV = 65e3         # N, axial stiffness of the 2.3 mm braid (E ≈ 70 GPa on ≈ 0.93 mm² load-bearing area)
 
 
@@ -42,7 +43,7 @@ def main():
     t, v, z = map(np.array, (F["t"], F["speed"], F["z"]))
     apogee, t_bo = float(F["apogee"]), float(F["t_bo"])
 
-    res = {"inputs": {"chute_d_in": D_IN, "area_m2": A, "rho": RHO, "cd": CD, "cx": CX, "propellant_g": prop,
+    res = {"inputs": {"chute_d_in": D_IN, "spill_d_m": D_SPILL, "area_m2": A, "rho": RHO, "cd": CD, "cx": CX, "propellant_g": prop,
                       "liftoff_g": liftoff, "cord_length_m": L_cord, "apogee_m": apogee}}
     # 1. descent rate and landing energy
     rows = []

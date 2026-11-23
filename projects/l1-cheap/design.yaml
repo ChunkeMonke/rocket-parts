@@ -285,3 +285,23 @@ owner_design:
   cp_cfd_owner_mm: {value: 809.9, status: UNCONFIRMED, note: "CFD own_a4 (coarse mesh); 1.13 cal on the corrected CG; +25.5 g nose ballast for 1.8"}
   cp_cfd_rev9_interim_mm: {value: 827.4, status: PROVISIONAL, note: "CFD r9a4, interim basis for the near-identical owner geometry; 1.55 cal; +9.1 g ballast for 1.8"}
   or_v4_note: "OR v4 (owner_cad/OR_Pepto_B_4.pdf) = v3 unchanged (fin offset, solid fairing, delay 14 s, nose 0.132 lb). OR v4 CP 861.5 -> 2.38 cal on the corrected CG; not trusted (fins 15 mm aft)"
+
+# ---- DESIGN DECISIONS 2026-11-23 (answers to the report questionnaire) ----
+decisions_2026_11_23:
+  ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png); 1.7 cal min needs +21.6 g (CP 809.9) / +5.4 g (CP 827.4); 1.8 target +25.6 / +9.2 g"}
+  deployment: {value: single_motor_ejection_12s, status: CONFIRMED}
+  ejection_protection: {value: LOC reusable wadding (chute protector), status: CONFIRMED}
+  aft_anchor: {value: printed bulkhead epoxied inside the body tube, holds the Kevlar and the chute pack forward, protects the chute, status: CONFIRMED, note: "replaces the epoxy-groove anchor and the 300 mm pack-position requirement is met by this bulkhead; bulkhead must pass ejection gas (vented / baffle)"}
+  backup_motor_stop: {value: none, status: CONFIRMED}
+  tail_cone_material: {value: PETG with foil-lined bore (gum-wrapper foil), status: CONFIRMED}
+  fin_can_print_orientation: {value: aft end (fins) down, axis vertical, status: CONFIRMED}
+  print_settings: {value: "0.20 mm layer, 6 walls, 25 % gyroid", status: CONFIRMED, note: "basis of the 97 g / 15 g slicer estimates"}
+  shock_cord: {value: "750 lb Kevlar 9KM, 3.5 m, knotted ends", status: CONFIRMED, note: "knotted capacity 1334 N (40 %)"}
+  nose_attachment: {value: Kevlar through two 5 mm holes in the nose-cap floor, status: CONFIRMED}
+  stability: {value: "target 1.8 cal, minimum 1.7 cal (41.275 mm reference)", status: CONFIRMED}
+  tube_heat_protection: {value: none, status: CONFIRMED}
+  rail: {value: "6 ft (1.83 m) rail; printed rail guides for both 1010 and 1515 rails", status: CONFIRMED, note: "no waiver altitude required"}
+  parachute: {value: "LOC Precision 28 in, 84 mm spill hole, 8 shroud lines", status: CONFIRMED, note: "locprecision.com model-rocket-recovery parachutes; flat ripstop, Cd 0.75 on net area"}
+  motor_source: {value: purchased on site; delay drilled with a delay drill tool, status: CONFIRMED}
+  motor_rationale: "H100W-14A: most cost-effective motor for the goal; long delay that can be drilled shorter; single-use (the H182R needed a reusable case)"
+  weights: {status: ESTIMATE, note: "materials not purchased; all part masses are slicer / model estimates"}
