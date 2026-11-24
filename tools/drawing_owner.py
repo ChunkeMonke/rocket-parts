@@ -32,7 +32,7 @@ FIG = ROOT / "projects/l1-cheap/report/figures/drawings"
 CONE_DZ = -29.89                 # seated tail cone (shoulder on the collar aft face)
 TIP = 1047.5                     # nose tip z in the OML frame (fin-can aft face z = 0)
 N = 4
-REV = "C"
+REV = "D"
 KW = dict(drawn="rocket-parts", project="Ms. Piggy · L1 · H100W-14A", material="PETG",
           note="Geometry cut from the SolidWorks STEP solids; stations from the nose tip. Do not scale: use the dimensions.",
           finish="FDM 0.20 layer, 6 walls", tol="±0.2 · angles ±0.5°")
@@ -99,7 +99,7 @@ def sheet1(pdf, oml):
     D.dim(ax, (955, -23.4), (955, 23.4), 0, "Ø46.80")
     D.leader(ax, (1010, 69.5), (1060, 92), "3 FINS @ 120°, TIP R69.5")
     # CG / CP symbols
-    for x, lab, kind in [(763.3, "CG 763.3 (EST.)", "cg"), (826.3, "CP 826.3 (CFD)", "cp")]:
+    for x, lab, kind in [(747.3, "CG 747.3 (EST.)", "cg"), (826.3, "CP 826.3 (CFD)", "cp")]:
         r = D.k_(ax, 2.6)
         ax.add_patch(Circle((x, 0), r, fc="white", ec="k", lw=0.6, zorder=9))
         if kind == "cg":
@@ -110,7 +110,7 @@ def sheet1(pdf, oml):
         ax.text(x, -D.k_(ax, 7 if kind == "cg" else 13), lab, fontsize=6, ha="center", va="top")
         ax.plot([x, x], [-D.k_(ax, 3), -D.k_(ax, 6 if kind == "cg" else 12)], color="k", lw=D.LW_THIN)
     D.leader(ax, (74.6, 0), (40, -60), "NOSE BALLAST STATION 74.6", ha="left")
-    D.leader(ax, (300, 0), (260, -60), "RECOVERY PACK ≈ 300, HELD BY PRINTED AFT BULKHEAD", ha="left")
+    D.leader(ax, (340, 0), (300, -60), "AFT KEVLAR BULKHEAD, FWD FACE AT 340 (PACK FORWARD OF IT)", ha="left")
     D.view_label(ax, (540, -112), "SIDE ELEVATION  (FIN 0 IN PLANE)")
     iso = plt.imread(str(ROOT / "projects/l1-cheap/report/figures/cover_rocket.png"))
     g = iso[..., :3].mean(axis=2)
@@ -127,13 +127,14 @@ def sheet1(pdf, oml):
             [6, "Parachute LOC 28 in, 84 mm spill hole, 8 lines", "ripstop nylon", 1, "38"],
             [7, "Shock cord 3.5 m, knotted ends", "Kevlar 750 lb", 1, "≈10"],
             [8, "Motor H100W-14A loaded, delay drilled 13 s", "AeroTech DMS 38/155", 1, "261"],
-            ["", "LIFTOFF (ESTIMATE)", "", "", "610"]]
+            [9, "Aft Kevlar bulkhead (SolidWorks), L1C-KB-005", "PETG", 1, "24.7"],
+            ["", "LIFTOFF (ESTIMATE)", "", "", "635"]]
     parts_table(paper, 14, 122, rows, [10, 66, 36, 10, 22])
     notes = ["NOTES",
              "1. ALL DIMENSIONS IN MM. STATIONS MEASURED FROM THE NOSE TIP.",
              "2. TUBE AND MOTOR DIAMETERS ARE PUBLISHED NOMINAL VALUES; FIT-CHECK AT ASSEMBLY.",
              "3. CG FROM SLICER MASSES AT CAD CENTROIDS (ESTIMATE). CP FROM REFINED 3D CFD (L1C-CFD-002).",
-             "4. BALLAST SIZED AT ASSEMBLY FROM THE AS-BUILT CG (EDR L1C-EDR-001 §6): MIN 1.7 CAL, TARGET 1.8 CAL.",
+             "4. 1.91 CAL WITH THE AFT BULKHEAD, NO NOSE BALLAST; CHECK AS-BUILT CG ≤ 752.0 (1.8 CAL) AT ASSEMBLY.",
              "5. REFERENCE DIAMETER 41.275 MM. THIRD-ANGLE PROJECTION."]
     for k, t in enumerate(notes):
         paper.text(175, 122 - k * 5.5, t, fontsize=6 if k else 7, weight="bold" if k == 0 else "normal")

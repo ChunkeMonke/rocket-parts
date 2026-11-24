@@ -5,7 +5,9 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parent.parent
-f = json.load(open(ROOT / "out/msp/flight.json"))
+import os
+TAG = os.environ.get("MSP_TAG", "")
+f = json.load(open(ROOT / f"out/msp/flight{TAG}.json"))
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
 fig, ax = plt.subplots(figsize=(7, 3.6))
 sty = {0.85: ":", 1.0: "-", 1.15: "--", 1.4: "-."}
@@ -19,5 +21,5 @@ ax.plot(list(worst), list(worst.values()), color="0.6", lw=5, alpha=.35, label="
 ax.set_xticks([11, 12, 13, 14]); ax.set_xlabel("drilled ejection delay (s after burnout)")
 ax.set_ylabel("speed at ejection (m/s)"); ax.grid(alpha=.3); ax.legend(fontsize=7.2, loc="upper center")
 ax.set_ylim(0, 40); ax.set_title("Speed at ejection vs delay, across the drag uncertainty band", fontsize=10)
-fig.tight_layout(); fig.savefig(ROOT / "projects/l1-cheap/report/figures/msp/delay_choice.png", dpi=180)
+fig.tight_layout(); fig.savefig(ROOT / f"projects/l1-cheap/report/figures/msp/delay_choice{TAG}.png", dpi=180)
 print(worst)

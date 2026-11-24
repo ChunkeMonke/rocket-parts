@@ -36,7 +36,7 @@ def _val(d, k):
 def params(project: str = "l1-cheap") -> dict:
     root = Path(__file__).resolve().parent.parent
     d = yaml.safe_load((root / "projects" / project / "design.yaml").read_text())
-    b = d["kevlar_bulkhead"]
+    b = d["kevlar_bulkhead_rev2"]
     p = {k: _val(b, k) for k in ("od_mm", "wall_mm", "length_mm", "plate_mm", "eye_tunnel_w_mm", "eye_tunnel_h_mm",
                                   "eye_bar_mm", "eye_post_mm", "eye_length_mm", "install_fwd_face_from_tip_mm")}
     p.update(tube_id_mm=38.735, tube_od_mm=41.275, vent_d_mm=6.5, vent_r_mm=12.25, groove_w_mm=1.5,

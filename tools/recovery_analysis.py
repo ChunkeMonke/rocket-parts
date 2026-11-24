@@ -36,10 +36,10 @@ def main():
     d = yaml.safe_load((ROOT / "projects/l1-cheap/design.yaml").read_text())
     prop = float(d["motor"]["propellant_mass_g"])
     liftoff = float(d["owner_design"]["liftoff_mass_g"]["value"])
-    cases = {"no added ballast": liftoff - prop, "+6.4 g ballast": liftoff + 6.4 - prop, "+10.2 g ballast": liftoff + 10.2 - prop}
-    nose = {"no added ballast": 65.0, "+6.4 g ballast": 71.4, "+10.2 g ballast": 75.2}
+    cases = {"with bulkhead, no ballast": liftoff - prop, "+5 g ballast": liftoff + 5 - prop, "+10 g ballast": liftoff + 10 - prop}
+    nose = {"with bulkhead, no ballast": 65.0, "+5 g ballast": 70.0, "+10 g ballast": 75.0}
     L_cord = 3 * 1.0774 + 0.3            # 3 x rocket length + loop allowance
-    F = json.load(open(ROOT / "out/msp/flight_series.json"))
+    F = json.load(open(ROOT / "out/msp/flight_series_bulkhead.json"))
     t, v, z = map(np.array, (F["t"], F["speed"], F["z"]))
     apogee, t_bo = float(F["apogee"]), float(F["t_bo"])
 
@@ -60,16 +60,16 @@ def main():
     vdep = [float(np.interp(t_bo + dl, t, v)) for dl in delays]
     res["deploy"] = [dict(delay=float(a), t=float(t_bo + a), v=b) for a, b in zip(delays, vdep)]
     # 3. opening load (upper bound) at deploy speed, nominal Cd
-    m_des = cases["+10.2 g ballast"] / 1000
+    m_des = cases["with bulkhead, no ballast"] / 1000
     fo = [0.5 * RHO * vv ** 2 * CD["nominal (0.75)"] * A * CX + m_des * G for vv in vdep]
     res["opening"] = [dict(delay=float(a), v=float(b), F_open_N=float(c)) for a, b, c in zip(delays, vdep, fo)]
     # 4. shock-cord snatch (energy method): nose vs body separating at dv after ejection
-    mu = (0.0752 * (m_des - 0.0752)) / m_des
+    mu = (0.065 * (m_des - 0.065)) / m_des
     k = EA_KEV / L_cord
     snatch = [dict(dv=dv, F_N=math.sqrt(2 * 0.5 * mu * dv ** 2 * k)) for dv in (5, 10, 15, 20)]
     res["snatch"] = dict(mu_kg=mu, k_N_per_m=k, cases=snatch)
     # 5. drift from apogee (vertical flight, constant wind, descent at nominal rate)
-    vnom = [r for r in rows if r["case"] == "+10.2 g ballast" and r["cd"] == 0.75][0]["v"]
+    vnom = [r for r in rows if r["case"] == "with bulkhead, no ballast" and r["cd"] == 0.75][0]["v"]
     winds_mph = [0, 5, 10, 15, 20]
     res["drift"] = [dict(wind_mph=w, wind_ms=w * 0.44704, drift_m=w * 0.44704 * apogee / vnom,
                          drift_ft=w * 0.44704 * apogee / vnom / 0.3048) for w in winds_mph]
@@ -79,7 +79,7 @@ def main():
 
     # ---------------- figures (monochrome)
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
-    ls = {"no added ballast": ":", "+6.4 g ballast": "--", "+10.2 g ballast": "-"}
+    ls = {"with bulkhead, no ballast": "-", "+5 g ballast": "--", "+10 g ballast": ":"}
     # fig 1: descent rate vs descent mass for Cd band
     fig, ax = plt.subplots(figsize=(7, 3.8))
     mm = np.linspace(420, 560, 50)
@@ -120,7 +120,7 @@ def main():
         if r["cd"] == 0.75:
             print(f'{r["case"]:18s} m {r["mass_g"]:.0f} g  v {r["v"]:.2f} m/s ({r["v_fps"]:.1f} ft/s)  '
                   f't {r["t_desc"]:.0f} s  KE body {r["ke_body_j"]:.1f} J ({r["ke_body_ftlbf"]:.1f} ft-lbf) nose {r["ke_nose_j"]:.2f} J')
-    print("Cd band (+25 g):", [f'{r["v"]:.2f}' for r in rows if r["case"] == "+10.2 g ballast"])
+    print("Cd band (+25 g):", [f'{r["v"]:.2f}' for r in rows if r["case"] == "with bulkhead, no ballast"])
     print("deploy:", [(r["delay"], round(r["v"], 1)) for r in res["deploy"]])
     print("opening N:", [(r["delay"], round(r["F_open_N"])) for r in res["opening"]])
     print("snatch:", [(s["dv"], round(s["F_N"])) for s in snatch], f"mu {mu:.3f} k {k:.0f}")

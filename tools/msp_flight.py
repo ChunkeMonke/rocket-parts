@@ -158,7 +158,7 @@ def main():
     for a in ax:
         a.axvline(s18["t_bo"], color="0.6", lw=0.8); a.axvline(s18["t_bo"] + DELAY, color="0.6", lw=0.8, ls="--"); a.grid(alpha=.3)
     ax[0].text(s18["t_bo"] + 0.2, 100, "burnout", fontsize=7.5); ax[0].text(s18["t_bo"] + DELAY + 0.2, 100, "ejection", fontsize=7.5)
-    fig.suptitle("Flight profile to ejection (1.8 cal ballast case, no wind)", fontsize=10)
+    fig.suptitle("Flight profile to ejection (design basis, no wind)", fontsize=10)
     fig.tight_layout(); fig.savefig(FIG / f"flight_profile{TAG}.png", dpi=180); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(7, 3.6))

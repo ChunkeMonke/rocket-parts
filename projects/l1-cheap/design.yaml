@@ -280,15 +280,15 @@ owner_design:
   tail_cone_mass_g: {value: 15, status: OWNER, note: "Bambu slicer 2026-11-23 (fin can + cone 112 g)"}
   fin_can_cg_from_aft_face_mm: {value: 59.5, status: ESTIMATE, note: "uniform-density CG of the owner STEP solid"}
   tail_cone_cg_aft_of_aft_face_mm: {value: 10.3, status: ESTIMATE, note: "uniform-density CG of the owner STEP solid, seated"}
-  liftoff_mass_g: {value: 610, status: ESTIMATE, note: "OR v4 (649 g) with the printed parts replaced by slicer masses (97 + 15 g) and the nose at 65 g"}
-  cg_liftoff_from_tip_mm: {value: 763.3, status: ESTIMATE, note: "OR v4 CG 774.8 corrected for the slicer masses at their STEP CGs and the 65 g nose (main session 2026-11-23)"}
+  liftoff_mass_g: {value: 634.7, status: ESTIMATE, note_2026_11_24: "with the 24.7 g SolidWorks bulkhead; 610 g without it", note: "OR v4 (649 g) with the printed parts replaced by slicer masses (97 + 15 g) and the nose at 65 g"}
+  cg_liftoff_from_tip_mm: {value: 747.3, status: ESTIMATE, note_2026_11_24: "with the bulkhead at 352.5 mm; 763.3 mm without it", note: "OR v4 CG 774.8 corrected for the slicer masses at their STEP CGs and the 65 g nose (main session 2026-11-23)"}
   cp_cfd_owner_mm: {value: 809.9, status: UNCONFIRMED, note: "CFD own_a4 (coarse mesh); 1.13 cal on the corrected CG; +25.5 g nose ballast for 1.8"}
   cp_cfd_rev9_interim_mm: {value: 827.4, status: PROVISIONAL, note: "CFD r9a4, interim basis for the near-identical owner geometry; 1.55 cal; +9.1 g ballast for 1.8"}
   or_v4_note: "OR v4 (owner_cad/OR_Pepto_B_4.pdf) = v3 unchanged (fin offset, solid fairing, delay 14 s, nose 0.132 lb). OR v4 CP 861.5 -> 2.38 cal on the corrected CG; not trusted (fins 15 mm aft)"
 
 # ---- DESIGN DECISIONS 2026-11-23 (answers to the report questionnaire) ----
 decisions_2026_11_23:
-  ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png) against CP 826.3 mm (L1C-CFD-002): +6.4 g for 1.7 cal, +10.2 g for 1.8 cal on the 763.3 mm CG ESTIMATE (before the 15 g aft Kevlar bulkhead)"}
+  ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png) against CP 826.3 mm (L1C-CFD-002): +6.4 g for 1.7 cal, +10.2 g for 1.8 cal on the 763.3 mm CG ESTIMATE (without the bulkhead). WITH the 24.7 g SolidWorks bulkhead: 1.91 cal, no nose ballast needed; balance check CG <= 752.0 mm (1.8 cal)"}
   deployment: {value: single_motor_ejection_13s, status: CONFIRMED, note: "2026-11-24: delay changed 12 -> 13 s (L1C-CFD-002: ideal delay 13.1 s on CFD drag; 13 s minimises the worst-case ejection speed, 14.7 m/s)"}
   ejection_protection: {value: LOC reusable wadding (chute protector), status: CONFIRMED}
   aft_anchor: {value: printed bulkhead epoxied inside the body tube, holds the Kevlar and the chute pack forward, protects the chute, status: CONFIRMED, note: "replaces the epoxy-groove anchor and the 300 mm pack-position requirement is met by this bulkhead; bulkhead must pass ejection gas (vented / baffle)"}
@@ -307,16 +307,25 @@ decisions_2026_11_23:
   weights: {status: ESTIMATE, note: "materials not purchased; all part masses are slicer / model estimates"}
 
 # ---- AFT KEVLAR ANCHOR BULKHEAD (design decision 2026-11-23: printed, epoxied inside the body tube) ----
-kevlar_bulkhead:            # parts/kevlar_bulkhead.py  (REV 2, 2026-11-24: open single-plate design with a Kevlar eye; rev 1 baffle chamber dropped: cord could not be threaded and supports would be trapped)
-  od_mm: {value: 38.555, status: PROPOSED, note: "tube id_measured 38.735 - 2 x snug_slip 0.09 (skills/SKILL.md): tight, self-centring, room for an epoxy film"}
-  wall_mm: {value: 2.0, status: PROPOSED}
-  length_mm: {value: 24.0, status: PROPOSED, note: "bond length; sleeve covers the eye"}
-  plate_mm: {value: 6.0, status: PROPOSED, note: "single vented plate at the aft end; LOC reusable wadding protects the chute (no baffle needed)"}
-  vents: {value: "6 x D7 at r 12.0, 0/60/.. deg", status: PROPOSED}
-  eye_tunnel_w_mm: {value: 6.0, status: PROPOSED, note: "Kevlar passes straight through; 45 deg diamond roof prints without supports"}
-  eye_tunnel_h_mm: {value: 6.0, status: PROPOSED, note: "vertical sides before the 45 deg roof"}
-  eye_bar_mm: {value: 6.0, status: PROPOSED, note: "solid bar above the roof apex"}
-  eye_post_mm: {value: 5.0, status: PROPOSED, note: "post thickness each side of the tunnel"}
-  eye_length_mm: {value: 12.0, status: PROPOSED, note: "eye depth along the tunnel axis"}
-  epoxy_grooves: {value: "2 x 1.5 wide x 0.5 deep", status: PROPOSED}
-  install_fwd_face_from_tip_mm: {value: 340, status: PROPOSED, note: "sleeve forward edge 176.6 mm inside the tube's forward end; 131.6 mm from the nose-cap face for chute + cord + wadding (pack length ESTIMATE 120 mm)"}
+kevlar_bulkhead:            # FLIGHT PART: SolidWorks design owner_cad/Bulkhead_Ms_Piggy.STEP (design decision 2026-11-24); parts/kevlar_bulkhead.py rev 1/2 = earlier proposals
+  source: {value: owner_cad/Bulkhead_Ms_Piggy.STEP, status: CONFIRMED}
+  od_mm: {value: 38.556, status: CONFIRMED, note: "snug in the 38.735 measured bore (0.09 mm per side)"}
+  length_mm: {value: 25.0, status: CONFIRMED}
+  vents: {value: "6 x D6.0 on R12 at 30/90/.. deg", status: CONFIRMED}
+  kevlar_holes: {value: "2 x D6.0 at (+-5, 0): 10 mm centres, 4 mm web, R2 rounded edges", status: CONFIRMED}
+  epoxy_grooves: {value: "3 sawtooth, 1.0 mm deep", status: CONFIRMED}
+  mass_g: {value: 24.7, status: ESTIMATE, note: "mass model 23.6 (0 %) - 27.9 g (100 %); 25 % gyroid, 6 walls, 0.20 mm"}
+  install_fwd_face_from_tip_mm: {value: 340, status: CONFIRMED, note: "176.6 mm inside the tube's forward end; bulkhead CG 352.5 mm from the tip"}
+  fea_686N: {value: "FI_z 0.13; in-layer 13.8 MPa; interlayer shear 10.0 MPa at 2 mm from the contact patch (FI 0.67)", status: RESULT, note: "out/fea/kevlar_bulkhead_owner/snatch686/result.json"}
+# ---- design-team bulkhead proposal rev 2 (history; parts/kevlar_bulkhead.py). Flight part = kevlar_bulkhead (SolidWorks) ----
+kevlar_bulkhead_rev2:
+  od_mm: 38.555
+  wall_mm: 2.0
+  length_mm: 24.0
+  plate_mm: 6.0
+  eye_tunnel_w_mm: 6.0
+  eye_tunnel_h_mm: 6.0
+  eye_bar_mm: 6.0
+  eye_post_mm: 5.0
+  eye_length_mm: 12.0
+  install_fwd_face_from_tip_mm: 340
