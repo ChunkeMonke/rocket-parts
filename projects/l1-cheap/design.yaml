@@ -288,7 +288,7 @@ owner_design:
 
 # ---- DESIGN DECISIONS 2026-11-23 (answers to the report questionnaire) ----
 decisions_2026_11_23:
-  ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png); 1.7 cal min needs +21.6 g (CP 809.9) / +5.4 g (CP 827.4); 1.8 target +25.6 / +9.2 g"}
+  ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png) against CP 826.3 mm (L1C-CFD-002): +6.4 g for 1.7 cal, +10.2 g for 1.8 cal on the 763.3 mm CG ESTIMATE (before the 15 g aft Kevlar bulkhead)"}
   deployment: {value: single_motor_ejection_13s, status: CONFIRMED, note: "2026-11-24: delay changed 12 -> 13 s (L1C-CFD-002: ideal delay 13.1 s on CFD drag; 13 s minimises the worst-case ejection speed, 14.7 m/s)"}
   ejection_protection: {value: LOC reusable wadding (chute protector), status: CONFIRMED}
   aft_anchor: {value: printed bulkhead epoxied inside the body tube, holds the Kevlar and the chute pack forward, protects the chute, status: CONFIRMED, note: "replaces the epoxy-groove anchor and the 300 mm pack-position requirement is met by this bulkhead; bulkhead must pass ejection gas (vented / baffle)"}
@@ -305,3 +305,18 @@ decisions_2026_11_23:
   motor_source: {value: purchased on site; delay drilled with a delay drill tool, status: CONFIRMED}
   motor_rationale: "H100W-14A: most cost-effective motor for the goal; long delay that can be drilled shorter; single-use (the H182R needed a reusable case)"
   weights: {status: ESTIMATE, note: "materials not purchased; all part masses are slicer / model estimates"}
+
+# ---- AFT KEVLAR ANCHOR BULKHEAD (design decision 2026-11-23: printed, epoxied inside the body tube) ----
+kevlar_bulkhead:            # parts/kevlar_bulkhead.py
+  od_mm: {value: 38.555, status: PROPOSED, note: "tube id_measured 38.735 - 2 x snug_slip 0.09 (skills/SKILL.md): tight, self-centring, room for an epoxy film"}
+  wall_mm: {value: 2.0, status: PROPOSED}
+  length_mm: {value: 26.0, status: PROPOSED, note: "bond length; 3153 mm2 bonded area"}
+  aft_plate_mm: {value: 3.0, status: PROPOSED}
+  gap_mm: {value: 9.0, status: PROPOSED, note: "baffle chamber; room for the Kevlar loop round the pillar"}
+  fwd_plate_mm: {value: 5.0, status: PROPOSED, note: "carries the Kevlar load"}
+  pillar_d_mm: {value: 8.0, status: PROPOSED}
+  aft_vents: {value: "6 x D7 at r 11.5, 0/60/.. deg", status: PROPOSED}
+  fwd_vents: {value: "6 x D6 at r 12.5, 30/90/.. deg (staggered 30 deg)", status: PROPOSED}
+  kevlar_holes: {value: "2 x D5, 14 mm apart, 0.5 mm edge chamfer", status: PROPOSED, note: "same pattern as the nose-cap web"}
+  epoxy_grooves: {value: "2 x 1.5 wide x 0.5 deep", status: PROPOSED}
+  install_fwd_face_from_tip_mm: {value: 340, status: PROPOSED, note: "176.6 mm inside the tube's forward end; leaves 131.6 mm from the nose-cap face for chute + cord + wadding (pack length ESTIMATE 120 mm)"}
