@@ -9,3 +9,6 @@ case /home/user/out/cfd/of_msp_a4_f  L 1.078 m  blocks (102, 20, 40)  U (99.7564
 03:37:43 setup msp_a0 --alpha 0 --speed 100
 case /home/user/out/cfd/of_msp_a0  L 1.078 m  blocks (102, 20, 40)  U (100.000000 0.000000 0.000000)  k 0.375  omega 111.8
 03:38:08 DONE msp_a4_f (post run manually; internal VTK export failed: MPI out of resource)
+03:48:02 DONE msp_a0 "CP_from_tip_mm":1006.3998856336509, "CN_alpha_per_rad":Infinity,
+03:48:02 setup msp_a2 --alpha 2 --speed 100
+case /home/user/out/cfd/of_msp_a2  L 1.078 m  blocks (102, 20, 40)  U (99.939083 0.000000 3.489950)  k 0.375  omega 111.8
