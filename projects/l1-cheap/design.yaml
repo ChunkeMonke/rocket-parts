@@ -307,16 +307,16 @@ decisions_2026_11_23:
   weights: {status: ESTIMATE, note: "materials not purchased; all part masses are slicer / model estimates"}
 
 # ---- AFT KEVLAR ANCHOR BULKHEAD (design decision 2026-11-23: printed, epoxied inside the body tube) ----
-kevlar_bulkhead:            # parts/kevlar_bulkhead.py
+kevlar_bulkhead:            # parts/kevlar_bulkhead.py  (REV 2, 2026-11-24: open single-plate design with a Kevlar eye; rev 1 baffle chamber dropped: cord could not be threaded and supports would be trapped)
   od_mm: {value: 38.555, status: PROPOSED, note: "tube id_measured 38.735 - 2 x snug_slip 0.09 (skills/SKILL.md): tight, self-centring, room for an epoxy film"}
   wall_mm: {value: 2.0, status: PROPOSED}
-  length_mm: {value: 26.0, status: PROPOSED, note: "bond length; 3153 mm2 bonded area"}
-  aft_plate_mm: {value: 3.0, status: PROPOSED}
-  gap_mm: {value: 9.0, status: PROPOSED, note: "baffle chamber; room for the Kevlar loop round the pillar"}
-  fwd_plate_mm: {value: 5.0, status: PROPOSED, note: "carries the Kevlar load"}
-  pillar_d_mm: {value: 8.0, status: PROPOSED}
-  aft_vents: {value: "6 x D7 at r 11.5, 0/60/.. deg", status: PROPOSED}
-  fwd_vents: {value: "6 x D6 at r 12.5, 30/90/.. deg (staggered 30 deg)", status: PROPOSED}
-  kevlar_holes: {value: "2 x D5, 14 mm apart, 0.5 mm edge chamfer", status: PROPOSED, note: "same pattern as the nose-cap web"}
+  length_mm: {value: 24.0, status: PROPOSED, note: "bond length; sleeve covers the eye"}
+  plate_mm: {value: 6.0, status: PROPOSED, note: "single vented plate at the aft end; LOC reusable wadding protects the chute (no baffle needed)"}
+  vents: {value: "6 x D7 at r 12.0, 0/60/.. deg", status: PROPOSED}
+  eye_tunnel_w_mm: {value: 6.0, status: PROPOSED, note: "Kevlar passes straight through; 45 deg diamond roof prints without supports"}
+  eye_tunnel_h_mm: {value: 6.0, status: PROPOSED, note: "vertical sides before the 45 deg roof"}
+  eye_bar_mm: {value: 6.0, status: PROPOSED, note: "solid bar above the roof apex"}
+  eye_post_mm: {value: 5.0, status: PROPOSED, note: "post thickness each side of the tunnel"}
+  eye_length_mm: {value: 12.0, status: PROPOSED, note: "eye depth along the tunnel axis"}
   epoxy_grooves: {value: "2 x 1.5 wide x 0.5 deep", status: PROPOSED}
-  install_fwd_face_from_tip_mm: {value: 340, status: PROPOSED, note: "176.6 mm inside the tube's forward end; leaves 131.6 mm from the nose-cap face for chute + cord + wadding (pack length ESTIMATE 120 mm)"}
+  install_fwd_face_from_tip_mm: {value: 340, status: PROPOSED, note: "sleeve forward edge 176.6 mm inside the tube's forward end; 131.6 mm from the nose-cap face for chute + cord + wadding (pack length ESTIMATE 120 mm)"}

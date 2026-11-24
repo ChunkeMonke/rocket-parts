@@ -1,0 +1,68 @@
+[
+  {
+    "num": 1,
+    "name": "mesh integrity",
+    "passed": true,
+    "detail": "watertight=True, winding_consistent=True, volume=12037.1 mm3, bodies=1",
+    "data": {
+      "bodies": 1,
+      "volume_mm3": 12037.146428296808
+    }
+  },
+  {
+    "num": 2,
+    "name": "mass",
+    "passed": true,
+    "detail": "target 15.0 g (\u00b15 %); reachable 13.2 g (0 %) \u2013 15.3 g (100 %); infill to hit target = 87.0 %",
+    "data": {
+      "solid_mm3": 10373.589593891962,
+      "infill_region_mm3": 1651.6117085969972,
+      "mass_0pct_g": 13.174458784242793,
+      "mass_100pct_g": 15.27200565416098,
+      "mesh_volume_mm3": 12037.146428296808,
+      "wall_mm": 2.67,
+      "layer_mm": 0.2,
+      "n_top": 5,
+      "n_bottom": 3,
+      "infill_needed_pct": 87.03220137476173,
+      "target_g": 15.0
+    }
+  },
+  {
+    "num": 3,
+    "name": "mating interference",
+    "passed": true,
+    "detail": "body_tube: 0.000 mm3",
+    "data": {
+      "interference_mm3": {
+        "body_tube": 0.0
+      }
+    }
+  },
+  {
+    "num": 4,
+    "name": "renders",
+    "passed": true,
+    "detail": "written: kevlar_bulkhead_rev2_iso.png, kevlar_bulkhead_rev2_front.png, kevlar_bulkhead_rev2_section.png \u2014 VISUAL REVIEW REQUIRED",
+    "data": {
+      "paths": [
+        "/home/user/out/kevlar_bulkhead/rev2/kevlar_bulkhead_rev2_iso.png",
+        "/home/user/out/kevlar_bulkhead/rev2/kevlar_bulkhead_rev2_front.png",
+        "/home/user/out/kevlar_bulkhead/rev2/kevlar_bulkhead_rev2_section.png"
+      ]
+    }
+  },
+  {
+    "num": 5,
+    "name": "build volume",
+    "passed": true,
+    "detail": "extents X 38.6 / Y 38.5 / Z 24.0 mm vs limit 256/256/256",
+    "data": {
+      "extents_mm": [
+        38.55500030517578,
+        38.54301452636719,
+        24.0
+      ]
+    }
+  }
+]
