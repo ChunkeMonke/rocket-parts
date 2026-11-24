@@ -18,3 +18,10 @@ out/cfd/of_*/*
 !out/cfd/of_*/case.json
 out/fea/**/ccx.log
 out/msp/part_*.stl
+out/fea/**/job.frd
+out/fea/**/job.inp
+out/fea/**/job.12d
+out/fea/**/job.dat
+out/fea/**/job.cvg
+out/fea/**/job.sta
+out/fea/**/spooles.out
