@@ -42,3 +42,5 @@ case /home/user/out/cfd/of_msp_m08  L 1.078 m  blocks (102, 20, 40)  U (271.5706
 06:18:04 CAMPAIGN COMPLETE
 06:18:04 setup msp_a0_f --alpha 0 --refine 1
 case /home/user/out/cfd/of_msp_a0_f  L 1.078 m  blocks (102, 20, 40)  U (100.000000 0.000000 0.000000)  k 0.375  omega 111.8
+07:28:06 DONE msp_a0_f "Fz_N":0.4446557637278238,
+07:28:06 FOLLOWUP COMPLETE

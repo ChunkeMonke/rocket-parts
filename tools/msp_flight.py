@@ -145,7 +145,7 @@ def main():
     ax[0].plot(s18["t"], s18["z"], "k"); ax[0].set_ylabel("altitude (m)")
     ax[1].plot(s18["t"], s18["v"], "k"); ax[1].set_ylabel("speed (m/s)")
     ax1b = ax[1].twinx(); ax1b.plot(s18["t"], s18["mach"], "k--", lw=0.8); ax1b.set_ylabel("Mach (dashed)")
-    ax[2].plot(s18["t"], s18["a"], "k"); ax[2].set_ylabel("acceleration (g)"); ax[2].set_xlabel("time (s)")
+    ax[2].plot(s18["t"], s18["a"], "k"); ax[2].set_ylabel("|acceleration| (g)"); ax[2].set_xlabel("time (s)")
     for a in ax:
         a.axvline(s18["t_bo"], color="0.6", lw=0.8); a.axvline(s18["t_bo"] + DELAY, color="0.6", lw=0.8, ls="--"); a.grid(alpha=.3)
     ax[0].text(s18["t_bo"] + 0.2, 100, "burnout", fontsize=7.5); ax[0].text(s18["t_bo"] + DELAY + 0.2, 100, "ejection", fontsize=7.5)

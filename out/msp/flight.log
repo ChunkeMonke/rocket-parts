@@ -1,0 +1,83 @@
+no added ballast     +  0.0 g  apogee 1665 m  vmax 305 m/s M0.90 rail 24.9 m/s  SM(CFD) lift-off 1.53 burnout 2.51 Barrowman 1.04  v_dep 10.5
+1.7 cal at liftoff   +  6.4 g  apogee 1665 m  vmax 303 m/s M0.89 rail 24.8 m/s  SM(CFD) lift-off 1.70 burnout 2.72 Barrowman 1.22  v_dep 11.0
+1.8 cal at liftoff   + 10.2 g  apogee 1664 m  vmax 302 m/s M0.89 rail 24.7 m/s  SM(CFD) lift-off 1.80 burnout 2.83 Barrowman 1.32  v_dep 11.2
+drag x0.85: apogee 1840 m, M 0.92, ideal delay 14.1 s, v at 12 s 21.1 m/s
+drag x1.00: apogee 1664 m, M 0.89, ideal delay 13.1 s, v at 12 s 11.2 m/s
+drag x1.15: apogee 1525 m, M 0.86, ideal delay 12.3 s, v at 12 s 3.2 m/s
+drag x1.40: apogee 1347 m, M 0.83, ideal delay 11.3 s, v at 12 s 7.3 m/s
+wind  0 mph: apogee 1664 m, apogee offset -2 m, landing -2 m
+wind  5 mph: apogee 1661 m, apogee offset -82 m, landing +613 m
+wind 10 mph: apogee 1653 m, apogee offset -161 m, landing +1220 m
+wind 15 mph: apogee 1638 m, apogee offset -240 m, landing +1813 m
+wind 20 mph: apogee 1617 m, apogee offset -317 m, landing +2386 m
+[
+ {
+  "case": "no added ballast",
+  "ballast_g": 0.0,
+  "liftoff_g": 610.0,
+  "cg_mm": 763.3,
+  "apogee_m": 1665.1803120011803,
+  "apogee_ft": 5463.190000003872,
+  "t_apogee": 15.47163636904211,
+  "vmax": 305.10299172603385,
+  "mach_max": 0.9007960529525552,
+  "amax_g": 21.090353174186614,
+  "rail_exit": 24.925194608375932,
+  "t_burnout": 2.398,
+  "t_deploy": 14.398,
+  "v_deploy": 10.541113361582548,
+  "max_q_kpa": 54.95596058355537,
+  "sm_cfd_liftoff": 1.5264361340694386,
+  "sm_cfd_min_powered": 1.5264361340694386,
+  "sm_cfd_burnout": 2.514829713706151,
+  "sm_barrowman_liftoff": 1.0432688146887181,
+  "t_descent": 311.24865644881874,
+  "ideal_delay_s": 13.073636369042111
+ },
+ {
+  "case": "1.7 cal at liftoff",
+  "ballast_g": 6.411908768508245,
+  "liftoff_g": 616.4119087685083,
+  "cg_mm": 756.136151433716,
+  "apogee_m": 1664.7181641808586,
+  "apogee_ft": 5461.673766997567,
+  "t_apogee": 15.514494780939224,
+  "vmax": 302.9678771692802,
+  "mach_max": 0.894459003867737,
+  "amax_g": 20.891655272319856,
+  "rail_exit": 24.79664606226267,
+  "t_burnout": 2.398,
+  "t_deploy": 14.398,
+  "v_deploy": 10.964411630842283,
+  "max_q_kpa": 54.20300263743441,
+  "sm_cfd_liftoff": 1.7000000000000033,
+  "sm_cfd_min_powered": 1.7000000000000033,
+  "sm_cfd_burnout": 2.715724072088216,
+  "sm_barrowman_liftoff": 1.2168326806192826,
+  "t_descent": 311.1622736786652,
+  "ideal_delay_s": 13.116494780939224
+ },
+ {
+  "case": "1.8 cal at liftoff",
+  "ballast_g": 10.167751195464515,
+  "liftoff_g": 620.1677511954645,
+  "cg_mm": 752.0086514337162,
+  "apogee_m": 1664.3047501381739,
+  "apogee_ft": 5460.317421713168,
+  "t_apogee": 15.538596097891919,
+  "vmax": 301.7106292015014,
+  "mach_max": 0.8907327926390504,
+  "amax_g": 20.739854006383617,
+  "rail_exit": 24.72303245439529,
+  "t_burnout": 2.398,
+  "t_deploy": 14.398,
+  "v_deploy": 11.202371810152208,
+  "max_q_kpa": 53.762605498289844,
+  "sm_cfd_liftoff": 1.7999999999999963,
+  "sm_cfd_min_powered": 1.7999999999999963,
+  "sm_cfd_burnout": 2.831003058930196,
+  "sm_barrowman_liftoff": 1.316832680619276,
+  "t_descent": 311.0850000258269,
+  "ideal_delay_s": 13.140596097891919
+ }
+]
