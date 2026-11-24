@@ -113,14 +113,15 @@ def main():
               f"Barrowman {rec['sm_barrowman_liftoff']:.2f}  v_dep {rec['v_deploy']:.1f}")
     # drag sensitivity on the 1.8 cal configuration
     out["drag_band"] = []
-    for k in (0.85, 1.0, 1.15):
+    for k in (0.85, 1.0, 1.15, 1.40):
         rkt, motor, _ = build(ball["1.8 cal at liftoff"], aero, base, drag_k=k)
         f = fly(rkt)
         t_bo = float(motor.burn_out_time)
         out["drag_band"].append(dict(drag_factor=k, apogee_m=float(f.apogee), apogee_ft=float(f.apogee) / 0.3048,
                                      vmax=float(f.max_speed), mach_max=float(f.max_mach_number),
                                      t_apogee=float(f.apogee_time), ideal_delay_s=float(f.apogee_time) - t_bo,
-                                     v_deploy_12s=float(f.speed(t_bo + DELAY))))
+                                     v_deploy_12s=float(f.speed(t_bo + DELAY)),
+                                     v_deploy={d: float(f.speed(t_bo + d)) for d in (11, 12, 13, 14)}))
         print(f"drag x{k:.2f}: apogee {f.apogee:.0f} m, M {f.max_mach_number:.2f}, ideal delay {f.apogee_time - t_bo:.1f} s, "
               f"v at 12 s {f.speed(t_bo + DELAY):.1f} m/s")
     # wind cases on the 1.8 cal configuration
