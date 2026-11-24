@@ -2,7 +2,7 @@
 title: "Ms. Piggy"
 subtitle: "Level 1 Minimum-Diameter Rocket · Design, Analysis & Flight Readiness"
 docnumber: "L1C-EDR-001"
-revision: "P"
+revision: "Q"
 date: "2026-11-24"
 status: "Released for build"
 prepared_for: "Tripoli Level 1 certification flight, Palm Bay FL, 2026-12-14"
@@ -11,6 +11,7 @@ tagline: "Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe com
 ref_diameter: "41.275 mm"
 cover_image: "figures/cover_rocket.png"
 revisions:
+  - {rev: "Q", date: "2026-11-24", description: "Independent SolidWorks Simulation cross-check of the aft Kevlar bulkhead (three figures); bearing check under the Kevlar cord"}
   - {rev: "P", date: "2026-11-24", description: "SolidWorks Kevlar bulkhead adopted (FEA, drawing L1C-KB-005 Rev C); stability 1.91 cal without nose ballast; flight and recovery on the with-bulkhead mass"}
   - {rev: "N", date: "2026-11-24", description: "Full-assembly CFD (L1C-CFD-002) adopted as aerodynamic basis; delay 13 s; stability, flight and recovery updated"}
   - {rev: "M", date: "2026-11-23", description: "Finalized report format (no action lists); recovery analysis with the 28 in parachute; complete revision history"}
@@ -43,7 +44,7 @@ revisions:
 | Apogee | **1662 m (5454 ft)**; 1524–1836 m for drag ±15 % | RocketPy on the CFD drag, with the bulkhead [D32] | [PROVISIONAL]{.tag} |
 | Max speed / rail exit | 297 m/s, **M 0.88** / 24.5 m/s on 1.83 m | same | [PROVISIONAL]{.tag} |
 | Fin strength, rev 9 | FI 0.34 / 0.27 / 0.15 / 0.026 | CalculiX, ANSYS-calibrated | pass (limits 0.5 / 0.5 / 0.5 / 0.1) |
-| Aft bulkhead, 686 N snatch | FI 0.13 across layers; interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N) | CalculiX, orthotropic PETG [D31] | [ESTIMATE]{.tag} load |
+| Aft bulkhead, 686 N snatch | FI 0.13 across layers; interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N); cord bearing ≈ 38 MPa, confined to about 2 mm | CalculiX, orthotropic PETG [D31]; SolidWorks Simulation cross-check [D34] | [ESTIMATE]{.tag} load |
 | Delay | drill 14 s → **13 s** | ideal 13.2 s at nominal drag; worst-case ejection 14.1 m/s over drag ×0.85–1.40 [D32] | [CONFIRMED]{.tag} |
 | Descent rate | **5.35 m/s** (17.5 ft/s); 4.88–5.98 m/s for *C*~d~ 0.90–0.60 | LOC 28 in chute, 84 mm spill hole, *C*~d~ 0.75, 513.7 g | [ESTIMATE]{.tag} |
 | Opening / snatch load | ≤ 87 N in the ±1.5 s band / ≤ 646 N at 20 m/s | against 1334 N knotted Kevlar [D27] | [ESTIMATE]{.tag} |
@@ -60,7 +61,7 @@ Table: Key results, with the aft Kevlar bulkhead fitted. Sources: §2.5, §3.4, 
 5. **Apogee is 1662 m (5454 ft) at nominal CFD drag**, at M 0.88, with a band of 1524–1836 m for ±15 % drag. A drag factor of 1.40 gives 1347 m and reproduces the OpenRocket apogee, so the two models differ mainly in drag [D28][D32].
 6. **A 13 s delay gives the lowest worst-case ejection speed**: 14.1 m/s across drag ×0.85–1.40, against 21.9 m/s for 12 s. The ideal delay at nominal drag is 13.2 s [D32].
 7. **The rev 9 fin can passes all four structural criteria.** The SolidWorks fin can (flight part) is covered by similarity. It differs from rev 9 at the fin root (root-fillet thickness 11.1 mm against 13.4 mm) and at the trailing edge (1.0 mm against 2.5 mm) [D25].
-8. **The aft Kevlar bulkhead carries the 686 N snatch load.** The cord presses the 4 mm web forward, so the load is carried in compression and in-layer bending. Across-layer tension reaches FI 0.13; interlayer shear reaches FI ≈ 0.67 at 2 mm from the cord contact (§5.8) [D31].
+8. **The aft Kevlar bulkhead carries the 686 N snatch load.** The cord presses the 4 mm web forward, so the load is carried in compression and in-layer bending. Across-layer tension reaches FI 0.13; interlayer shear reaches FI ≈ 0.67 at 2 mm from the cord contact (§5.8) [D31]. An independent SolidWorks Simulation study confirms the result; the governing local effect is cord bearing on the web, ≈ 38 MPa [ESTIMATE]{.tag} at 686 N, confined to about 2 mm [D34].
 9. **The 28 in parachute is adequate.** Descent is 5.35 m/s (17.5 ft/s) at *C*~d~ 0.75 with the bulkhead fitted, and body-section landing energy is ≈ 6.4 J (4.7 ft-lbf) [ESTIMATE]{.tag}. Opening and snatch loads stay far below the 1334 N knotted-cord strength (§7).
 10. **Chute-pack position is critical.** If the pack slid aft onto the motor, the RocketPy basis would drop to 0.15 cal [D25]. The aft bulkhead holds the pack in the 131.6 mm between the nose-cap face and its forward face at 340 mm [D30].
 
@@ -77,7 +78,7 @@ Table: Key results, with the aft Kevlar bulkhead fitted. Sources: §2.5, §3.4, 
 
 ::: summary
 **Section summary**
-This section defines the scope, mission and requirements of the design, and the conventions used throughout. Each requirement carries its compliance status as of revision P.
+This section defines the scope, mission and requirements of the design, and the conventions used throughout. Each requirement carries its compliance status as of revision Q.
 :::
 
 ## Scope
@@ -549,7 +550,7 @@ Table: Flutter estimate. Source: [D12].
 
 ::: summary
 **Section summary**
-The governing structural loads are landing strikes on a fin tip, which put the printed layers at the fin root in across-layer tension. The rev 9 reference fin can meets all four fin criteria with in-house FEA calibrated against reference ANSYS runs. The SolidWorks flight fin can is covered by similarity to rev 9, and a 1.5 m drop test is recommended as its structural acceptance test. The SolidWorks aft Kevlar bulkhead carries the 686 N snatch load in compression and in-layer bending: FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 near the cord contact.
+The governing structural loads are landing strikes on a fin tip, which put the printed layers at the fin root in across-layer tension. The rev 9 reference fin can meets all four fin criteria with in-house FEA calibrated against reference ANSYS runs. The SolidWorks flight fin can is covered by similarity to rev 9, and a 1.5 m drop test is recommended as its structural acceptance test. The SolidWorks aft Kevlar bulkhead carries the 686 N snatch load in compression and in-layer bending: FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 near the cord contact. An independent SolidWorks Simulation study confirms this; the governing local effect is cord bearing on the web, confined to about 2 mm.
 :::
 
 ## Load cases {#sec-loadcases}
@@ -681,9 +682,10 @@ Every printed structural part is printed with its axis vertical, so *Z* is acros
 | **Aft Kevlar bulkhead** (printed flat, aft face down; layers horizontal) | | |
 | Kevlar snatch | Cord under the 4 mm web presses it forward (+*Z*) | Within: **compression and in-layer bending**; across-layer tension small (FI 0.13) |
 | Same load, at the cord contact | Web underside next to the contact patch | Across: **interlayer shear**, FI ≈ 0.67 at 686 N (§5.8) |
+| Same load, cord bearing | Flattened cord presses on the web aft face | Across: **compression** (bearing), ≈ 38 MPa at 686 N [ESTIMATE]{.tag} (§5.8) |
 | Bond to the tube | Epoxy shear on the outer surface and grooves | Within: in-plane shear |
 
-Table: Load direction relative to the print layers. Sources: [D13][D17][D18][D19][D31].
+Table: Load direction relative to the print layers. Sources: [D13][D17][D18][D19][D31][D34].
 
 - **Flight part.** The SolidWorks fin can is printed aft end (fins) down with the axis vertical [CONFIRMED]{.tag} [D3], as rev 9. The table applies to it directly.
 - The rev 9 fin-can specification states that fin-root bending is carried "within the layers". The ANSYS and CalculiX results show across-layer tension at the root, and this report follows the FEA (Appendix G).
@@ -702,7 +704,7 @@ The structural basis of the SolidWorks fin can is the rev 9 FEA. Its fin root is
 
 ::: summary
 **Aft Kevlar bulkhead**
-The SolidWorks bulkhead (drawing L1C-KB-005 Rev C) anchors the aft end of the Kevlar. Under the 686 N worst-case snatch load the cord presses the 4 mm web forward, so the part works in compression and in-layer bending with horizontal layers. Across-layer tension is low (FI 0.13); the governing quantity is interlayer shear next to the cord contact, FI ≈ 0.67 at 686 N and ≈ 0.33 at the typical 343 N.
+The SolidWorks bulkhead (drawing L1C-KB-005 Rev C) anchors the aft end of the Kevlar. Under the 686 N worst-case snatch load the cord presses the 4 mm web forward, so the part works in compression and in-layer bending with horizontal layers. Across-layer tension is low (FI 0.13); the governing quantity is interlayer shear next to the cord contact, FI ≈ 0.67 at 686 N and ≈ 0.33 at the typical 343 N. An independent SolidWorks Simulation study confirms the result and identifies cord bearing on the web, ≈ 38 MPa [ESTIMATE]{.tag} at 686 N and confined to about 2 mm, as the governing local effect.
 :::
 
 **Load case.** The snatch load of §7.4 is applied: 686 N at 20 m/s separation (worst case) and 343 N at 10 m/s (typical) [D27]. The opening load is at most 87 N across the ±1.5 s delay band and the snatch load at most 646 N at 20 m/s, both covered by the 686 N case.
@@ -739,6 +741,63 @@ Table: Aft Kevlar bulkhead FEA, 686 N worst-case snatch load [ESTIMATE]{.tag} lo
 - **In-layer stress.** The 13.8 MPa peak at the web underside gives SF ≈ 2.8 on 38.5 MPa in-plane (Ultimaker TDS, §5.2) strength. The material table of §5.2 lists ≈ 38.5 MPa in-plane tensile strength [R43]; both values are recorded in Appendix G.2.
 - **Stiffness.** The maximum deflection is 0.25 mm.
 - **Design history.** Two printed bulkhead proposals preceded the SolidWorks design (Appendix A.9).
+
+**Independent cross-check: SolidWorks Simulation.** The bulkhead was analysed a second time in SolidWorks Simulation, independently of the CalculiX model, under the same 686 N load on the web [D34].
+
+| Item | SolidWorks Simulation set-up |
+|---|---|
+| Study | Static, study "Static 1"; solid mesh |
+| Material | PETG, linear elastic isotropic, *E* ≈ 1.47 GPa; yield strength 35 MPa (library value) |
+| Fixtures | Fixed-1 and Fixed-2 on the outer groove faces (the epoxy bond) |
+| Load | Force-1: 686 N along the rocket axis, forward, on a split face on the web aft face between the two Kevlar holes (worst-case snatch load, §7.4) |
+| Results | von Mises stress; resultant displacement URES; section clipping through the web |
+
+Table: SolidWorks Simulation set-up, aft Kevlar bulkhead. Source: [D34].
+
+| Quantity at 686 N | SolidWorks | CalculiX | Note |
+|---|---|---|---|
+| PETG model | isotropic, *E* ≈ 1.47 GPa | orthotropic, *E*~z~ 1087 MPa across layers | §5.2 |
+| Maximum displacement | **0.156 mm** | 0.25 mm | same order; CalculiX softer across the layers |
+| Stress 2 mm from the contact | below about 10 MPa (von Mises) | 10.1 MPa in-layer; 10.0 MPa interlayer shear | agree |
+| Stress 3 / 5 mm from the contact | below about 10 MPa | 7.4–7.8 / 3.9–4.7 MPa | agree |
+| Field directly under the load patch | ≈ 50–60 MPa | not reported | cord bearing (compressive) |
+| Peak value | 102.5 MPa (face), 100.5 MPa (section) | 14.5 MPa interlayer shear within 1 mm | edge singularity; point-load artefact |
+
+Table: SolidWorks Simulation against CalculiX, 686 N on the web. Sources: [D31][D34].
+
+![Aft Kevlar bulkhead, SolidWorks Simulation, 686 N: von Mises stress, view on the aft face looking forward. The two Ø6.0 mm Kevlar holes lie either side of the 4 mm web, with the six Ø6.0 mm vents around them. Fixtures (green) act on the outer groove faces; the 686 N force (magenta) acts on a split face on the web between the Kevlar holes. Colour scale 0.02–102.5 MPa; the 35 MPa yield strength is marked on the legend. Stress concentrates on the web at the load patch: ≈ 50–60 MPa around the patch and a peak of 102.5 MPa at the corners of the split face. The rest of the face lies below about 10 MPa. Source: SolidWorks Simulation study, 2026-11-24 [D34].](figures/fea/sw_sim_vm686_face.png){.color width=80%}
+
+![Aft Kevlar bulkhead, SolidWorks Simulation, 686 N: section clipping through the web along the rocket axis, resultant displacement URES, deformed shape exaggerated. The maximum, 0.156 mm, lies at the cord contact on the web; the displacement falls to near zero within a few millimetres. Fixtures act on the epoxy-groove faces. Source: SolidWorks Simulation study, 2026-11-24 [D34].](figures/fea/sw_sim_disp686_section.png){.color width=75%}
+
+![Aft Kevlar bulkhead, SolidWorks Simulation, 686 N: the same section, von Mises stress. Colour scale 0.02–100.5 MPa; the 35 MPa yield strength is marked on the legend. The region above 35 MPa is a thin shell about 2 mm deep at the cord contact patch of the 25 mm long plug, with a peak of 100.5 MPa in a ring along the edge of the load patch. Beyond about 2 mm from the contact the stress is below about 10 MPa. Source: SolidWorks Simulation study, 2026-11-24 [D34].](figures/fea/sw_sim_vm686_section.png){.color width=75%}
+
+- **Agreement with CalculiX.** The maximum displacement is 0.156 mm in SolidWorks (isotropic, *E* ≈ 1.47 GPa) and 0.25 mm in CalculiX (orthotropic, 1087 MPa across the layers). The two are of the same order; the difference is consistent with the softer across-layer modulus of the CalculiX model. Away from the contact both models give stress at or below about 10 MPa [D31][D34].
+- **Peak values.** The 100.5–102.5 MPa peaks lie on the sharp edge of the idealised load patch. They are a stress singularity, which grows with mesh refinement, and not a material stress.
+- **Field under the patch.** The ≈ 50–60 MPa field directly under the patch is the contact (bearing) pressure of the cord on the web. 686 N on the ≈ 11.4 mm² patch (4.4 × 2.6 mm, the same patch as the CalculiX model) gives ≈ 60 MPa. This bearing stress is compressive; the CalculiX results [D31] do not include it.
+
+**Bearing under the Kevlar cord.** The cord presses on the web aft face in compression, across the layers. The mean bearing stress is
+
+$$ \sigma_b = \frac{F}{A_c} $$
+
+where σ~b~ is the bearing stress (MPa), *F* the cord load on the web (N) and *A*~c~ the cord contact area (mm²). The 2.3 mm braid flattens to about 3 mm and wraps the 4 mm web and its R2 rounded edges, a contact of roughly 3 × 6 mm ≈ 18 mm² [ESTIMATE]{.tag}.
+
+| Load case | *F* | σ~b~ on ≈ 18 mm² | Against 35 MPa yield |
+|---|---|---|---|
+| Snatch, 20 m/s separation (worst case, FEA load) | 686 N | ≈ 38 MPa | above |
+| Snatch, 10 m/s separation (typical) | 323 N | ≈ 18 MPa | below |
+| Opening load, ±1.5 s delay band | 6–87 N | ≤ 5 MPa | below |
+
+Table: Bearing stress under the Kevlar cord [ESTIMATE]{.tag}. Loads from §7.3–7.4 [D27]; contact area [ESTIMATE]{.tag}. Source: [D34].
+
+- **Allowable.** The compressive strength of printed PETG is typically about 55–60 MPa [ESTIMATE]{.tag}, above the 35 MPa tensile yield of the SolidWorks material library.
+- **Worst case, 686 N.** The cord may bed a shallow seat, a fraction of a millimetre, into the web. The above-yield zone is confined to about 2 mm and does not propagate, so the web is not at risk of fracture.
+- **Typical case, 323 N.** The bearing stress is below yield.
+- **Technical note:** larger edge radii on the web (R3 instead of R2), or an epoxy fillet over the web where the cord crosses, would enlarge the contact and reduce the bearing stress.
+
+::: result
+**Cross-check result**
+The independent SolidWorks study confirms the CalculiX result: the bulkhead carries the 686 N worst-case snatch load. The governing local effect is bearing under the cord, confined to about 2 mm.
+:::
 
 # Stability and Flight Performance {#sec-stab}
 
@@ -1057,7 +1116,7 @@ Table: Shock-cord snatch load with the aft bulkhead, no nose ballast [ESTIMATE]{
 - The snatch load stays below the 1334 N knotted-cord strength even at 20 m/s separation [D27].
 - **Technical note:** sewn or spliced ends would raise the capacity to the 3336 N cord rating.
 - **Forward anchor:** the Kevlar passes through the two 5 mm holes in the nose-cap floor, 14 mm apart [CONFIRMED]{.tag}; web capacity about 2.1 kN [D3].
-- **Aft anchor:** the SolidWorks Kevlar bulkhead epoxied inside the tube (§2.3, §7.1) [D30]. The cord goes down one Ø6.0 mm hole, across the aft face under the 4 mm web and up the other hole, and is knotted (figure-8) on the forward side; it is threaded before the bulkhead is glued. The cord load presses the web forward, in compression and in-layer bending with horizontal layers. At the 686 N snatch load the FEA gives FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 (≈ 0.33 at 343 N) (§5.8) [D31]. The FEA replaces the earlier net-area rule for printed anchors (48 mm² for a deploy at or below 20 m/s [D7]) as the anchor basis.
+- **Aft anchor:** the SolidWorks Kevlar bulkhead epoxied inside the tube (§2.3, §7.1) [D30]. The cord goes down one Ø6.0 mm hole, across the aft face under the 4 mm web and up the other hole, and is knotted (figure-8) on the forward side; it is threaded before the bulkhead is glued. The cord load presses the web forward, in compression and in-layer bending with horizontal layers. At the 686 N snatch load the FEA gives FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 (≈ 0.33 at 343 N) (§5.8) [D31]. An independent SolidWorks Simulation study confirms this; cord bearing on the web is ≈ 38 MPa at 686 N and ≈ 18 MPa at 323 N [ESTIMATE]{.tag}, confined to about 2 mm (§5.8) [D34]. The FEA replaces the earlier net-area rule for printed anchors (48 mm² for a deploy at or below 20 m/s [D7]) as the anchor basis.
 - **Mass basis.** The with-bulkhead liftoff mass adds the 24.7 g bulkhead to the 610 g basis, which still carries the OpenRocket bulkhead entry (0.005 lb) [D16] [ESTIMATE]{.tag}.
 
 ## Ejection protection
@@ -1274,7 +1333,7 @@ Analysis covers aerodynamics, structure (fin can and aft Kevlar bulkhead), fligh
 | RQ-8 build volume | Verification script | Complies: all parts within 256 mm |
 | RQ-9 fin loads | FEA (rev 9); drop test (flight part) | Rev 9 passes C1–C4; flight part by similarity (§5.7) |
 | RQ-10 flutter | Analysis | C5 by argument (§4.9) |
-| Aft Kevlar bulkhead strength | FEA, 686 N snatch (§5.8); pull test (optional verification method) | FI 0.13 across layers; interlayer shear FI ≈ 0.67 at 686 N, ≈ 0.33 at 343 N; in-layer SF ≈ 2.8 |
+| Aft Kevlar bulkhead strength | FEA, 686 N snatch (§5.8); SolidWorks Simulation cross-check; bearing check; pull test (optional verification method) | FI 0.13 across layers; interlayer shear FI ≈ 0.67 at 686 N, ≈ 0.33 at 343 N; in-layer SF ≈ 2.8; cross-check agrees; bearing ≈ 38 MPa at 686 N, confined to about 2 mm [ESTIMATE]{.tag} |
 | Ejection gas path through the bulkhead | Geometry (drawing L1C-KB-005); pack test | Six Ø6.0 mm vents; ≈ 18 % open area with the cord in place |
 | Thread fit | Test print | [VALIDATED]{.tag .ok}, 2026-11-23 |
 | Part fit | Fit test on the actual parts | Method: §9.3 |
@@ -1349,7 +1408,7 @@ Likelihood (L) and severity (S) are rated Low, Medium or High (engineering judge
 | K12 | Drift beyond the recovery area in wind (≈ 695 m from apogee at 5 mph) | M | M | Launch-wind limit from the recovery-area size (§7.8) |
 | K13 | Aft bulkhead blocks the ejection gas | L | H | Six Ø6.0 mm vents, ≈ 18 % open area with the cord in place; vents kept clear of epoxy; pack test |
 | K14 | Actual drag differs from the CFD prediction; apogee 1347–1836 m across drag ×0.85–1.40 | M | M | 13 s delay: lowest worst-case ejection speed, 14.1 m/s (§6.6) |
-| K15 | Aft bulkhead anchor fails under the snatch load | L | H | FEA at 686 N: FI 0.13 across layers, interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N); epoxy-filled grooves; cord load in compression and in-layer bending (§5.8) |
+| K15 | Aft bulkhead anchor fails under the snatch load | L | H | FEA at 686 N: FI 0.13 across layers, interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N); confirmed by an independent SolidWorks Simulation study; cord bearing confined to about 2 mm; epoxy-filled grooves; cord load in compression and in-layer bending (§5.8) |
 
 Table: Risk register (engineering judgement).
 
@@ -1370,7 +1429,7 @@ The design is released for build. The refined full-assembly CFD places the CP at
 6. A 13 s delay gives the lowest worst-case ejection speed across drag ×0.85–1.40, 14.1 m/s, and deploys at 2.3 m/s on the nominal trajectory.
 7. The OpenRocket model is not used as a stability basis: its fins sit 15 mm too far aft and its fairing is modelled solid.
 8. The rev 9 fin can meets all landing and gust criteria with a 2× margin. The SolidWorks flight part is covered by similarity, with a 1.5 m drop test as its acceptance test.
-9. The SolidWorks aft Kevlar bulkhead carries the 686 N snatch load with FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 next to the cord contact; its six vents pass the ejection gas.
+9. The SolidWorks aft Kevlar bulkhead carries the 686 N snatch load with FI 0.13 across the layers and interlayer-shear FI ≈ 0.67 next to the cord contact; an independent SolidWorks Simulation study confirms this, with cord bearing on the web as the governing local effect, confined to about 2 mm. Its six vents pass the ejection gas.
 10. The LOC Precision 28 in parachute is adequate: 5.35 m/s descent with the bulkhead, ≈ 6.4 J body landing energy, and opening and snatch loads far below the 1334 N knotted-cord strength.
 11. Holding the chute pack forward is essential to stability; the aft bulkhead does this.
 
@@ -2336,6 +2395,7 @@ Type: **Design decision** (project direction, binding), **Recommendation** (anal
 | 2026-11-24 | **SolidWorks aft Kevlar bulkhead adopted as the flight part** (drawing L1C-KB-005 Rev C). Rationale: the cord load is carried in compression and in-layer bending; FEA at 686 N gives FI 0.13 across layers and interlayer-shear FI ≈ 0.67 | Design decision | [D30][D31] |
 | 2026-11-24 | Stability with the bulkhead: 634.7 g, CG 747.3 mm [ESTIMATE]{.tag}, **1.91 cal without nose ballast**; ballast only if the measured CG lies aft of 752.0 mm (1.8 cal) or 756.1 mm (1.7 cal) | Result | [D32] |
 | 2026-11-24 | Flight and recovery on the with-bulkhead mass: apogee 1662 m, M 0.88, ideal delay 13.2 s (13 s delay stands); descent 5.35 m/s at 513.7 g | Result | [D27][D32] |
+| 2026-11-24 | **SolidWorks Simulation cross-check of the aft bulkhead at 686 N** confirms the CalculiX result: maximum displacement 0.156 mm (CalculiX 0.25 mm), stress below about 10 MPa beyond 2 mm from the cord contact; cord bearing ≈ 38 MPa on ≈ 18 mm² [ESTIMATE]{.tag}, confined to about 2 mm | Result | [D34] |
 
 Table: Decision log.
 
@@ -2499,6 +2559,7 @@ All paths are relative to the project repository. The project data file is the s
 | D31 | out/fea/kevlar_bulkhead_solidworks/snatch686/result.json; out/kevlar_bulkhead/fea_sw_686.log; tools/fea_bulkhead.py; report/figures/fea/bulkhead_sw_fi686.png | Aft bulkhead FEA, 686 N snatch load (gmsh + CalculiX, orthotropic PETG) |
 | D32 | out/msp/flight_bulkhead.json, out/msp/flight_series_bulkhead.json; report/figures/msp/margin_vs_time_bulkhead.png, flight_profile_bulkhead.png, wind_cases_bulkhead.png | CFD flight simulation with the aft bulkhead: 634.7 g, CG 747.3 mm; drag band and wind cases. Descent with the bulkhead (513.7 g) evaluated with the method of [D27] |
 | D33 | parts/kevlar_bulkhead.py; out/kevlar_bulkhead/rev1/, rev2/ (spec, verify.json, drawings L1C-KB-005 Rev A and Rev B) | Printed bulkhead proposals rev 1 and rev 2 (Appendix A.9) |
+| D34 | SolidWorks Simulation study of the flight bulkhead (static, 686 N), screenshots report/figures/fea/sw_sim_vm686_face.png, sw_sim_disp686_section.png, sw_sim_vm686_section.png | Independent FEA cross-check of the aft Kevlar bulkhead; bearing check |
 
 Table: Data sources.
 
@@ -2557,6 +2618,7 @@ Table: Source discrepancies.
 
 | Rev | Date | Change |
 |---|---|---|
+| Q | 2026-11-24 | Independent SolidWorks Simulation cross-check of the aft Kevlar bulkhead (three figures); bearing check under the Kevlar cord |
 | P | 2026-11-24 | SolidWorks Kevlar bulkhead adopted (FEA, drawing L1C-KB-005 Rev C); stability 1.91 cal without nose ballast; flight and recovery on the with-bulkhead mass |
 | N | 2026-11-24 | Full-assembly CFD (L1C-CFD-002) adopted as aerodynamic basis; delay 13 s; stability, flight and recovery updated |
 | M | 2026-11-23 | Finalized report format (no action lists); recovery analysis with the 28 in parachute; complete revision history |
@@ -2609,6 +2671,7 @@ Table: Document history. Revision letters I and O are not used.
 | tools/drawing_owner.py | Flight drawing set L1C-GA-001 to L1C-TC-004 |
 | tools/drawing_bulkhead_owner.py | Aft Kevlar bulkhead drawing L1C-KB-005 Rev C |
 | tools/fea_bulkhead.py (gmsh, CalculiX) | Aft Kevlar bulkhead FEA: any STEP, outer surface fixed, cord load on the contact nodes; across-layer FI, in-layer stress, interlayer shear |
+| SolidWorks Simulation (static) | Independent FEA cross-check of the aft Kevlar bulkhead at 686 N (§5.8) [D34] |
 | make.py, verify checks | Part generation and the five-check verification |
 | Ansys Mechanical 2023 R1 | Reference FEA on rev 5 |
 
