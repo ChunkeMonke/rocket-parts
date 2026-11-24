@@ -1,0 +1,1 @@
+{"alpha_deg": 4.0, "speed": 170.14614343263852, "L": 1.0782622165679931, "U": [169.73167597875187, 0.0, 11.868794987023026], "t_prev": 1875, "t_last": 2500, "compressible": true, "solver": "rhoPimpleFoam LTS, first-order upwind", "mach": 0.5, "x_fin_le": 0.9888039970397949, "x_fin_te": 1.0321879959106446, "p_inf": 101325.0, "T_inf": 288.15, "rho_inf": 1.2250122659906946}

@@ -18,3 +18,6 @@ case /home/user/out/cfd/of_msp_a6  L 1.078 m  blocks (102, 20, 40)  U (99.452190
 04:05:32 DONE msp_a6 "CP_from_tip_mm":802.5407831223287, "CN_alpha_per_rad":11.927085912642017,
 04:05:32 setup msp_a8 --alpha 8 --speed 100
 case /home/user/out/cfd/of_msp_a8  L 1.078 m  blocks (102, 20, 40)  U (99.026807 0.000000 13.917310)  k 0.375  omega 111.8
+04:14:37 DONE msp_a8 "CP_from_tip_mm":774.0934076220117, "CN_alpha_per_rad":10.723479572556071,
+04:14:37 setup msp_m05 --alpha 4 --mach 0.5
+case /home/user/out/cfd/of_msp_m05  L 1.078 m  blocks (102, 20, 40)  U (169.731676 0.000000 11.868795)  k 1.086  omega 190.2
