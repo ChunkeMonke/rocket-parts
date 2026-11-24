@@ -35,10 +35,7 @@ def mesh(step, p, h, h_eye, work, load_box=None, r_fix=None):
         if r.min() > (r_fix if r_fix else R - 0.65):
             outer.append(tag)
         elif load_box is not None:
-            bx = load_box
-            if (pts[:, 0].min() >= bx[0] and pts[:, 0].max() <= bx[1] and pts[:, 1].min() >= bx[2]
-                    and pts[:, 1].max() <= bx[3] and pts[:, 2].min() >= bx[4] and pts[:, 2].max() <= bx[5]):
-                roof.append(tag)
+            pass
         elif (pts[:, 2].min() > t + hh - 0.05 and np.abs(pts[:, 0]).max() <= w / 2 + 0.01
               and np.abs(pts[:, 1]).max() <= p["eye_length_mm"] / 2 + 0.01):
             roof.append(tag)
@@ -61,7 +58,17 @@ def mesh(step, p, h, h_eye, work, load_box=None, r_fix=None):
         for d, t_ in gmsh.model.getPhysicalGroups(2):
             if gmsh.model.getPhysicalName(d, t_) == name:
                 return np.unique(gmsh.model.mesh.getNodesForPhysicalGroup(d, t_)[0]).astype(int)
-    out = {"node_xyz": node_xyz, "tets": tets, "bore_nodes": gn("BORE"), "tip_nodes": gn("TIP"),
+    tip = gn("TIP")
+    if load_box is not None:          # node-based: surface nodes inside the cord-contact box
+        bx, sel = load_box, set()
+        for dim, tag in gmsh.model.getEntities(2):
+            nt, nx, _ = gmsh.model.mesh.getNodes(2, tag, includeBoundary=True)
+            nx = np.asarray(nx).reshape(-1, 3)
+            ok = ((nx[:, 0] >= bx[0]) & (nx[:, 0] <= bx[1]) & (nx[:, 1] >= bx[2]) & (nx[:, 1] <= bx[3])
+                  & (nx[:, 2] >= bx[4]) & (nx[:, 2] <= bx[5]))
+            sel.update(np.asarray(nt)[ok].astype(int).tolist())
+        tip = np.array(sorted(sel), dtype=int)
+    out = {"node_xyz": node_xyz, "tets": tets, "bore_nodes": gn("BORE"), "tip_nodes": tip,
            "n_outer": len(outer), "n_roof": len(roof)}
     gmsh.finalize()
     return out
@@ -82,7 +89,7 @@ def main():
     lb = [float(v) for v in a.load_box.split(",")] if a.load_box else None
     work.mkdir(parents=True, exist_ok=True)
     m = mesh(step, p, a.mesh, a.eye_mesh, work, load_box=lb, r_fix=a.r_fix)
-    print(f"faces: outer {m['n_outer']}, roof {m['n_roof']}; nodes {len(m['node_xyz'])}, tets {len(m['tets'])}")
+    print(f"faces: outer {m['n_outer']}, load nodes {len(m['tip_nodes'])}; nodes {len(m['node_xyz'])}, tets {len(m['tets'])}")
     job = work / "job"
     F.write_deck(m, {"Z": a.load}, job)
     subprocess.run(["ccx", "-i", str(job)], cwd=work, capture_output=True, check=True)
