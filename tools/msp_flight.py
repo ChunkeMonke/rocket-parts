@@ -28,7 +28,7 @@ M0, CG0 = 610.0, 763.3            # liftoff mass / CG without added ballast (EST
 M_MOT, M_PROP = 261.0, 121.0
 X_MOT_AFT, X_MOT_FWD = TIP - 8.4, TIP - 173.4     # motor nozzle / forward end from the tip, mm
 X_BALLAST = 74.6
-DELAY = 12.0
+DELAY = 13.0                      # drilled delay, design decision 2026-11-24
 RAIL = 1.83
 V_DESC = 5.35                     # m/s, LOC 28 in, 514 g (recovery analysis)
 
@@ -137,6 +137,11 @@ def main():
                                 landing_x_m=x_ap + w * float(f.apogee) / V_DESC))
         print(f"wind {mph:2d} mph: apogee {f.apogee:.0f} m, apogee offset {x_ap:+.0f} m, landing {out['wind'][-1]['landing_x_m']:+.0f} m")
     json.dump(out, open(ROOT / "out/msp/flight.json", "w"), indent=1, default=float)
+    s = series[lab18]                       # trajectory export for tools/recovery_analysis.py
+    c18 = [c for c in out["cases"] if c["case"] == lab18][0]
+    json.dump(dict(t=s["t"].tolist(), speed=s["v"].tolist(), z=s["z"].tolist(), t_bo=s["t_bo"],
+                   apogee=c18["apogee_m"], t_ap=c18["t_apogee"], delay=DELAY, source="msp_flight.py, 1.8 cal case"),
+              open(ROOT / "out/msp/flight_series.json", "w"))
 
     # ---------------- figures
     sty = {"no added ballast": ":", "1.7 cal at liftoff": "--", "1.8 cal at liftoff": "-"}

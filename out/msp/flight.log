@@ -1,10 +1,10 @@
-no added ballast     +  0.0 g  apogee 1665 m  vmax 305 m/s M0.90 rail 24.9 m/s  SM(CFD) lift-off 1.53 burnout 2.51 Barrowman 1.04  v_dep 10.5
-1.7 cal at liftoff   +  6.4 g  apogee 1665 m  vmax 303 m/s M0.89 rail 24.8 m/s  SM(CFD) lift-off 1.70 burnout 2.72 Barrowman 1.22  v_dep 11.0
-1.8 cal at liftoff   + 10.2 g  apogee 1664 m  vmax 302 m/s M0.89 rail 24.7 m/s  SM(CFD) lift-off 1.80 burnout 2.83 Barrowman 1.32  v_dep 11.2
-drag x0.85: apogee 1840 m, M 0.92, ideal delay 14.1 s, v at 12 s 21.1 m/s
-drag x1.00: apogee 1664 m, M 0.89, ideal delay 13.1 s, v at 12 s 11.2 m/s
-drag x1.15: apogee 1525 m, M 0.86, ideal delay 12.3 s, v at 12 s 3.2 m/s
-drag x1.40: apogee 1347 m, M 0.83, ideal delay 11.3 s, v at 12 s 7.3 m/s
+no added ballast     +  0.0 g  apogee 1665 m  vmax 305 m/s M0.90 rail 24.9 m/s  SM(CFD) lift-off 1.53 burnout 2.51 Barrowman 1.04  v_dep 0.7
+1.7 cal at liftoff   +  6.4 g  apogee 1665 m  vmax 303 m/s M0.89 rail 24.8 m/s  SM(CFD) lift-off 1.70 burnout 2.72 Barrowman 1.22  v_dep 1.2
+1.8 cal at liftoff   + 10.2 g  apogee 1664 m  vmax 302 m/s M0.89 rail 24.7 m/s  SM(CFD) lift-off 1.80 burnout 2.83 Barrowman 1.32  v_dep 1.4
+drag x0.85: apogee 1840 m, M 0.92, ideal delay 14.1 s, v at 12 s 11.1 m/s
+drag x1.00: apogee 1664 m, M 0.89, ideal delay 13.1 s, v at 12 s 1.4 m/s
+drag x1.15: apogee 1525 m, M 0.86, ideal delay 12.3 s, v at 12 s 6.6 m/s
+drag x1.40: apogee 1347 m, M 0.83, ideal delay 11.3 s, v at 12 s 14.7 m/s
 wind  0 mph: apogee 1664 m, apogee offset -2 m, landing -2 m
 wind  5 mph: apogee 1661 m, apogee offset -82 m, landing +613 m
 wind 10 mph: apogee 1653 m, apogee offset -161 m, landing +1220 m
@@ -24,8 +24,8 @@ wind 20 mph: apogee 1617 m, apogee offset -317 m, landing +2386 m
   "amax_g": 21.090353174186614,
   "rail_exit": 24.925194608375932,
   "t_burnout": 2.398,
-  "t_deploy": 14.398,
-  "v_deploy": 10.541113361582548,
+  "t_deploy": 15.398,
+  "v_deploy": 0.7114093532984944,
   "max_q_kpa": 54.95596058355537,
   "sm_cfd_liftoff": 1.5264361340694386,
   "sm_cfd_min_powered": 1.5264361340694386,
@@ -47,8 +47,8 @@ wind 20 mph: apogee 1617 m, apogee offset -317 m, landing +2386 m
   "amax_g": 20.891655272319856,
   "rail_exit": 24.79664606226267,
   "t_burnout": 2.398,
-  "t_deploy": 14.398,
-  "v_deploy": 10.964411630842283,
+  "t_deploy": 15.398,
+  "v_deploy": 1.2008946541823236,
   "max_q_kpa": 54.20300263743441,
   "sm_cfd_liftoff": 1.7000000000000033,
   "sm_cfd_min_powered": 1.7000000000000033,
@@ -70,8 +70,8 @@ wind 20 mph: apogee 1617 m, apogee offset -317 m, landing +2386 m
   "amax_g": 20.739854006383617,
   "rail_exit": 24.72303245439529,
   "t_burnout": 2.398,
-  "t_deploy": 14.398,
-  "v_deploy": 11.202371810152208,
+  "t_deploy": 15.398,
+  "v_deploy": 1.3803737142875139,
   "max_q_kpa": 53.762605498289844,
   "sm_cfd_liftoff": 1.7999999999999963,
   "sm_cfd_min_powered": 1.7999999999999963,

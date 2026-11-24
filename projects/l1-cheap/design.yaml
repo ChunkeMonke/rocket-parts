@@ -289,7 +289,7 @@ owner_design:
 # ---- DESIGN DECISIONS 2026-11-23 (answers to the report questionnaire) ----
 decisions_2026_11_23:
   ballast: {value: at_assembly, status: CONFIRMED, note: "chosen after assembly from the measured ready-to-fly CG (figures/ballast_vs_cg.png); 1.7 cal min needs +21.6 g (CP 809.9) / +5.4 g (CP 827.4); 1.8 target +25.6 / +9.2 g"}
-  deployment: {value: single_motor_ejection_12s, status: CONFIRMED}
+  deployment: {value: single_motor_ejection_13s, status: CONFIRMED, note: "2026-11-24: delay changed 12 -> 13 s (L1C-CFD-002: ideal delay 13.1 s on CFD drag; 13 s minimises the worst-case ejection speed, 14.7 m/s)"}
   ejection_protection: {value: LOC reusable wadding (chute protector), status: CONFIRMED}
   aft_anchor: {value: printed bulkhead epoxied inside the body tube, holds the Kevlar and the chute pack forward, protects the chute, status: CONFIRMED, note: "replaces the epoxy-groove anchor and the 300 mm pack-position requirement is met by this bulkhead; bulkhead must pass ejection gas (vented / baffle)"}
   backup_motor_stop: {value: none, status: CONFIRMED}
