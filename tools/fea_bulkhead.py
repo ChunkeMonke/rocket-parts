@@ -42,8 +42,10 @@ def mesh(step, p, h, h_eye, work, load_box=None, r_fix=None):
     gmsh.model.addPhysicalGroup(3, [t_ for _, t_ in gmsh.model.getEntities(3)], name="SOLID")
     gmsh.model.addPhysicalGroup(2, outer, name="BORE"); gmsh.model.addPhysicalGroup(2, roof, name="TIP")
     f = gmsh.model.mesh.field.add("Box")
-    for k, v in (("VIn", h_eye), ("VOut", h), ("XMin", -12), ("XMax", 12), ("YMin", -9), ("YMax", 9),
-                 ("ZMin", -1), ("ZMax", 24), ("Thickness", 3)):
+    box = (-12, 12, -9, 9, -1, 24) if load_box is None else (load_box[0] - 4, load_box[1] + 4, load_box[2] - 5,
+                                                              load_box[3] + 5, -1, load_box[5] + 6)
+    for k, v in (("VIn", h_eye), ("VOut", h), ("XMin", box[0]), ("XMax", box[1]), ("YMin", box[2]), ("YMax", box[3]),
+                 ("ZMin", box[4]), ("ZMax", box[5]), ("Thickness", 3)):
         gmsh.model.mesh.field.setNumber(f, k, v)
     gmsh.model.mesh.field.setAsBackgroundMesh(f)
     gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
@@ -82,6 +84,7 @@ def main():
     ap.add_argument("--load-box", default=None, help="xmin,xmax,ymin,ymax,zmin,zmax of the cord-contact faces")
     ap.add_argument("--r-fix", type=float, default=None, help="faces with all samples beyond this radius are fixed (bond)")
     ap.add_argument("--tag", default=None)
+    ap.add_argument("--iterative", action="store_true", help="low-memory iterative solver")
     a = ap.parse_args()
     p = K.params()
     step = Path(a.step) if a.step else ROOT / f"out/kevlar_bulkhead/rev{a.rev}/kevlar_bulkhead_rev{a.rev}.step"
@@ -91,6 +94,8 @@ def main():
     m = mesh(step, p, a.mesh, a.eye_mesh, work, load_box=lb, r_fix=a.r_fix)
     print(f"faces: outer {m['n_outer']}, load nodes {len(m['tip_nodes'])}; nodes {len(m['node_xyz'])}, tets {len(m['tets'])}")
     job = work / "job"
+    if a.iterative:
+        F.SOLVER = ", SOLVER=ITERATIVE CHOLESKY"
     F.write_deck(m, {"Z": a.load}, job)
     subprocess.run(["ccx", "-i", str(job)], cwd=work, capture_output=True, check=True)
     disp, stress = F.read_frd(job.with_suffix(".frd"))
@@ -113,8 +118,11 @@ def main():
                inplane_max_MPa=ip[2], inplane_at=ip[5].round(2).tolist(), interlayer_shear_max_MPa=tz[3],
                tau_at=tz[5].round(2).tolist(), FI_shear=tz[3] / 15.0, u_max_mm=umax,
                nodes=len(m["node_xyz"]), tets=len(m["tets"]))
+    for dex in (2.0, 3.0, 5.0):          # peak away from the load-application patch (point-load artefact check)
+        kk = [r for r in res if r[4] > dex]
+        out[f"beyond_{dex:g}mm"] = dict(SZ=max(r[1] for r in kk), inplane=max(r[2] for r in kk), tau=max(r[3] for r in kk))
     (work / "result.json").write_text(json.dumps(out, indent=1, default=float))
-    fi = {n: max(r[1], 0) / F.Z_STRENGTH_MPA for n, *r in [(r[0], r[1]) for r in res]}
+    fi = {r[0]: max(r[1], 0) / F.Z_STRENGTH_MPA for r in res}
     F.render(m, fi, work / "fi.png", f"Kevlar bulkhead {a.tag or 'rev %d' % a.rev}: {a.load:g} N Kevlar pull, FI = SZ/19 MPa", zoom=False)
     print(json.dumps(out, indent=1, default=float))
 
