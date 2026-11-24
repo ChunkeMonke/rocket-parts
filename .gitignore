@@ -17,3 +17,4 @@ out/cfd/of_*/*
 !out/cfd/of_*/result.json
 !out/cfd/of_*/case.json
 out/fea/**/ccx.log
+out/msp/part_*.stl

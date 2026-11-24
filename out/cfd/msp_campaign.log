@@ -1,0 +1,4 @@
+02:25:58 setup msp_a4 --alpha 4 --speed 100
+case /home/user/out/cfd/of_msp_a4  L 1.078 m  blocks (102, 20, 40)  U (99.756405 0.000000 6.975647)  k 0.375  omega 111.8
+02:26:08 setup msp_a4 --alpha 4 --speed 100
+case /home/user/out/cfd/of_msp_a4  L 1.078 m  blocks (102, 20, 40)  U (99.756405 0.000000 6.975647)  k 0.375  omega 111.8

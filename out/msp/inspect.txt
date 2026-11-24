@@ -1,0 +1,7 @@
+  L1-Rocket-FinCan             vol     90.7 cm3  x[  -37.4,   69.5] y[  -61.7,   61.7] z[    -0.0,   158.5] valid True
+  FinCanBottom                 vol     12.5 cm3  x[  -23.4,   23.4] y[  -23.4,   23.4] z[   -30.0,     8.0] valid True
+  H100Motor                    vol    186.5 cm3  x[  -20.5,   20.5] y[  -20.5,   20.5] z[     8.4,   173.4] valid True
+  BodyTubeLOC                  vol    137.8 cm3  x[  -20.6,   20.6] y[  -20.6,   20.6] z[    21.3,   884.9] valid True
+  nose_cone_rev1.step          vol     49.2 cm3  x[  -20.6,   20.6] y[  -20.6,   20.6] z[   844.9,  1048.3] valid True
+  nose_cap_rev1.step           vol      8.9 cm3  x[  -19.3,   19.3] y[  -19.3,   19.3] z[   839.9,   856.9] valid True
+  nose_plug_rev1.step          vol      2.9 cm3  x[  -11.5,   11.5] y[  -11.5,   11.5] z[   940.9,   949.4] valid True
