@@ -21,3 +21,7 @@ case /home/user/out/cfd/of_msp_a8  L 1.078 m  blocks (102, 20, 40)  U (99.026807
 04:14:37 DONE msp_a8 "CP_from_tip_mm":774.0934076220117, "CN_alpha_per_rad":10.723479572556071,
 04:14:37 setup msp_m05 --alpha 4 --mach 0.5
 case /home/user/out/cfd/of_msp_m05  L 1.078 m  blocks (102, 20, 40)  U (169.731676 0.000000 11.868795)  k 1.086  omega 190.2
+04:54:50 RUN FAILED msp_m05
+04:54:50 setup msp_m08 --alpha 4 --mach 0.8
+case /home/user/out/cfd/of_msp_m08  L 1.078 m  blocks (102, 20, 40)  U (271.570682 0.000000 18.990072)  k 2.779  omega 304.4
+04:55:06 DONE msp_m05 (post run manually; internal VTK export failed: MPI)

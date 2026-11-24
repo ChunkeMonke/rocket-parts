@@ -150,14 +150,30 @@ def main():
     out["areas"] = sp
     d_alpha = (base_ref["CA_pressure"] - a0["CA_pressure"]) if (a0 and base_ref) else 0.0
     rows = []
+    # Pressure drag: refined-mesh, offset-free incompressible value at M 0.29 (forebody + base). Compressible runs use
+    # first-order upwinding and over-predict CA_pressure (0.55 at M 0.5 vs 0.24 at M 0.29), so their CA is not used.
+    # Base drag scaled with the subsonic base-drag rise (0.12 + 0.13 M^2, OpenRocket/Barrowman); forebody constant.
+    # CN / CP vs Mach: compressible runs as increments over the coarse M 0.29 run at the same alpha and mesh.
+    ref_c = raw.get("msp_a4")
+    ca_p_fine = (base_ref["CA_pressure"] - d_alpha) * corr["CA_p"] if base_ref else 0.0
+    base0 = sp["ca_base"] * corr["CA_p"]
+    fore = ca_p_fine - base0
     for m, r in mach_pts:
-        ca_p0 = (r["CA_pressure"] - d_alpha) * corr["CA_p"]
+        base_m = base0 * (0.12 + 0.13 * m * m) / (0.12 + 0.13 * 0.294 ** 2)
         re = m * A_SND * L_BODY / NU
         ca_f = (cf_smooth(re, m) * sp["A_tube"] + max(cf_smooth(re, m), cf_rough(m)) * sp["A_print"]) / A_REF
-        rows.append(dict(mach=m, CA_pressure0=ca_p0, CA_friction=ca_f, CA0=ca_p0 + ca_f,
-                         CNalpha=r["CN_alpha_per_rad"] * corr["CN"], CP_mm=r["CP_from_tip_mm"] + corr["CP_mm"]))
+        if m < 0.3:
+            cna, cpm = r["CN_alpha_per_rad"] * corr["CN"], r["CP_from_tip_mm"] + corr["CP_mm"]
+        else:
+            rr = raw[[k for k in ("msp_m05", "msp_m08") if k.endswith(f"{int(round(m * 10)):02d}")][0]]
+            k_cn = rr["CN"] / ref_c["CN"]
+            d_cp = rr["CP_from_tip_mm"] - ref_c["CP_from_tip_mm"]
+            cna = have["msp_a4_f"]["CN_alpha_per_rad"] * k_cn if "msp_a4_f" in have else r["CN_alpha_per_rad"]
+            cpm = (have["msp_a4_f"]["CP_from_tip_mm"] if "msp_a4_f" in have else r["CP_from_tip_mm"]) + d_cp
+        rows.append(dict(mach=m, CA_forebody=fore, CA_base=base_m, CA_pressure0=fore + base_m, CA_friction=ca_f,
+                         CA0=fore + base_m + ca_f, CNalpha=cna, CP_mm=cpm))
     out["mach"] = rows
-    out["ca_base_M029"] = sp["ca_base"]
+    out["ca_base_M029"] = base0
     if rows:
         fig, ax = plt.subplots(1, 3, figsize=(10, 3))
         mm = [r["mach"] for r in rows]
@@ -173,7 +189,7 @@ def main():
         fig.tight_layout(); fig.savefig(FIG / "ca_cn_cp_vs_mach.png", dpi=180); plt.close(fig)
         r0 = rows[0]
         fig, ax = plt.subplots(figsize=(6, 2.8))
-        parts = {"forebody pressure": r0["CA_pressure0"] - sp["ca_base"], "base pressure": sp["ca_base"],
+        parts = {"forebody pressure": r0["CA_forebody"], "base pressure": r0["CA_base"],
                  "skin friction": r0["CA_friction"]}
         ax.barh(list(parts), list(parts.values()), color=["0.25", "0.55", "0.8"], edgecolor="k")
         for i, v in enumerate(parts.values()):
