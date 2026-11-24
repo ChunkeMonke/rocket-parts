@@ -33,6 +33,7 @@ A_REF = math.pi * D_REF ** 2 / 4
 L_BODY = 1.0783
 NU, A_SND = 1.5e-5, 340.3
 KS = 40e-6
+CA_RAIL = 0.06        # two printed rail guides (1010 or 1515), ESTIMATE (≈0.03 each on the 41 mm reference area)
 
 
 def res(name):
@@ -158,20 +159,35 @@ def main():
     ca_p_fine = (base_ref["CA_pressure"] - d_alpha) * corr["CA_p"] if base_ref else 0.0
     base0 = sp["ca_base"] * corr["CA_p"]
     fore = ca_p_fine - base0
-    for m, r in mach_pts:
+    # compressibility of the forebody/fin pressure drag: same-scheme ratio of the compressible runs
+    # (both first-order upwind, so the numerical bias largely cancels), anchored with Prandtl-Glauert 0.294 -> 0.5
+    comp = {m: raw[k]["CA_pressure"] for m, k in ((0.5, "msp_m05"), (0.8, "msp_m08")) if k in raw}
+    pg = lambda m: 1 / math.sqrt(1 - m * m)  # noqa: E731
+    def fore_m(m):
+        if m <= 0.5 or 0.8 not in comp:
+            return fore * pg(min(m, 0.5)) / pg(0.294)
+        f05 = fore * pg(0.5) / pg(0.294)
+        k = comp[0.8] / comp[0.5]
+        return f05 * (1 + (k - 1) * (m - 0.5) / 0.3)
+    grid = sorted(set([0.294, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9] + [m for m, _ in mach_pts]))
+    for m in grid:
+        r = next((rr for mm, rr in mach_pts if abs(mm - m) < 1e-6), None)
         base_m = base0 * (0.12 + 0.13 * m * m) / (0.12 + 0.13 * 0.294 ** 2)
         re = m * A_SND * L_BODY / NU
         ca_f = (cf_smooth(re, m) * sp["A_tube"] + max(cf_smooth(re, m), cf_rough(m)) * sp["A_print"]) / A_REF
-        if m < 0.3:
-            cna, cpm = r["CN_alpha_per_rad"] * corr["CN"], r["CP_from_tip_mm"] + corr["CP_mm"]
-        else:
-            rr = raw[[k for k in ("msp_m05", "msp_m08") if k.endswith(f"{int(round(m * 10)):02d}")][0]]
-            k_cn = rr["CN"] / ref_c["CN"]
-            d_cp = rr["CP_from_tip_mm"] - ref_c["CP_from_tip_mm"]
-            cna = have["msp_a4_f"]["CN_alpha_per_rad"] * k_cn if "msp_a4_f" in have else r["CN_alpha_per_rad"]
-            cpm = (have["msp_a4_f"]["CP_from_tip_mm"] if "msp_a4_f" in have else r["CP_from_tip_mm"]) + d_cp
-        rows.append(dict(mach=m, CA_forebody=fore, CA_base=base_m, CA_pressure0=fore + base_m, CA_friction=ca_f,
-                         CA0=fore + base_m + ca_f, CNalpha=cna, CP_mm=cpm))
+        fm = fore_m(min(m, 0.8)) if m <= 0.8 else fore_m(0.8) * (1 + 1.5 * (m - 0.8))   # beyond 0.8: extrapolated
+        row = dict(mach=m, CA_forebody=fm, CA_base=base_m, CA_pressure0=fm + base_m, CA_friction=ca_f, CA_rail=CA_RAIL,
+                   CA0=fm + base_m + ca_f + CA_RAIL, source="CFD" if r else "interpolated")
+        if r is not None:
+            if m < 0.3:
+                row.update(CNalpha=r["CN_alpha_per_rad"] * corr["CN"], CP_mm=r["CP_from_tip_mm"] + corr["CP_mm"])
+            else:
+                rr = raw[[k for k in ("msp_m05", "msp_m08") if k.endswith(f"{int(round(m * 10)):02d}")][0]]
+                k_cn = rr["CN"] / ref_c["CN"]
+                d_cp = rr["CP_from_tip_mm"] - ref_c["CP_from_tip_mm"]
+                f4 = have.get("msp_a4_f", r)
+                row.update(CNalpha=f4["CN_alpha_per_rad"] * k_cn, CP_mm=f4["CP_from_tip_mm"] + d_cp)
+        rows.append(row)
     out["mach"] = rows
     out["ca_base_M029"] = base0
     if rows:
@@ -181,17 +197,18 @@ def main():
         ax[0].plot(mm, [r["CA_pressure0"] for r in rows], "k--", marker="s", ms=3, label="pressure (CFD)")
         ax[0].plot(mm, [r["CA_friction"] for r in rows], "k:", marker="^", ms=3, label="skin friction")
         ax[0].set_ylabel("axial-force coefficient CA"); ax[0].legend(fontsize=7.5)
-        ax[1].plot(mm, [r["CNalpha"] for r in rows], "ko-"); ax[1].set_ylabel("CNα (/rad)")
-        ax[2].plot(mm, [r["CP_mm"] for r in rows], "ko-"); ax[2].set_ylabel("CP from tip (mm)")
+        cr = [r for r in rows if "CP_mm" in r]
+        ax[1].plot([r["mach"] for r in cr], [r["CNalpha"] for r in cr], "ko-"); ax[1].set_ylabel("CNα (/rad)")
+        ax[2].plot([r["mach"] for r in cr], [r["CP_mm"] for r in cr], "ko-"); ax[2].set_ylabel("CP from tip (mm)")
         for a in ax:
             a.set_xlabel("Mach number"); a.grid(alpha=.3)
         fig.suptitle("Aerodynamic coefficients vs Mach (mesh-corrected; ref. diameter 41.275 mm)", fontsize=9.5)
         fig.tight_layout(); fig.savefig(FIG / "ca_cn_cp_vs_mach.png", dpi=180); plt.close(fig)
         r0 = rows[0]
         fig, ax = plt.subplots(figsize=(6, 2.8))
-        parts = {"forebody pressure": r0["CA_forebody"], "base pressure": r0["CA_base"],
-                 "skin friction": r0["CA_friction"]}
-        ax.barh(list(parts), list(parts.values()), color=["0.25", "0.55", "0.8"], edgecolor="k")
+        parts = {"forebody + fin pressure": r0["CA_forebody"], "base pressure": r0["CA_base"],
+                 "skin friction": r0["CA_friction"], "rail guides (est.)": r0["CA_rail"]}
+        ax.barh(list(parts), list(parts.values()), color=["0.25", "0.45", "0.7", "0.9"], edgecolor="k")
         for i, v in enumerate(parts.values()):
             ax.text(v + 0.005, i, f"{v:.3f} ({v / r0['CA0'] * 100:.0f} %)", va="center", fontsize=8)
         ax.set_xlabel(f"CA contribution at M {r0['mach']:.2f}, α = 0 (total {r0['CA0']:.3f})"); ax.grid(axis="x", alpha=.3)

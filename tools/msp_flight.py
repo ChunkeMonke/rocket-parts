@@ -33,7 +33,7 @@ RAIL = 1.83
 V_DESC = 5.35                     # m/s, LOC 28 in, 514 g (recovery analysis)
 
 
-def build(ballast_g, aero, base):
+def build(ballast_g, aero, base, drag_k=1.0):
     x_mot = (X_MOT_AFT + X_MOT_FWD) / 2
     m_tot = M0 + ballast_g
     cg_tot = (M0 * CG0 + ballast_g * X_BALLAST) / m_tot
@@ -48,7 +48,7 @@ def build(ballast_g, aero, base):
         coordinate_system_orientation="nozzle_to_combustion_chamber")
     mach = [r["mach"] for r in aero["mach"]]
     ca0 = [r["CA0"] for r in aero["mach"]]
-    off = [[0.0, ca0[0]]] + [[m, c] for m, c in zip(mach, ca0)] + [[1.2, ca0[-1]]]
+    off = [[0.0, ca0[0] * drag_k]] + [[m, c * drag_k] for m, c in zip(mach, ca0)] + [[1.2, ca0[-1] * drag_k]]
     on = [[m, max(c - base, 0.05)] for m, c in off]
     I_lat = m_s / 1000 * (L / 1000) ** 2 / 12
     rkt = Rocket(radius=D / 2, mass=m_s / 1000, inertia=(I_lat, I_lat, 0.5 * m_s / 1000 * (D / 2) ** 2),
@@ -68,7 +68,7 @@ def fly(rkt, wind_ms=0.0, incl=90.0):
     if wind_ms:
         env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=None, wind_u=wind_ms, wind_v=0)
     return Flight(rocket=rkt, environment=env, rail_length=RAIL, inclination=incl, heading=90,
-                  terminate_on_apogee=False, max_time=2.6 + DELAY + 3, verbose=False)
+                  terminate_on_apogee=False, max_time=2.6 + 18, verbose=False)
 
 
 def main():
@@ -76,7 +76,7 @@ def main():
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
     aero = json.load(open(ROOT / "out/msp/aero.json"))
     base = aero.get("ca_base_M029", 0.0)
-    cp_m = [(r["mach"], r["CP_mm"]) for r in aero["mach"]]
+    cp_m = [(r["mach"], r["CP_mm"]) for r in aero["mach"] if "CP_mm" in r]
     cp_of = lambda m: float(np.interp(m, [a for a, _ in cp_m], [b for _, b in cp_m]))  # noqa: E731
     cp_low = cp_m[0][1]
     ball = {"no added ballast": 0.0}
@@ -103,7 +103,7 @@ def main():
                    v_deploy=float(f.speed(t_dep)), max_q_kpa=float(f.max_dynamic_pressure) / 1000,
                    sm_cfd_liftoff=float(sm_cfd[0]), sm_cfd_min_powered=float(sm_cfd[t <= t_bo].min()),
                    sm_cfd_burnout=float(np.interp(t_bo, t, sm_cfd)), sm_barrowman_liftoff=float(sm_bar[0]),
-                   t_descent=float(f.apogee) / V_DESC)
+                   t_descent=float(f.apogee) / V_DESC, ideal_delay_s=float(f.apogee_time) - t_bo)
         out["cases"].append(rec)
         series[lab] = dict(t=t, z=np.array([f.z(x) for x in t]), v=np.array([f.speed(x) for x in t]),
                            a=np.array([f.acceleration(x) for x in t]) / 9.81, mach=mach, sm=sm_cfd, sm_bar=sm_bar,
@@ -111,6 +111,18 @@ def main():
         print(f"{lab:20s} +{b:5.1f} g  apogee {rec['apogee_m']:.0f} m  vmax {rec['vmax']:.0f} m/s M{rec['mach_max']:.2f} "
               f"rail {rec['rail_exit']:.1f} m/s  SM(CFD) lift-off {rec['sm_cfd_liftoff']:.2f} burnout {rec['sm_cfd_burnout']:.2f} "
               f"Barrowman {rec['sm_barrowman_liftoff']:.2f}  v_dep {rec['v_deploy']:.1f}")
+    # drag sensitivity on the 1.8 cal configuration
+    out["drag_band"] = []
+    for k in (0.85, 1.0, 1.15):
+        rkt, motor, _ = build(ball["1.8 cal at liftoff"], aero, base, drag_k=k)
+        f = fly(rkt)
+        t_bo = float(motor.burn_out_time)
+        out["drag_band"].append(dict(drag_factor=k, apogee_m=float(f.apogee), apogee_ft=float(f.apogee) / 0.3048,
+                                     vmax=float(f.max_speed), mach_max=float(f.max_mach_number),
+                                     t_apogee=float(f.apogee_time), ideal_delay_s=float(f.apogee_time) - t_bo,
+                                     v_deploy_12s=float(f.speed(t_bo + DELAY))))
+        print(f"drag x{k:.2f}: apogee {f.apogee:.0f} m, M {f.max_mach_number:.2f}, ideal delay {f.apogee_time - t_bo:.1f} s, "
+              f"v at 12 s {f.speed(t_bo + DELAY):.1f} m/s")
     # wind cases on the 1.8 cal configuration
     lab18 = "1.8 cal at liftoff"
     rkt, motor, _ = build(ball[lab18], aero, base)
