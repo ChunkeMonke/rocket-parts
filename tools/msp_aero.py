@@ -40,6 +40,20 @@ def res(name):
     return json.load(open(f)) if f.exists() else None
 
 
+def offset_correct(r, r0):
+    """Remove the zero-incidence force offset (numerical: a 3-fin rocket has CN = 0 at alpha = 0 by symmetry).
+    CN' = CN - CN0;  CP' = (CN*CP - CN0*CP0) / CN'."""
+    if not r0:
+        return dict(r)
+    cn0, mc0 = r0["CN"], r0["CN"] * r0["CP_from_tip_mm"]
+    out = dict(r)
+    cn = r["CN"] - cn0
+    out["CN"] = cn
+    out["CP_from_tip_mm"] = (r["CN"] * r["CP_from_tip_mm"] - mc0) / cn
+    out["CN_alpha_per_rad"] = r["CN_alpha_per_rad"] * cn / r["CN"]
+    return out
+
+
 def split_areas_and_base(name):
     """Wetted area split (printed vs tube) and base axial coefficient from the surface VTK."""
     case = ROOT / f"out/cfd/of_{name}"
@@ -69,9 +83,21 @@ def main():
     FIG.mkdir(parents=True, exist_ok=True)
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9})
     R = {n: res(n) for n in ("msp_a0", "msp_a2", "msp_a4", "msp_a6", "msp_a8", "msp_a4_f", "msp_m05", "msp_m08")}
-    have = {k: v["final"] for k, v in R.items() if v}
-    print("cases:", sorted(have))
-    out = {"cases": {k: {kk: v[kk] for kk in ("CN", "CN_alpha_per_rad", "CP_from_tip_mm", "CA_pressure")} for k, v in have.items()}}
+    raw = {k: v["final"] for k, v in R.items() if v}
+    r0c = raw.get("msp_a0")
+    f0 = res("msp_a0_f")
+    r0f = f0["final"] if f0 else r0c          # refined-mesh offset; falls back to the coarse offset
+    have = {}
+    for k, v in raw.items():
+        if k in ("msp_a0",):
+            have[k] = v
+        else:
+            have[k] = offset_correct(v, r0f if k.endswith("_f") else r0c)
+    print("cases:", sorted(have), "| refined offset from", "msp_a0_f" if f0 else "coarse msp_a0 (fallback)")
+    out = {"cases": {k: {kk: v[kk] for kk in ("CN", "CN_alpha_per_rad", "CP_from_tip_mm", "CA_pressure")} for k, v in have.items()},
+           "raw": {k: {kk: v[kk] for kk in ("CN", "CN_alpha_per_rad", "CP_from_tip_mm", "CA_pressure")} for k, v in raw.items()},
+           "offset": {"coarse": {"CN0": r0c["CN"], "CP0": r0c["CP_from_tip_mm"]} if r0c else None,
+                      "refined_source": "msp_a0_f" if f0 else "msp_a0 (fallback)"}}
     # ---- mesh study
     c4, f4 = have.get("msp_a4"), have.get("msp_a4_f")
     corr = {"CN": 1.0, "CP_mm": 0.0, "CA_p": 1.0}
@@ -98,7 +124,7 @@ def main():
     for a_deg in (0, 2, 4, 6, 8):
         r = have.get(f"msp_a{a_deg}")
         if r:
-            al.append(a_deg); cn.append(r["CN"] * corr["CN"])
+            al.append(a_deg); cn.append(0.0 if a_deg == 0 else r["CN"] * corr["CN"])
             cp.append(r["CP_from_tip_mm"] + corr["CP_mm"] if a_deg > 0 else np.nan)
     if len(al) >= 3:
         al_a, cn_a = np.array(al, float), np.array(cn)
