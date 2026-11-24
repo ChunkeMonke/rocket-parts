@@ -2,7 +2,7 @@
 title: "Ms. Piggy"
 subtitle: "Level 1 Minimum-Diameter Rocket · Design, Analysis & Flight Readiness"
 docnumber: "L1C-EDR-001"
-revision: "N"
+revision: "P"
 date: "2026-11-24"
 status: "Released for build"
 prepared_for: "Tripoli Level 1 certification flight, Palm Bay FL, 2026-12-14"
@@ -11,6 +11,7 @@ tagline: "Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe com
 ref_diameter: "41.275 mm"
 cover_image: "figures/cover_rocket.png"
 revisions:
+  - {rev: "P", date: "2026-11-24", description: "SolidWorks Kevlar bulkhead adopted (FEA, drawing L1C-KB-005 Rev C); stability 1.91 cal without nose ballast; flight and recovery on the with-bulkhead mass"}
   - {rev: "N", date: "2026-11-24", description: "Full-assembly CFD (L1C-CFD-002) adopted as aerodynamic basis; delay 13 s; stability, flight and recovery updated"}
   - {rev: "M", date: "2026-11-23", description: "Finalized report format (no action lists); recovery analysis with the 28 in parachute; complete revision history"}
   - {rev: "L", date: "2026-11-23", description: "Formal restructure as Engineering Design Report L1C-EDR-001; vehicle named Ms. Piggy; drawing set L1C-GA-001 to L1C-TC-004; corrected CG and ballast recommendation"}
@@ -30,7 +31,7 @@ revisions:
 
 **Purpose.** This report sets out the design basis, analyses and verification status of *Ms. Piggy*, the rocket to be flown for a Tripoli Level 1 certification at Palm Bay, FL, on 2026-12-14 [D1]. The budget is \$100 including the motor [D1]. The report is the design basis for the build release and states the engineering recommendations for flight.
 
-**Configuration.** Ms. Piggy is a single-stage, minimum-diameter rocket. An AeroTech H100W-14A DMS 38 mm motor sits directly in a LOC BT-1.52 paper tube [D3]. A 165 mm PETG tangent-ogive nose carries 2 g of ballast, for a 65 g nose total [D3]. A PETG fin can modelled in SolidWorks carries three trapezoidal fins of 46.1 mm span [D15]. A screw-on PETG tail cone with a foil-lined bore traps the motor thrust ring and forms a 30 mm boattail [D3][D15]. Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 13 s, a LOC Precision 28 in parachute with an 84 mm spill hole, and 3.5 m of 750 lb Kevlar with knotted ends; a printed bulkhead in the tube anchors the cord and holds the chute pack forward [D3]. The aerodynamic basis is the refined-mesh CFD of the complete SolidWorks assembly, documented in the supporting analysis report L1C-CFD-002 [D28]. Fin can rev 9, generated from the design data, is geometrically almost identical to the flight part and remains the structural reference [D14].
+**Configuration.** Ms. Piggy is a single-stage, minimum-diameter rocket. An AeroTech H100W-14A DMS 38 mm motor sits directly in a LOC BT-1.52 paper tube [D3]. A 165 mm PETG tangent-ogive nose carries 2 g of ballast, for a 65 g nose total [D3]. A PETG fin can modelled in SolidWorks carries three trapezoidal fins of 46.1 mm span [D15]. A screw-on PETG tail cone with a foil-lined bore traps the motor thrust ring and forms a 30 mm boattail [D3][D15]. Recovery is a single deployment on the motor's ejection charge, with the delay drilled to 13 s, a LOC Precision 28 in parachute with an 84 mm spill hole, and 3.5 m of 750 lb Kevlar with knotted ends [D3]. The aft end of the cord is anchored to a solid, vented PETG bulkhead designed in SolidWorks (drawing L1C-KB-005 Rev C), epoxied in the tube with its forward face 340 mm from the nose tip; it also holds the chute pack forward and acts as forward ballast [D30]. The aerodynamic basis is the refined-mesh CFD of the complete SolidWorks assembly, documented in the supporting analysis report L1C-CFD-002 [D28]. Fin can rev 9, generated from the design data, is geometrically almost identical to the flight part and remains the structural reference [D14].
 
 | Quantity | Value | Basis | Status |
 |---|---|---|---|
