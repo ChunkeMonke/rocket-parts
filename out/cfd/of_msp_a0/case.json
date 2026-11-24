@@ -1,0 +1,1 @@
+{"alpha_deg": 0.0, "speed": 100.0, "L": 1.0782622165679931, "U": [100.0, 0.0, 0.0], "t_prev": 600, "t_last": 800, "compressible": false, "solver": "simpleFoam", "mach": 0.293865020924175, "x_fin_le": 0.9888039970397949, "x_fin_te": 1.0321879959106446}
