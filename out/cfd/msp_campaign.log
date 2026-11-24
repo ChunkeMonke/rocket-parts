@@ -2,3 +2,6 @@
 case /home/user/out/cfd/of_msp_a4  L 1.078 m  blocks (102, 20, 40)  U (99.756405 0.000000 6.975647)  k 0.375  omega 111.8
 02:26:08 setup msp_a4 --alpha 4 --speed 100
 case /home/user/out/cfd/of_msp_a4  L 1.078 m  blocks (102, 20, 40)  U (99.756405 0.000000 6.975647)  k 0.375  omega 111.8
+02:34:58 DONE msp_a4 "CP_from_tip_mm":816.8229775103114, "CN_alpha_per_rad":12.381787115165576,
+02:34:58 setup msp_a4_f --alpha 4 --speed 100 --refine 1 --iters 1200
+case /home/user/out/cfd/of_msp_a4_f  L 1.078 m  blocks (102, 20, 40)  U (99.756405 0.000000 6.975647)  k 0.375  omega 111.8
