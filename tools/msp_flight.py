@@ -20,11 +20,15 @@ import yaml
 from rocketpy import Environment, Flight, GenericMotor, Rocket
 
 ROOT = Path(__file__).resolve().parent.parent
-FIG = ROOT / "projects/l1-cheap/report/figures/msp"
+FIG = ROOT / "projects/l1-cheap/report/figures/msp"   # figures get the MSP_TAG suffix
 D = 0.041275
 TIP = 1048.3                      # nose-tip z in the assembly frame (fin-can aft face z = 0), mm
 L = 1078.3
-M0, CG0 = 610.0, 763.3            # liftoff mass / CG without added ballast (ESTIMATE, EDR §2.5)
+import os
+# liftoff mass / CG without added ballast (ESTIMATE, EDR §2.5); override MSP_M0 / MSP_CG0 / MSP_TAG for variants
+M0 = float(os.environ.get("MSP_M0", 610.0))
+CG0 = float(os.environ.get("MSP_CG0", 763.3))
+TAG = os.environ.get("MSP_TAG", "")
 M_MOT, M_PROP = 261.0, 121.0
 X_MOT_AFT, X_MOT_FWD = TIP - 8.4, TIP - 173.4     # motor nozzle / forward end from the tip, mm
 X_BALLAST = 74.6
@@ -136,12 +140,12 @@ def main():
                                 aoa_max_deg=float(max(abs(f.angle_of_attack(x)) for x in np.linspace(f.out_of_rail_time + 0.05, 2.4, 60))),
                                 landing_x_m=x_ap + w * float(f.apogee) / V_DESC))
         print(f"wind {mph:2d} mph: apogee {f.apogee:.0f} m, apogee offset {x_ap:+.0f} m, landing {out['wind'][-1]['landing_x_m']:+.0f} m")
-    json.dump(out, open(ROOT / "out/msp/flight.json", "w"), indent=1, default=float)
+    json.dump(out, open(ROOT / f"out/msp/flight{TAG}.json", "w"), indent=1, default=float)
     s = series[lab18]                       # trajectory export for tools/recovery_analysis.py
     c18 = [c for c in out["cases"] if c["case"] == lab18][0]
     json.dump(dict(t=s["t"].tolist(), speed=s["v"].tolist(), z=s["z"].tolist(), t_bo=s["t_bo"],
                    apogee=c18["apogee_m"], t_ap=c18["t_apogee"], delay=DELAY, source="msp_flight.py, 1.8 cal case"),
-              open(ROOT / "out/msp/flight_series.json", "w"))
+              open(ROOT / f"out/msp/flight_series{TAG}.json", "w"))
 
     # ---------------- figures
     sty = {"no added ballast": ":", "1.7 cal at liftoff": "--", "1.8 cal at liftoff": "-"}
@@ -155,7 +159,7 @@ def main():
         a.axvline(s18["t_bo"], color="0.6", lw=0.8); a.axvline(s18["t_bo"] + DELAY, color="0.6", lw=0.8, ls="--"); a.grid(alpha=.3)
     ax[0].text(s18["t_bo"] + 0.2, 100, "burnout", fontsize=7.5); ax[0].text(s18["t_bo"] + DELAY + 0.2, 100, "ejection", fontsize=7.5)
     fig.suptitle("Flight profile to ejection (1.8 cal ballast case, no wind)", fontsize=10)
-    fig.tight_layout(); fig.savefig(FIG / "flight_profile.png", dpi=180); plt.close(fig)
+    fig.tight_layout(); fig.savefig(FIG / f"flight_profile{TAG}.png", dpi=180); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(7, 3.6))
     for lab, s in series.items():
@@ -166,7 +170,7 @@ def main():
     ax.axvline(series[lab18]["t_bo"], color="0.6", lw=0.8)
     ax.set_xlabel("time (s)"); ax.set_ylabel("static margin (cal), CFD CP"); ax.grid(alpha=.3); ax.legend(fontsize=7.5)
     ax.set_title("Static margin during flight: CFD CP(Mach) against simulated CG(t)", fontsize=10)
-    fig.tight_layout(); fig.savefig(FIG / "margin_vs_time.png", dpi=180); plt.close(fig)
+    fig.tight_layout(); fig.savefig(FIG / f"margin_vs_time{TAG}.png", dpi=180); plt.close(fig)
 
     fig, ax = plt.subplots(1, 2, figsize=(9, 3.2))
     W = out["wind"]
@@ -176,7 +180,7 @@ def main():
     ax[1].plot([w["wind_mph"] for w in W], [w["x_apogee_m"] for w in W], "ks--", ms=3, label="apogee position")
     ax[1].set_xlabel("wind (mph)"); ax[1].set_ylabel("downwind distance (m)"); ax[1].legend(fontsize=7.5); ax[1].grid(alpha=.3)
     ax[1].set_title("Apogee and landing position vs wind", fontsize=9)
-    fig.tight_layout(); fig.savefig(FIG / "wind_cases.png", dpi=180); plt.close(fig)
+    fig.tight_layout(); fig.savefig(FIG / f"wind_cases{TAG}.png", dpi=180); plt.close(fig)
     print(json.dumps(out["cases"], indent=1, default=float)[:2500])
 
 
