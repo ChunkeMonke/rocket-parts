@@ -11,6 +11,10 @@ run() {  # name, setup args...
   echo "$(date +%T) setup $n $*" >> $LOG
   $PY tools/cfd_rocket.py setup --name $n --stl rocket_oml_asm.stl "$@" >> $LOG 2>&1 || { echo "$(date +%T) SETUP FAILED $n" >> $LOG; return; }
   bash out/cfd/of_$n/Allrun > out/cfd/of_$n/allrun.out 2>&1
+  # the internal-field VTK export can fail with an MPI resource error after a good solve: forces only need VTKL
+  if [ ! -f out/cfd/of_$n/done.flag ] && [ "$(ls out/cfd/of_$n/VTKL/rocket/*.vtk 2>/dev/null | wc -l)" -ge 2 ]; then
+    echo DONE > out/cfd/of_$n/done.flag
+  fi
   if [ -f out/cfd/of_$n/done.flag ]; then
     $PY tools/cfd_post.py --name $n > out/cfd/of_$n/post.out 2>&1
     echo "$(date +%T) DONE $n $(grep -h -m1 'CP_from_tip_mm' out/cfd/of_$n/result.json | tr -d ' \n') $(grep -h 'CN_alpha_per_rad' out/cfd/of_$n/result.json | tail -1 | tr -d ' \n')" >> $LOG

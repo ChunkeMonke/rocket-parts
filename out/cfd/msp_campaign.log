@@ -25,3 +25,16 @@ case /home/user/out/cfd/of_msp_m05  L 1.078 m  blocks (102, 20, 40)  U (169.7316
 04:54:50 setup msp_m08 --alpha 4 --mach 0.8
 case /home/user/out/cfd/of_msp_m08  L 1.078 m  blocks (102, 20, 40)  U (271.570682 0.000000 18.990072)  k 2.779  omega 304.4
 04:55:06 DONE msp_m05 (post run manually; internal VTK export failed: MPI)
+05:33:02 resume msp_m08 from t=1875 (container restart)
+05:33:09 RUN FAILED msp_m08 (resume)
+05:33:09 CAMPAIGN COMPLETE
+05:33:09 setup msp_a0_f --alpha 0 --refine 1
+05:33:41 skip msp_a4 (done)
+05:33:41 skip msp_a4_f (done)
+05:33:41 skip msp_a0 (done)
+05:33:41 skip msp_a2 (done)
+05:33:41 skip msp_a6 (done)
+05:33:41 skip msp_a8 (done)
+05:33:41 skip msp_m05 (done)
+05:33:41 setup msp_m08 --alpha 4 --mach 0.8
+case /home/user/out/cfd/of_msp_m08  L 1.078 m  blocks (102, 20, 40)  U (271.570682 0.000000 18.990072)  k 2.779  omega 304.4
