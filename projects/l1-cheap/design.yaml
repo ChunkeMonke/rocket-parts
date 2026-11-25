@@ -316,7 +316,7 @@ kevlar_bulkhead:            # FLIGHT PART: SolidWorks design owner_cad/Bulkhead_
   epoxy_grooves: {value: "3 sawtooth, 1.0 mm deep", status: CONFIRMED}
   mass_g: {value: 24.7, status: ESTIMATE, note: "mass model 23.6 (0 %) - 27.9 g (100 %); 25 % gyroid, 6 walls, 0.20 mm"}
   install_fwd_face_from_tip_mm: {value: 340, status: CONFIRMED, note: "176.6 mm inside the tube's forward end; bulkhead CG 352.5 mm from the tip"}
-  fea_686N: {value: "FI_z 0.13; in-layer 13.8 MPa; interlayer shear 10.0 MPa at 2 mm from the contact patch (FI 0.67)", status: RESULT, note: "out/fea/kevlar_bulkhead_owner/snatch686/result.json"}
+  fea_686N: {value: "FI_z 0.13; in-layer 13.8 MPa; interlayer shear 10.0 MPa at 2 mm from the contact patch (FI 0.67)", status: RESULT, note: "out/fea/kevlar_bulkhead_solidworks/snatch686/result.json; SolidWorks Simulation cross-check 2026-11-24 (report D34)"}
 # ---- design-team bulkhead proposal rev 2 (history; parts/kevlar_bulkhead.py). Flight part = kevlar_bulkhead (SolidWorks) ----
 kevlar_bulkhead_rev2:
   od_mm: 38.555

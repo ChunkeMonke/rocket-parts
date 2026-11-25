@@ -2,8 +2,8 @@
 title: "Ms. Piggy"
 subtitle: "Level 1 Minimum-Diameter Rocket · Design, Analysis & Flight Readiness"
 docnumber: "L1C-EDR-001"
-revision: "Q"
-date: "2026-11-24"
+revision: "R"
+date: "2026-11-25"
 status: "Released for build"
 prepared_for: "Tripoli Level 1 certification flight, Palm Bay FL, 2026-12-14"
 prepared_by: ""
@@ -11,6 +11,7 @@ tagline: "Minimum-diameter · AeroTech H100W-14A · 3D-printed PETG airframe com
 ref_diameter: "41.275 mm"
 cover_image: "figures/cover_rocket.png"
 revisions:
+  - {rev: "R", date: "2026-11-25", description: "SolidWorks Simulation material entry limited to recorded values; bearing allowable from published compressive strengths of printed PETG; derivation of the earlier drag factor x0.857 stated"}
   - {rev: "Q", date: "2026-11-24", description: "Independent SolidWorks Simulation cross-check of the aft Kevlar bulkhead (three figures); bearing check under the Kevlar cord"}
   - {rev: "P", date: "2026-11-24", description: "SolidWorks Kevlar bulkhead adopted (FEA, drawing L1C-KB-005 Rev C); stability 1.91 cal without nose ballast; flight and recovery on the with-bulkhead mass"}
   - {rev: "N", date: "2026-11-24", description: "Full-assembly CFD (L1C-CFD-002) adopted as aerodynamic basis; delay 13 s; stability, flight and recovery updated"}
@@ -44,7 +45,7 @@ revisions:
 | Apogee | **1662 m (5454 ft)**; 1524–1836 m for drag ±15 % | RocketPy on the CFD drag, with the bulkhead [D32] | [PROVISIONAL]{.tag} |
 | Max speed / rail exit | 297 m/s, **M 0.88** / 24.5 m/s on 1.83 m | same | [PROVISIONAL]{.tag} |
 | Fin strength, rev 9 | FI 0.34 / 0.27 / 0.15 / 0.026 | CalculiX, ANSYS-calibrated | pass (limits 0.5 / 0.5 / 0.5 / 0.1) |
-| Aft bulkhead, 686 N snatch | FI 0.13 across layers; interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N); cord bearing ≈ 38 MPa, confined to about 2 mm | CalculiX, orthotropic PETG [D31]; SolidWorks Simulation cross-check [D34] | [ESTIMATE]{.tag} load |
+| Aft bulkhead, 686 N snatch | FI 0.13 across layers; interlayer shear FI ≈ 0.67 (≈ 0.33 at 343 N); cord bearing ≈ 38 MPa against 30–52 MPa published compressive strength, confined to about 2 mm | CalculiX, orthotropic PETG [D31]; SolidWorks Simulation cross-check [D34] | [ESTIMATE]{.tag} load |
 | Delay | drill 14 s → **13 s** | ideal 13.2 s at nominal drag; worst-case ejection 14.1 m/s over drag ×0.85–1.40 [D32] | [CONFIRMED]{.tag} |
 | Descent rate | **5.35 m/s** (17.5 ft/s); 4.88–5.98 m/s for *C*~d~ 0.90–0.60 | LOC 28 in chute, 84 mm spill hole, *C*~d~ 0.75, 513.7 g | [ESTIMATE]{.tag} |
 | Opening / snatch load | ≤ 87 N in the ±1.5 s band / ≤ 646 N at 20 m/s | against 1334 N knotted Kevlar [D27] | [ESTIMATE]{.tag} |
@@ -61,7 +62,7 @@ Table: Key results, with the aft Kevlar bulkhead fitted. Sources: §2.5, §3.4, 
 5. **Apogee is 1662 m (5454 ft) at nominal CFD drag**, at M 0.88, with a band of 1524–1836 m for ±15 % drag. A drag factor of 1.40 gives 1347 m and reproduces the OpenRocket apogee, so the two models differ mainly in drag [D28][D32].
 6. **A 13 s delay gives the lowest worst-case ejection speed**: 14.1 m/s across drag ×0.85–1.40, against 21.9 m/s for 12 s. The ideal delay at nominal drag is 13.2 s [D32].
 7. **The rev 9 fin can passes all four structural criteria.** The SolidWorks fin can (flight part) is covered by similarity. It differs from rev 9 at the fin root (root-fillet thickness 11.1 mm against 13.4 mm) and at the trailing edge (1.0 mm against 2.5 mm) [D25].
-8. **The aft Kevlar bulkhead carries the 686 N snatch load.** The cord presses the 4 mm web forward, so the load is carried in compression and in-layer bending. Across-layer tension reaches FI 0.13; interlayer shear reaches FI ≈ 0.67 at 2 mm from the cord contact (§5.8) [D31]. An independent SolidWorks Simulation study confirms the result; the governing local effect is cord bearing on the web, ≈ 38 MPa [ESTIMATE]{.tag} at 686 N, confined to about 2 mm [D34].
+8. **The aft Kevlar bulkhead carries the 686 N snatch load.** The cord presses the 4 mm web forward, so the load is carried in compression and in-layer bending. Across-layer tension reaches FI 0.13; interlayer shear reaches FI ≈ 0.67 at 2 mm from the cord contact (§5.8) [D31]. An independent SolidWorks Simulation study confirms the result; the governing local effect is cord bearing on the web, ≈ 38 MPa [ESTIMATE]{.tag} at 686 N against a published compressive strength of 30–52 MPa for printed PETG, so a shallow seat may crush locally, confined to about 2 mm [D34].
 9. **The 28 in parachute is adequate.** Descent is 5.35 m/s (17.5 ft/s) at *C*~d~ 0.75 with the bulkhead fitted, and body-section landing energy is ≈ 6.4 J (4.7 ft-lbf) [ESTIMATE]{.tag}. Opening and snatch loads stay far below the 1334 N knotted-cord strength (§7).
 10. **Chute-pack position is critical.** If the pack slid aft onto the motor, the RocketPy basis would drop to 0.15 cal [D25]. The aft bulkhead holds the pack in the 131.6 mm between the nose-cap face and its forward face at 340 mm [D30].
 
@@ -747,7 +748,7 @@ Table: Aft Kevlar bulkhead FEA, 686 N worst-case snatch load [ESTIMATE]{.tag} lo
 | Item | SolidWorks Simulation set-up |
 |---|---|
 | Study | Static, study "Static 1"; solid mesh |
-| Material | PETG, linear elastic isotropic, *E* ≈ 1.47 GPa; yield strength 35 MPa (library value) |
+| Material | PETG, linear elastic isotropic (SolidWorks library); yield strength 35 MPa |
 | Fixtures | Fixed-1 and Fixed-2 on the outer groove faces (the epoxy bond) |
 | Load | Force-1: 686 N along the rocket axis, forward, on a split face on the web aft face between the two Kevlar holes (worst-case snatch load, §7.4) |
 | Results | von Mises stress; resultant displacement URES; section clipping through the web |
@@ -756,7 +757,7 @@ Table: SolidWorks Simulation set-up, aft Kevlar bulkhead. Source: [D34].
 
 | Quantity at 686 N | SolidWorks | CalculiX | Note |
 |---|---|---|---|
-| PETG model | isotropic, *E* ≈ 1.47 GPa | orthotropic, *E*~z~ 1087 MPa across layers | §5.2 |
+| PETG model | isotropic, library PETG | orthotropic, *E*~z~ 1087 MPa across layers | §5.2 |
 | Maximum displacement | **0.156 mm** | 0.25 mm | same order; CalculiX softer across the layers |
 | Stress 2 mm from the contact | below about 10 MPa (von Mises) | 10.1 MPa in-layer; 10.0 MPa interlayer shear | agree |
 | Stress 3 / 5 mm from the contact | below about 10 MPa | 7.4–7.8 / 3.9–4.7 MPa | agree |
@@ -771,7 +772,7 @@ Table: SolidWorks Simulation against CalculiX, 686 N on the web. Sources: [D31][
 
 ![Aft Kevlar bulkhead, SolidWorks Simulation, 686 N: the same section, von Mises stress. Colour scale 0.02–100.5 MPa; the 35 MPa yield strength is marked on the legend. The region above 35 MPa is a thin shell about 2 mm deep at the cord contact patch of the 25 mm long plug, with a peak of 100.5 MPa in a ring along the edge of the load patch. Beyond about 2 mm from the contact the stress is below about 10 MPa. Source: SolidWorks Simulation study, 2026-11-24 [D34].](figures/fea/sw_sim_vm686_section.png){.color width=75%}
 
-- **Agreement with CalculiX.** The maximum displacement is 0.156 mm in SolidWorks (isotropic, *E* ≈ 1.47 GPa) and 0.25 mm in CalculiX (orthotropic, 1087 MPa across the layers). The two are of the same order; the difference is consistent with the softer across-layer modulus of the CalculiX model. Away from the contact both models give stress at or below about 10 MPa [D31][D34].
+- **Agreement with CalculiX.** The maximum displacement is 0.156 mm in SolidWorks (isotropic library PETG) and 0.25 mm in CalculiX (orthotropic, 1087 MPa across the layers). The two are of the same order; the CalculiX model is the softer of the two across the layers. Away from the contact both models give stress at or below about 10 MPa [D31][D34].
 - **Peak values.** The 100.5–102.5 MPa peaks lie on the sharp edge of the idealised load patch. They are a stress singularity, which grows with mesh refinement, and not a material stress.
 - **Field under the patch.** The ≈ 50–60 MPa field directly under the patch is the contact (bearing) pressure of the cord on the web. 686 N on the ≈ 11.4 mm² patch (4.4 × 2.6 mm, the same patch as the CalculiX model) gives ≈ 60 MPa. This bearing stress is compressive; the CalculiX results [D31] do not include it.
 
@@ -781,22 +782,22 @@ $$ \sigma_b = \frac{F}{A_c} $$
 
 where σ~b~ is the bearing stress (MPa), *F* the cord load on the web (N) and *A*~c~ the cord contact area (mm²). The 2.3 mm braid flattens to about 3 mm and wraps the 4 mm web and its R2 rounded edges, a contact of roughly 3 × 6 mm ≈ 18 mm² [ESTIMATE]{.tag}.
 
-| Load case | *F* | σ~b~ on ≈ 18 mm² | Against 35 MPa yield |
+| Load case | *F* | σ~b~ on ≈ 18 mm² | Against 30–52 MPa compressive strength |
 |---|---|---|---|
-| Snatch, 20 m/s separation (worst case, FEA load) | 686 N | ≈ 38 MPa | above |
+| Snatch, 20 m/s separation (worst case, FEA load) | 686 N | ≈ 38 MPa | inside the range: local crushing possible |
 | Snatch, 10 m/s separation (typical) | 323 N | ≈ 18 MPa | below |
 | Opening load, ±1.5 s delay band | 6–87 N | ≤ 5 MPa | below |
 
 Table: Bearing stress under the Kevlar cord [ESTIMATE]{.tag}. Loads from §7.3–7.4 [D27]; contact area [ESTIMATE]{.tag}. Source: [D34].
 
-- **Allowable.** The compressive strength of printed PETG is typically about 55–60 MPa [ESTIMATE]{.tag}, above the 35 MPa tensile yield of the SolidWorks material library.
-- **Worst case, 686 N.** The cord may bed a shallow seat, a fraction of a millimetre, into the web. The above-yield zone is confined to about 2 mm and does not propagate, so the web is not at risk of fracture.
-- **Typical case, 323 N.** The bearing stress is below yield.
+- **Allowable.** Published compressive strengths of FDM-printed PETG at 100 % infill range from about 30 MPa to 52 MPa, depending on print settings [R83][R84][R85]. The web under the cord is solid material (6 walls, solid top and bottom layers), so the 100 % infill values apply; the lower bound, 30 MPa, is used here.
+- **Worst case, 686 N.** The ≈ 38 MPa bearing stress exceeds the 30 MPa lower bound and lies inside the published range: the cord may crush a shallow seat into the web. The above-yield zone is confined to about 2 mm, and away from the contact the stress falls below about 10 MPa, so local crushing does not lead to fracture of the web.
+- **Typical case, 323 N.** The ≈ 18 MPa bearing stress is below the 30 MPa lower bound and below the 35 MPa yield.
 - **Technical note:** larger edge radii on the web (R3 instead of R2), or an epoxy fillet over the web where the cord crosses, would enlarge the contact and reduce the bearing stress.
 
 ::: result
 **Cross-check result**
-The independent SolidWorks study confirms the CalculiX result: the bulkhead carries the 686 N worst-case snatch load. The governing local effect is bearing under the cord, confined to about 2 mm.
+The independent SolidWorks study confirms the CalculiX result: the bulkhead carries the 686 N worst-case snatch load. The governing local effect is bearing under the cord: at the 686 N worst case it may crush a shallow seat confined to about 2 mm; at the typical 323 N it stays below the published compressive strength.
 :::
 
 # Stability and Flight Performance {#sec-stab}
@@ -1740,7 +1741,7 @@ Table: Where the earlier *C*~Nα~ difference sat. Source: CFD lift breakdown [D1
 
 Table: Earlier CFD axial force at 100 m/s, α = 4°, with flat-plate friction. Sources: [D11][D20].
 
-- The earlier simulation drag tables (0.70–0.83 sim input; 0.73–1.13 aero build-up, M 0.1–0.7) were estimates for older fin sets, held flat above M 0.7. The rev 8, rev 9 and flight-video simulations scaled *C*~d~ by ×0.857, whose derivation is not documented [D3][D11][D21].
+- The earlier simulation drag tables (0.70–0.83 sim input; 0.73–1.13 aero build-up, M 0.1–0.7) were estimates for older fin sets, held flat above M 0.7. The rev 8, rev 9 and flight-video simulations scaled *C*~d~ by ×0.857: the ratio of the CFD total axial-force coefficient of the rev 8 fin can with tail cone to that of rev 7 without it (0.608 / 0.709 at 100 m/s, α = 4°), applied to the design drag table [D3][D11][D21]. The full-assembly CFD (L1C-CFD-002) replaces this scaling.
 
 | Basis | CP (mm) | CG (mm) | Margin | Ballast for 1.8 cal |
 |---|---|---|---|---|
@@ -2517,6 +2518,9 @@ Accessed 2026-11-20 unless noted, as recorded in the project files. Entries with
 **Supporting project documents**
 
 - [R82] *Ms. Piggy — Full-Vehicle CFD and Flight Simulation · SolidWorks Assembly*, document L1C-CFD-002 Rev A, 2026-11-24. Supporting analysis to this report: OpenFOAM RANS (k-ω SST), nine cases at 0.6 M and 2.5 M cells; RocketPy 6-DOF flight simulation on the CFD aerodynamic database (data source [D28]).
+- [R83] Compressive strength of FDM-printed PETG against infill density; 29.79–30.84 MPa at 100 % infill. *Engineering, Technology & Applied Science Research* (ETASR), 2024. https://etasr.com/index.php/ETASR/article/download/7063/3556/26796
+- [R84] FDM-printed PETG under compression; 52.29 MPa at 100 % infill, 0.18 mm layer height. *E3S Web of Conferences*, SNE2 2024, 01014. https://www.e3s-conferences.org/articles/e3sconf/pdf/2024/118/e3sconf_sne2-2024_01014.pdf
+- [R85] PLA and PETG at 100 % infill in compression; PETG 52.39 MPa. *Journal of Testing and Evaluation*, ASTM, 2026. https://store.astm.org/jte20250176.html
 
 # Appendix G — Data Sources and Traceability {#app-sources .unnumbered .appendix}
 
@@ -2580,7 +2584,6 @@ Where sources disagree, both values are reported with their basis; none are aver
 | 9 | Nose mass | Decision 65 g; `nosecone.mass_g` 80 g; verify target 52.7 g; stability target 122.7 g |
 | 10 | Landing speed | 12.3 mph (video tool), 11.9 (model v2), 12.2 (v4), 11.8 (2026-11-22 export) |
 | 11 | Ballast on the 763.3 mm CG | 10.2 g (1.8 cal) and 6.4 g (1.7 cal) on CP 826.3 mm [D28], the basis without the aft bulkhead; with the bulkhead no nose ballast is required [D32]. The `decisions_2026_11_23.ballast` note of the data file still lists +25.6 / +9.2 g and +21.6 / +5.4 g on CP 809.9 / 827.4 mm [D3]; earlier CG bases gave +23 g (CG 759 mm) and +15 g (CG 750.6 mm) |
-| 12 | *C*~d~ ×0.857 | Used by rev 8, rev 9 and flight simulations; derivation not documented |
 | 13 | Recovery values in the data file | Cord rating 2860 N, anchor area 191 mm², simulation chute mass 57 g are 40 in values; the 28 in analysis on the with-bulkhead CFD trajectory gives opening ≤ 303 N (10 s) and snatch ≤ 646 N at 20 m/s [D27] |
 | 14 | Landing load | Criteria at 200 N (40 in basis); 28 in whole-rocket estimate 180–450 N average, ≈ 900 N peak, 7.8–9.7 J [D12]; 28 in analysis 5.8–6.1 J body section [D27] |
 | 15 | Reefing | Recovery analysis (40 in): reef in wind; landing-load note: fly unreefed |
@@ -2618,6 +2621,7 @@ Table: Source discrepancies.
 
 | Rev | Date | Change |
 |---|---|---|
+| R | 2026-11-25 | SolidWorks Simulation material entry limited to recorded values; bearing allowable from published compressive strengths of printed PETG (30–52 MPa); derivation of the earlier drag factor ×0.857 stated |
 | Q | 2026-11-24 | Independent SolidWorks Simulation cross-check of the aft Kevlar bulkhead (three figures); bearing check under the Kevlar cord |
 | P | 2026-11-24 | SolidWorks Kevlar bulkhead adopted (FEA, drawing L1C-KB-005 Rev C); stability 1.91 cal without nose ballast; flight and recovery on the with-bulkhead mass |
 | N | 2026-11-24 | Full-assembly CFD (L1C-CFD-002) adopted as aerodynamic basis; delay 13 s; stability, flight and recovery updated |
